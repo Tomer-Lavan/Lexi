@@ -1,6 +1,6 @@
 # Contributing Guidelines
 
-Welcome to the [Lexi](<[Lexi](https://github.com/Tomer-Lavan/Lexi)>) repository! We're excited that you're interested in contributing. Please take a moment to review this document to ensure a smooth collaboration process.
+Welcome to [Lexi](<[Lexi](https://github.com/Tomer-Lavan/Lexi)>) repository! We're excited that you're interested in contributing. Please take a moment to review this document to ensure a smooth collaboration process.
 
 ## How to Contribute
 
@@ -53,4 +53,4 @@ Please follow this commit format for your commit messages:
 
 If you have any questions, feel free to reach out by creating an issue.
 
-Thank you for contributing to [idurar-erp-crm](https://github.com/Tomer-Lavan/Lexi) dont forget to give us a :star: !
+Thank you for contributing to [Lexi](https://github.com/Tomer-Lavan/Lexi) dont forget to give us a :star: !
