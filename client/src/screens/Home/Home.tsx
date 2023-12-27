@@ -10,6 +10,7 @@ import { createConversation } from '../../DAL/server-requests/conversationsDAL';
 import { getExperimentContent, updateExperimentDisplaySettings } from '../../DAL/server-requests/experimentsDAL';
 import { logout } from '../../DAL/server-requests/usersDAL';
 import theme from '../../Theme';
+import { Pages } from '../../app/App';
 import AsynchButton from '../../components/common/AsynchButton';
 import LoadingPage from '../../components/common/LoadingPage';
 import { useSnackbar } from '../../contexts/SnackbarProvider';
@@ -51,13 +52,14 @@ const Home: React.FC = () => {
                     openSnackbar('Experiment is not active', 'warning');
                 } else {
                     await logout();
-                    navigate('/info');
+                    navigate(Pages.PROJECT_OVERVIEW);
                     dispatch(setActiveUser(null));
+                    openSnackbar('Experiment is not active', 'warning');
                 }
             }
         } catch (err) {
             openSnackbar('Failed to load experiment', 'error');
-            navigate('/info');
+            navigate(Pages.PROJECT_OVERVIEW);
         }
         setIsLoadingPage(false);
     }, []);
@@ -89,7 +91,12 @@ const Home: React.FC = () => {
                 activeUser.numberOfConversations,
                 experimentId,
             );
-            navigate(`c/${newConversationId}`);
+            navigate(
+                `${Pages.EXPERIMENT_CONVERSATION.replace(':experimentId', experimentId).replace(
+                    ':conversationId',
+                    newConversationId,
+                )}`,
+            );
         } catch (err) {
             openSnackbar('Failed to start a new conversation', 'error');
         }

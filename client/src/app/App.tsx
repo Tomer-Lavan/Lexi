@@ -4,14 +4,17 @@ import LoadingPage from '../components/common/LoadingPage';
 import LoginExperimentRoute from '../components/common/LoginExperimentRoute';
 import PrivateExperimentRoute from '../components/common/ProtectedExperimentRoute';
 import useActiveUser from '../hooks/useActiveUser';
-import InfoPage from '../screens/InfoPage';
+import ProjectOverview from '../screens/ProjectOverview';
 import './styles.css';
 
 export enum Pages {
-    HOME = 'home',
-    LOGIN = 'login',
-    ADMIN = 'admin',
-    CHAT = 'chat/:id',
+    PROJECT_OVERVIEW = '/project-overview',
+    ADMIN = '/admin',
+    ADMIN_LOGIN = '/admin/login',
+    EXPERIMENT = '/e/:experimentId',
+    EXPERIMENT_CONVERSATION = '/e/:experimentId/c/:conversationId',
+    EXPERIMENT_LOGIN = '/e/:experimentId/login',
+    GENERAL_LOGIN = 'login',
 }
 
 const App: FC = () => {
@@ -30,28 +33,34 @@ const App: FC = () => {
                     <LoadingPage />
                 ) : (
                     <Routes>
-                        <Route path="/info" element={<InfoPage />} />
+                        <Route path={Pages.PROJECT_OVERVIEW} element={<ProjectOverview />} />
 
                         {/* Admin Routes */}
                         <Route
-                            path="/admin"
-                            element={activeUser?.isAdmin ? <Admin /> : <Navigate to="/admin/login" />}
+                            path={Pages.ADMIN}
+                            element={activeUser?.isAdmin ? <Admin /> : <Navigate to={Pages.ADMIN_LOGIN} />}
                         />
                         <Route
-                            path="/admin/login"
-                            element={!activeUser ? <Login /> : <Navigate to="/admin" replace />}
+                            path={Pages.ADMIN_LOGIN}
+                            element={
+                                activeUser && activeUser?.isAdmin ? (
+                                    <Navigate to={Pages.ADMIN} replace />
+                                ) : (
+                                    <Login />
+                                )
+                            }
                         />
 
                         {/* Experiment Routes */}
                         <Route
-                            path="/e/:experimentId"
+                            path={Pages.EXPERIMENT}
                             element={
                                 <PrivateExperimentRoute TopBar={TopBar} setIsOpen={setOpenEndConversationDialog} />
                             }
                         >
                             <Route path="" element={<Home />} />
                             <Route
-                                path="c/:conversationId"
+                                path={Pages.EXPERIMENT_CONVERSATION.replace(`${Pages.EXPERIMENT}/`, '')}
                                 element={
                                     <ChatPage
                                         open={openEndConversationDialog}
@@ -60,13 +69,18 @@ const App: FC = () => {
                                 }
                             />
                         </Route>
-                        <Route path="/e/:experimentId/login" element={<LoginExperimentRoute />}>
+                        <Route path={Pages.EXPERIMENT_LOGIN} element={<LoginExperimentRoute />}>
                             <Route path="" element={<Login />} />
                         </Route>
 
                         <Route
                             path="*"
-                            element={<Navigate to={activeUser?.isAdmin ? '/admin' : '/info'} replace />}
+                            element={
+                                <Navigate
+                                    to={activeUser?.isAdmin ? Pages.ADMIN : Pages.PROJECT_OVERVIEW}
+                                    replace
+                                />
+                            }
                         />
                     </Routes>
                 )}

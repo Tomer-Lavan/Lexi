@@ -1,4 +1,5 @@
 import { Navigate, Outlet, useParams } from 'react-router-dom';
+import { Pages } from '../../app/App';
 import useActiveUser from '../../hooks/useActiveUser';
 
 const PrivateExperimentRoute = ({ TopBar, setIsOpen }) => {
@@ -6,7 +7,7 @@ const PrivateExperimentRoute = ({ TopBar, setIsOpen }) => {
     const { experimentId } = useParams();
 
     if (!activeUser) {
-        return <Navigate to={`/e/${experimentId}/login`} replace />;
+        return <Navigate to={`${Pages.EXPERIMENT_LOGIN.replace(':experimentId', experimentId)}`} replace />;
     }
 
     return (

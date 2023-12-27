@@ -10,6 +10,7 @@ import {
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import theme from '../../Theme';
+import { Pages } from '../../app/App';
 import SurveyComponent from '../forms/SurveyForm';
 
 const FinishConversationDialog = ({ open, setIsOpen, questionnaireLink, conversationId }) => {
@@ -23,7 +24,7 @@ const FinishConversationDialog = ({ open, setIsOpen, questionnaireLink, conversa
     };
 
     const handleDone = () => {
-        navigate(`/e/${experimentId}`);
+        navigate(`${Pages.EXPERIMENT.replace(':experimentId', experimentId)}`);
         setIsOpen(false);
     };
 

@@ -20,7 +20,6 @@ export const SidebarAdmin: React.FC<{ section; setSection }> = ({ section, setSe
     const handleLogout = async () => {
         await logout();
         dispatch(setActiveUser(null));
-        // navigate(Pages.LOGIN);
     };
 
     const gradientCircleStyle = {
@@ -92,9 +91,6 @@ export const SidebarAdmin: React.FC<{ section; setSection }> = ({ section, setSe
                 </StyledListItemIcon>
                 <Typography color={'floralwhite'}>Logout</Typography>
             </ListItem>
-            {/* <Button size={'small'} variant="outlined" style={{ color: '#ff5050', borderColor: '#ff5050' }}>
-                Logout
-            </Button> */}
         </MainContainer>
     );
 };

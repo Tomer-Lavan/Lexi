@@ -1,4 +1,5 @@
 import { Navigate, Outlet, useParams } from 'react-router-dom';
+import { Pages } from '../../app/App';
 import useActiveUser from '../../hooks/useActiveUser';
 
 const LoginExperimentRoute = () => {
@@ -9,7 +10,7 @@ const LoginExperimentRoute = () => {
         return <Outlet />;
     }
 
-    return <Navigate to={`/e/${experimentId}`} replace />;
+    return <Navigate to={Pages.EXPERIMENT.replace(':experimentId', experimentId)} replace />;
 };
 
 export default LoginExperimentRoute;

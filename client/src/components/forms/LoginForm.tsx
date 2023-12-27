@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { setActiveUser } from '../../DAL/redux/reducers/activeUserReducer';
 import { login } from '../../DAL/server-requests/usersDAL';
+import { Pages } from '../../app/App';
 
 export const LoginForm = ({ isSignUp, setIsSignUp, isAdminPage, experimentId }) => {
     const [nickname, setNickname] = useState('');
@@ -28,7 +29,7 @@ export const LoginForm = ({ isSignUp, setIsSignUp, isAdminPage, experimentId }) 
                 setIsUserAdmin(true);
             } else if (user) {
                 dispatch(setActiveUser(user));
-                navigate(isAdminPage ? '/admin' : `/e/${experimentId}`);
+                navigate(isAdminPage ? Pages.ADMIN : Pages.EXPERIMENT.replace(':experimentId', experimentId));
             }
         } catch (error) {
             console.error(error);

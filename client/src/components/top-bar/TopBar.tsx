@@ -26,7 +26,7 @@ const TopBar: React.FC<TopBarProps> = (props) => {
     const handleLogout = async () => {
         await logout();
         dispatch(setActiveUser(null));
-        navigate(Pages.LOGIN);
+        navigate(Pages.GENERAL_LOGIN);
     };
 
     return (

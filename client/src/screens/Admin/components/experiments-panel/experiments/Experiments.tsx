@@ -12,16 +12,19 @@ import { FlexContainer, IconButtonStyled, MainContainerStyled, PointerDiv } from
 export const Experiments = ({ models }) => {
     const [experiments, setExperiments] = useState([]);
     const [isEditMode, setIsEditMode] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoadingStatusChange, setIsLoadingStatusChange] = useState(false);
+    const [isLoadingExperiments, setIsLoadingExperiments] = useState(true);
     const [tempExperiments, setTempExperiments] = useState([]);
     const [modifiedExperiments, setModifiedExperiments] = useState({});
     const [openExperimentFormDialog, setOpenExperimentFormDialog] = useState(false);
     const [editExperiment, setEditExperiment] = useState<ModelType | undefined>(null);
 
     useEffectAsync(async () => {
+        setIsLoadingExperiments(true);
         const res = await getExperiments();
         setExperiments(res);
         setTempExperiments(res);
+        setIsLoadingExperiments(false);
     }, []);
 
     const closeDialog = () => {
@@ -47,10 +50,10 @@ export const Experiments = ({ models }) => {
     };
 
     const handleSaveChanges = async () => {
-        setIsLoading(true);
+        setIsLoadingStatusChange(true);
         const updatedExperiments = Object.values(modifiedExperiments);
         await updateExperimentsStatus(updatedExperiments);
-        setIsLoading(false);
+        setIsLoadingStatusChange(false);
         setExperiments(tempExperiments);
         setModifiedExperiments({});
     };
@@ -76,10 +79,11 @@ export const Experiments = ({ models }) => {
                 handleStatusChange={handleStatusChange}
                 handleSaveChanges={handleSaveChanges}
                 handleCancelChanges={handleCancelChanges}
-                isLoading={isLoading}
+                isLoadingStatusChange={isLoadingStatusChange}
                 setEditExperiment={setEditExperiment}
                 setOpenExperimentFormDialog={setOpenExperimentFormDialog}
                 setIsEditMode={setIsEditMode}
+                isLoadingExperiments={isLoadingExperiments}
             />
             <Dialog open={openExperimentFormDialog} fullWidth>
                 <IconButtonStyled aria-label="close" onClick={closeDialog}>

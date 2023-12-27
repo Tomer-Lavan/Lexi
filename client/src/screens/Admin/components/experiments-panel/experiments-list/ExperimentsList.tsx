@@ -2,6 +2,7 @@ import FileCopyIcon from '@mui/icons-material/FileCopy';
 import {
     Box,
     Button,
+    CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
@@ -35,7 +36,8 @@ const ExperimentsList = ({
     handleCancelChanges,
     setEditExperiment,
     setOpenExperimentFormDialog,
-    isLoading,
+    isLoadingStatusChange,
+    isLoadingExperiments,
 }) => {
     const { openSnackbar } = useSnackbar();
     const [openShareDialog, setOpenShareDialog] = useState(false);
@@ -80,7 +82,7 @@ const ExperimentsList = ({
                         sx={{ mr: 1 }}
                         style={{ marginBottom: 0 }}
                         variant="contained"
-                        isLoading={isLoading}
+                        isLoading={isLoadingStatusChange}
                         color="primary"
                         onClick={handleSaveChanges}
                         disabled={Object.values(modifiedExperiments).length === 0}
@@ -112,19 +114,23 @@ const ExperimentsList = ({
                                 <TableCell />
                             </TableRow>
                         </TableHead>
-                        {experiments.length ? (
-                            <TableBody>
-                                {experiments.map((experiment) => (
+                        <TableBody>
+                            {isLoadingExperiments ? (
+                                <TableRow>
+                                    <TableCell colSpan={5} align="center">
+                                        <CircularProgress />
+                                    </TableCell>
+                                </TableRow>
+                            ) : experiments.length ? (
+                                experiments.map((experiment) => (
                                     <ExperimentRow
                                         key={experiment._id}
                                         row={experiment}
                                         handleMenuAction={handleMenuAction}
                                         onStatusChange={handleStatusChange}
                                     />
-                                ))}
-                            </TableBody>
-                        ) : (
-                            <TableBody>
+                                ))
+                            ) : (
                                 <TableRow>
                                     <TableCell colSpan={5} align="center">
                                         <Typography variant="body1">
@@ -132,8 +138,8 @@ const ExperimentsList = ({
                                         </Typography>
                                     </TableCell>
                                 </TableRow>
-                            </TableBody>
-                        )}
+                            )}
+                        </TableBody>
                     </Table>
                 </TableContainer>
             </TablePaper>

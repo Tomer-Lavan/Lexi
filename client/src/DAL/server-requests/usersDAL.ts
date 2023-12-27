@@ -1,9 +1,9 @@
-import { User } from '../../models/AppModels';
+import { UserType } from '../../models/AppModels';
 import axiosInstance from './AxiosInstance';
 
 const USERS_PATH = 'users';
 
-export const getActiveUser = async (): Promise<User> => {
+export const getActiveUser = async (): Promise<UserType> => {
     try {
         const response = await axiosInstance.get(`/${USERS_PATH}/user`);
         return response.data;
