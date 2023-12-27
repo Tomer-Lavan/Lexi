@@ -10,6 +10,18 @@ import { experimentsService } from './experiments.service';
 dotenv.config();
 
 class UsersService {
+    creatAdminUser = async (username, password) => {
+        const usersModel = mongoDbProvider.getModel('users', userSchema);
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const res = await usersModel.create({
+            nickname: username,
+            password: hashedPassword,
+            isAdmin: true,
+        });
+
+        return { user: res };
+    };
+
     createUser = async (user: UserDocument, experimentId) => {
         const {
             nickname,

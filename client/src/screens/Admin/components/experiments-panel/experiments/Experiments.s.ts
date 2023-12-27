@@ -4,7 +4,7 @@ import theme from '../../../../../Theme';
 
 export const MainContainerStyled = styled('div')({
     maxWidth: 'lg',
-    width: '95%',
+    width: '100%',
     padding: '2%',
 });
 

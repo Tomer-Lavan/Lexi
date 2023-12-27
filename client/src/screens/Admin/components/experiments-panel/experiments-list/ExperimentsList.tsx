@@ -112,16 +112,28 @@ const ExperimentsList = ({
                                 <TableCell />
                             </TableRow>
                         </TableHead>
-                        <TableBody>
-                            {experiments.map((experiment) => (
-                                <ExperimentRow
-                                    key={experiment._id}
-                                    row={experiment}
-                                    handleMenuAction={handleMenuAction}
-                                    onStatusChange={handleStatusChange}
-                                />
-                            ))}
-                        </TableBody>
+                        {experiments.length ? (
+                            <TableBody>
+                                {experiments.map((experiment) => (
+                                    <ExperimentRow
+                                        key={experiment._id}
+                                        row={experiment}
+                                        handleMenuAction={handleMenuAction}
+                                        onStatusChange={handleStatusChange}
+                                    />
+                                ))}
+                            </TableBody>
+                        ) : (
+                            <TableBody>
+                                <TableRow>
+                                    <TableCell colSpan={5} align="center">
+                                        <Typography variant="body1">
+                                            <b>No experiments found</b>
+                                        </Typography>
+                                    </TableCell>
+                                </TableRow>
+                            </TableBody>
+                        )}
                     </Table>
                 </TableContainer>
             </TablePaper>

@@ -176,7 +176,12 @@ export const metadataConversationSchema = new Schema<MetadataConversationDocumen
 
 export const userSchema = new Schema<UserDocument>(
     {
-        experimentId: { type: String, required: true },
+        experimentId: {
+            type: String,
+            required() {
+                return !this.isAdmin;
+            },
+        },
         nickname: { type: String, required: true, unique: true },
         age: { type: Number },
         gender: { type: String },
@@ -191,7 +196,12 @@ export const userSchema = new Schema<UserDocument>(
         isAdmin: { type: Boolean, default: () => false },
         password: { type: String },
         numberOfConversations: { type: Number, default: () => 0 },
-        model: { type: settingsSchema, required: true },
+        model: {
+            type: settingsSchema,
+            required() {
+                return !this.isAdmin;
+            },
+        },
     },
     { versionKey: false },
 );

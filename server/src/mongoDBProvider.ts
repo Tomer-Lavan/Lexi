@@ -12,7 +12,7 @@ export class MongoDbProvider {
 
     private connect(): Connection {
         console.log('Connecting to DB...');
-        return mongoose.createConnection(`${process.env.MONGODB_URL}/${process.env.MONGODB_DB}`, {
+        return mongoose.createConnection(`${process.env.MONGODB_URL}/${process.env.MONGODB_DB_NAME}`, {
             ssl: true,
             auth: {
                 username: process.env.MONGODB_USER,

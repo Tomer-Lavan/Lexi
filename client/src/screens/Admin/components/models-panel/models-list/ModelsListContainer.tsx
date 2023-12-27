@@ -16,8 +16,8 @@ import {
 import Typography from '@mui/material/Typography';
 import React, { useState } from 'react';
 import { ModelType } from '../../../../../models/AppModels';
+import { MainContainerStyled } from '../../experiments-panel/experiments/Experiments.s';
 import ModelForm from '../model-form/ModelForm';
-import { MainContainer } from '../model-form/ModelForm.s';
 import { ModelDetails } from './ModelDetails';
 import { ModelHeader } from './ModelHeader';
 
@@ -59,7 +59,7 @@ export const ModelsListContainer: React.FC<ModelsListContainerProps> = ({ models
     };
 
     return (
-        <MainContainer maxWidth="lg" sx={{ width: '100%' }}>
+        <MainContainerStyled>
             <div
                 style={{
                     display: 'flex',
@@ -85,20 +85,30 @@ export const ModelsListContainer: React.FC<ModelsListContainerProps> = ({ models
                 </div>
             </div>
             <List>
-                {models.map((model, index) => (
-                    <Paper elevation={3} key={model._id?.toString() || index} sx={{ margin: '10px' }}>
-                        <ModelHeader model={model} setSelectedModel={setSelectedModel} setAnchorEl={setAnchorEl} />
-                        <Divider />
-                        <Accordion>
-                            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                                <Typography variant="subtitle2">Detailed Settings</Typography>
-                            </AccordionSummary>
-                            <AccordionDetails>
-                                <ModelDetails model={model} />
-                            </AccordionDetails>
-                        </Accordion>
-                    </Paper>
-                ))}
+                {models.length ? (
+                    models.map((model, index) => (
+                        <Paper elevation={3} key={model._id?.toString() || index} sx={{ margin: '10px' }}>
+                            <ModelHeader
+                                model={model}
+                                setSelectedModel={setSelectedModel}
+                                setAnchorEl={setAnchorEl}
+                            />
+                            <Divider />
+                            <Accordion>
+                                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                                    <Typography variant="subtitle2">Detailed Settings</Typography>
+                                </AccordionSummary>
+                                <AccordionDetails>
+                                    <ModelDetails model={model} />
+                                </AccordionDetails>
+                            </Accordion>
+                        </Paper>
+                    ))
+                ) : (
+                    <Typography variant="body1" textAlign={'center'} width={'100%'} margin={2}>
+                        <b>No models found</b>
+                    </Typography>
+                )}
                 <Menu
                     id="long-menu"
                     anchorEl={anchorEl}
@@ -131,6 +141,6 @@ export const ModelsListContainer: React.FC<ModelsListContainerProps> = ({ models
                     isEditMode={isEditMode}
                 />
             </Dialog>
-        </MainContainer>
+        </MainContainerStyled>
     );
 };
