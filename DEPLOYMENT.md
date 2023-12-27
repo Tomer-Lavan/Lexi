@@ -1,4 +1,4 @@
-# Deloyment
+# Deployment
 Here we provide options on how to deploy Lexi. Adapt these instructions as necessary to fit your project's specific setup and configuration. The deployment process can vary depending on the particulars of your client and server architecture.
 
 Deploying this project can be done in two different ways depending on your needs. Here's a guide for both methods:
