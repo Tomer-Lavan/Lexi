@@ -16,7 +16,7 @@ To set up and start using the project, follow these steps:
 
 ### Step 0: Download the following prerquirments:
 
-Node.JS - <a href="https://nodejs.org/en">https://nodejs.org/en</a>
+Node.JS - <a href="https://nodejs.org/en">https://nodejs.org/en</a><br>
 Npm - <a href="https://docs.npmjs.com/downloading-and-installing-node-js-and-npm">https://docs.npmjs.com/downloading-and-installing-node-js-and-npm</a>
 
 ### Step 1: Set Up MongoDB Database
