@@ -14,7 +14,7 @@ This platform, developed in collaboration with Cambridge University, is designed
 
 To set up and start using the project, follow these steps:
 
-### Step 0: Download the following prerquirments:
+### Step 0: Download the following pre-requirements:
 
 Node.JS - <a href="https://nodejs.org/en">https://nodejs.org/en</a><br>
 Npm - <a href="https://docs.npmjs.com/downloading-and-installing-node-js-and-npm">https://docs.npmjs.com/downloading-and-installing-node-js-and-npm</a>
