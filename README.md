@@ -17,7 +17,8 @@ To set up and start using the project, follow these steps:
 ### Step 0: Download the following pre-requirements:
 
 Node.JS - <a href="https://nodejs.org/en">https://nodejs.org/en</a><br>
-Npm - <a href="https://docs.npmjs.com/downloading-and-installing-node-js-and-npm">https://docs.npmjs.com/downloading-and-installing-node-js-and-npm</a>
+Npm - <a href="https://docs.npmjs.com/downloading-and-installing-node-js-and-npm">https://docs.npmjs.com/downloading-and-installing-node-js-and-npm</a><br>
+Git - <a href ="https://git-scm.com/downloads">https://git-scm.com/downloads</a>
 
 ### Step 1: Set Up MongoDB Database
 
