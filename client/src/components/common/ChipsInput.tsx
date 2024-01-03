@@ -1,13 +1,13 @@
+import { SnackbarStatus, useSnackbar } from '@contexts/SnackbarProvider';
 import Autocomplete from '@mui/material/Autocomplete';
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import * as React from 'react';
-import { v4 as uuidv4 } from 'uuid';
 
 interface ChipsInputProps {
-    list: any[];
-    setList: (list: any[]) => void;
+    list: string[];
+    setList: (list: string[]) => void;
     label: string;
     id: string;
     placeholder?: string;
@@ -16,47 +16,24 @@ interface ChipsInputProps {
 
 export const ChipsInput: React.FC<ChipsInputProps> = (props) => {
     const { list, setList } = props;
+    const { openSnackbar } = useSnackbar();
 
-    const listWithIds = list.map((item, index) => ({
-        ...item,
-        id: index,
-    }));
-
-    const listById = {};
-    for (const item of listWithIds) {
-        listById[item.id] = item;
-    }
-
-    const updateList = (item: any[]) => {
-        const newList = [...list, ...item];
+    const updateList = (newList: string[]) => {
         setList(newList);
     };
 
     const validateInput = async (event, inputs, reason) => {
-        if ('createOption' === reason) {
-            const valuesToAdd = [];
-            const values = inputs[inputs.length - 1].split(',');
-            for (const value of values) {
-                const valueToAdd = {
-                    id: uuidv4(),
-                    value,
-                };
-                valuesToAdd.push(valueToAdd);
-            }
-            updateList(valuesToAdd);
-        } else if ('removeOption' === reason) {
-            const newList = inputs.map((id) => ({ value: listById[id].value, isValid: listById[id].isValid }));
-            setList(newList);
-        } else if ('clear' === reason) {
-            setList([]);
+        if (reason === 'createOption') {
+            const valuesToAdd = inputs[inputs.length - 1].split(',');
+            updateList([...list, ...valuesToAdd]);
+        } else if (reason === 'removeOption' || reason === 'clear') {
+            updateList(inputs);
         }
     };
 
-    const handleChipClick = (id) => {
-        // Copy the chip text to the clipboardtext
-        const text = listById[id].value;
-        navigator.clipboard.writeText(text).then(() => {
-            console.log('Copy To Clipboard');
+    const handleChipClick = (value: string) => {
+        navigator.clipboard.writeText(value).then(() => {
+            openSnackbar('Copy To Clipboard', SnackbarStatus.SUCCESS);
         });
     };
 
@@ -67,40 +44,23 @@ export const ChipsInput: React.FC<ChipsInputProps> = (props) => {
                 id="tags-filled"
                 filterSelectedOptions={true}
                 options={[]}
-                value={listWithIds.map((item) => item.id)}
+                value={list}
                 freeSolo
-                renderTags={(listIds, getTagProps) =>
-                    listIds.map((id, index) => (
+                renderTags={(values, getTagProps) =>
+                    values.map((value, index) => (
                         <Chip
                             key={index}
                             variant="outlined"
-                            label={listById[id].value}
-                            onClick={() => handleChipClick(id)}
+                            label={value}
+                            onClick={() => handleChipClick(value)}
                             clickable
                             sx={{
-                                color: (theme) => {
-                                    let chipColor = '#fff';
-                                    if (typeof listById[id] === 'object') {
-                                        chipColor = listById[id].isValid
-                                            ? theme.palette.common.white
-                                            : theme.palette.common.white;
-                                    }
-                                    return chipColor;
-                                },
-
-                                backgroundColor: (theme) => {
-                                    let chipColor = '#fff';
-                                    if (typeof listById[id] === 'object') {
-                                        chipColor = theme.palette.primary.main;
-                                    }
-                                    return chipColor;
-                                },
-
+                                color: (theme) => theme.palette.common.white,
+                                backgroundColor: (theme) => theme.palette.primary.main,
                                 '&.MuiButtonBase-root.MuiChip-root.MuiChip-clickable:hover': {
                                     backgroundColor: 'grey',
                                 },
-
-                                [`& .MuiSvgIcon-root.MuiSvgIcon-fontSizeMedium.MuiChip-deleteIcon.MuiChip-deleteIconMedium.MuiChip-deleteIconColorDefault.MuiChip-deleteIconOutlinedColorDefault`]:
+                                '& .MuiSvgIcon-root.MuiSvgIcon-fontSizeMedium.MuiChip-deleteIcon.MuiChip-deleteIconMedium.MuiChip-deleteIconColorDefault.MuiChip-deleteIconOutlinedColorDefault':
                                     {
                                         fill: (theme) => theme.palette.grey[200],
                                     },

@@ -1,6 +1,6 @@
-import { FormControl, MenuItem, Select, Typography } from '@mui/material';
+import { AbModelsType, ModelType } from '@models/AppModels';
+import { Box, FormControl, MenuItem, Select, Typography } from '@mui/material';
 import React from 'react';
-import { AbModelsType, ModelType } from '../../../../../models/AppModels';
 
 interface AbModelsProps {
     models: ModelType[];
@@ -11,7 +11,7 @@ interface AbModelsProps {
 }
 
 export const AbModels: React.FC<AbModelsProps> = ({ models, abModels, handleChangeAB, isRow = true }) => (
-    <div
+    <Box
         style={{
             display: 'flex',
             flexDirection: isRow ? 'row' : 'column',
@@ -73,5 +73,5 @@ export const AbModels: React.FC<AbModelsProps> = ({ models, abModels, handleChan
                 style={{ width: '40px' }}
             />
         </FormControl>
-    </div>
+    </Box>
 );

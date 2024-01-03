@@ -1,14 +1,14 @@
+import { setActiveUser } from '@DAL/redux/reducers/activeUserReducer';
+import { logout } from '@DAL/server-requests/users';
+import { Pages } from '@app/App';
+import useActiveUser from '@hooks/useActiveUser';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ExitToAppOutlinedIcon from '@mui/icons-material/ExitToAppOutlined';
-import { Button, IconButton, useMediaQuery } from '@mui/material';
+import { Box, Button, IconButton, useMediaQuery } from '@mui/material';
+import theme from '@root/Theme';
 import { useDispatch } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { setActiveUser } from '../../DAL/redux/reducers/activeUserReducer';
-import { logout } from '../../DAL/server-requests/usersDAL';
-import theme from '../../Theme';
-import { Pages } from '../../app/App';
-import useActiveUser from '../../hooks/useActiveUser';
 import { AppBarText, StyledAppBar, StyledIconButton, StyledToolBar } from './TopBar.s';
 
 interface TopBarProps {
@@ -24,7 +24,11 @@ const TopBar: React.FC<TopBarProps> = (props) => {
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
     const handleLogout = async () => {
-        await logout();
+        try {
+            await logout();
+        } catch (error) {
+            console.log(error);
+        }
         dispatch(setActiveUser(null));
         navigate(Pages.GENERAL_LOGIN);
     };
@@ -38,16 +42,16 @@ const TopBar: React.FC<TopBarProps> = (props) => {
                         <AppBarText>Finish</AppBarText>
                     </StyledIconButton>
                 ) : (
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <Box style={{ display: 'flex', alignItems: 'center' }}>
                         {/\/e\/.+\/c\/.+/.test(location.pathname) && (
                             <IconButton color="inherit" onClick={() => navigate(-1)}>
                                 <ArrowBackIcon />
                             </IconButton>
                         )}
                         <AppBarText>{activeUser.nickname}</AppBarText>
-                    </div>
+                    </Box>
                 )}
-                <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
+                <Box style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
                     {activeUser && activeUser.isAdmin && (
                         <IconButton color="inherit" edge="end" onClick={() => navigate(Pages.ADMIN)}>
                             <AccountCircleIcon />
@@ -68,7 +72,7 @@ const TopBar: React.FC<TopBarProps> = (props) => {
                     >
                         Logout
                     </Button>
-                </div>
+                </Box>
             </StyledToolBar>
         </StyledAppBar>
     );

@@ -1,3 +1,8 @@
+import { defaultSettings, defaultSliderSettings, initialSlidersEnabled, modelsOptions } from '@DAL/constants';
+import { saveModel, updateModel } from '@DAL/server-requests/models';
+import { ChipsInput } from '@components/common/ChipsInput';
+import { SnackbarStatus, useSnackbar } from '@contexts/SnackbarProvider';
+import { ModelType } from '@models/AppModels';
 import {
     Box,
     Checkbox,
@@ -11,16 +16,6 @@ import {
     Typography,
 } from '@mui/material';
 import React, { useMemo, useState } from 'react';
-import {
-    defaultSettings,
-    defaultSliderSettings,
-    initialSlidersEnabled,
-    modelsOptions,
-} from '../../../../../DAL/constants';
-import { saveModel, updateModel } from '../../../../../DAL/server-requests/modelsDAL';
-import { ChipsInput } from '../../../../../components/common/ChipsInput';
-import { useSnackbar } from '../../../../../contexts/SnackbarProvider';
-import { ModelType } from '../../../../../models/AppModels';
 import { MainContainer, SaveButton } from './ModelForm.s';
 
 interface ModelFormProps {
@@ -54,20 +49,8 @@ const ModelForm: React.FC<ModelFormProps> = ({
             : initialSlidersEnabled,
     );
 
-    const [model, setModel] = useState<any>(
-        editModel
-            ? {
-                  ...editModel,
-                  stopSequences:
-                      editModel.stopSequences &&
-                      editModel.stopSequences.map((value, index) => ({
-                          value,
-                          id: `${index}`,
-                      })),
-              }
-            : defaultSettings,
-    );
-
+    const [model, setModel] = useState<any>(editModel ? editModel : defaultSettings);
+    console.log(model);
     const updateModelInList = (updatedModel: ModelType) => {
         const updatedSettings = models.map((model: ModelType) =>
             model._id === updatedModel._id ? updatedModel : model,
@@ -96,22 +79,18 @@ const ModelForm: React.FC<ModelFormProps> = ({
 
         setIsSaveLoading(true);
         try {
-            const modelToSave = {
-                ...model,
-                stopSequences: model.stopSequences.map((item) => item.value),
-            };
             if (!isEditMode) {
-                const savedModel = await saveModel(modelToSave);
+                const savedModel = await saveModel(model);
                 setModels([...models, savedModel]);
             } else {
-                await updateModel(modelToSave);
-                updateModelInList(modelToSave);
+                await updateModel(model);
+                updateModelInList(model);
             }
-            openSnackbar('Model Saved !', 'success');
+            openSnackbar('Model Saved !', SnackbarStatus.SUCCESS);
             setIsSaveLoading(false);
             closeDialog();
         } catch (error) {
-            openSnackbar('Model Saving Failed', 'error');
+            openSnackbar('Model Saving Failed', SnackbarStatus.ERROR);
             setIsSaveLoading(false);
         }
     };

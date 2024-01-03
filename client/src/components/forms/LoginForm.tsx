@@ -1,17 +1,16 @@
+import { setActiveUser } from '@DAL/redux/reducers/activeUserReducer';
+import { login } from '@DAL/server-requests/users';
+import { Pages } from '@app/App';
 import { Box, Button, Container, Grid, Link, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { setActiveUser } from '../../DAL/redux/reducers/activeUserReducer';
-import { login } from '../../DAL/server-requests/usersDAL';
-import { Pages } from '../../app/App';
 
 export const LoginForm = ({ isSignUp, setIsSignUp, isAdminPage, experimentId }) => {
     const [nickname, setNickname] = useState('');
     const [isUserAdmin, setIsUserAdmin] = useState(false);
     const [password, setPassword] = useState('');
     const [errorMsg, setErrorMsg] = useState('');
-    // const [rememberMe, setRememberMe] = useState(false);
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -81,10 +80,6 @@ export const LoginForm = ({ isSignUp, setIsSignUp, isAdminPage, experimentId }) 
                         </Grid>
                     )}
                 </Grid>
-                {/* <FormControlLabel
-                        control={<Checkbox checked={rememberMe} onChange={() => setRememberMe(!rememberMe)} name="rememberMe" />}
-                        label="Remember me"
-                    /> */}
                 <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                     <Button
                         type="submit"

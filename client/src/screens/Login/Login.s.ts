@@ -1,7 +1,7 @@
 // Login.styles.ts
+import { IsMobile } from '@models/StylesModels';
 import { Button, Paper, TextField } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { IsMobile } from '../../models/StylesModels';
 
 export const MainContainer = styled('div')<IsMobile>(({ isMobile }) => ({
     display: 'flex',

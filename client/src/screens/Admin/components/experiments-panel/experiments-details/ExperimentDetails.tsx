@@ -1,6 +1,6 @@
+import { ExperimentType, ModelsModes } from '@models/AppModels';
 import { Box, Grid, Link } from '@mui/material';
 import React from 'react';
-import { ExperimentType, ModelsModes } from '../../../../../models/AppModels';
 import { AdressContainer, GridContainerStyled, GridItemStyled, TypographyStyled } from './ExperimentsDetails.s';
 
 interface ExperimentDetailsProps {

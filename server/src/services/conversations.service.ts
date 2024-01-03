@@ -1,8 +1,8 @@
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import { OpenAI } from 'openai';
-import { conversationSchema, metadataConversationSchema } from '../models/DbModels';
-import { mongoDbProvider } from '../mongoDBProvider';
+import { ConversationsModel } from '../models/ConversationsModel';
+import { MetadataConversationsModel } from '../models/MetadataConversationsModel';
 import { experimentsService } from './experiments.service';
 import { usersService } from './users.service';
 
@@ -16,7 +16,6 @@ interface Message {
 const { OPENAI_API_KEY } = process.env;
 if (!OPENAI_API_KEY) throw new Error('Server is not configured with OpenAI API key');
 const openai = new OpenAI({ apiKey: OPENAI_API_KEY });
-const MetadataConversationModel = mongoDbProvider.getModel('metadata_conversations', metadataConversationSchema);
 
 class ConversationsService {
     message = async (message: any, conversationId: string, streamResponse?) => {
@@ -66,7 +65,7 @@ class ConversationsService {
             model = await experimentsService.getActiveModel(experimentId);
         }
 
-        const res = await MetadataConversationModel.create({
+        const res = await MetadataConversationsModel.create({
             conversationNumber: userConversationsNumber + 1,
             experimentId,
             userId,
@@ -78,29 +77,21 @@ class ConversationsService {
             content: user.isAdmin ? model.firstChatSentence : user.model.firstChatSentence,
         };
         await this.createMessageDoc(firstMessage, res._id.toString(), 1);
-        usersService.updateUser(
-            { _id: new mongoose.Types.ObjectId(userId) },
-            { numberOfConversations: userConversationsNumber + 1 },
-        );
+        usersService.addConversation(userId);
 
         return res._id.toString();
     };
 
     getConversation = async (conversationId: string) => {
-        const conversationModel = mongoDbProvider.getModel('conversations', conversationSchema);
-        const conversation = await conversationModel.find({ conversationId }, { _id: 0, role: 1, content: 1 });
+        const conversation = await ConversationsModel.find({ conversationId }, { _id: 0, role: 1, content: 1 });
 
         return conversation;
     };
 
     updateIms = async (conversationId: string, imsValues, isPreConversation: boolean) => {
-        const metadataConversationModel = mongoDbProvider.getModel(
-            'metadata_conversations',
-            metadataConversationSchema,
-        );
         const saveField = isPreConversation ? { imsPre: imsValues } : { imsPost: imsValues };
 
-        const res = await metadataConversationModel.updateMany(
+        const res = await MetadataConversationsModel.updateMany(
             {
                 _id: new mongoose.Types.ObjectId(conversationId),
             },
@@ -111,17 +102,18 @@ class ConversationsService {
     };
 
     getConversationMetadata = async (conversationId: string): Promise<any> => {
-        const res = await MetadataConversationModel.findOne({ _id: new mongoose.Types.ObjectId(conversationId) });
+        const res = await MetadataConversationsModel.findOne({ _id: new mongoose.Types.ObjectId(conversationId) });
         return res;
     };
 
     getUserConversations = async (userId: string): Promise<any> => {
-        const conversationModel = mongoDbProvider.getModel('conversations', conversationSchema);
         const conversations = [];
-        const metadataConversations = await MetadataConversationModel.find({ userId }, { model: 0 }).lean();
+        const metadataConversations = await MetadataConversationsModel.find({ userId }, { model: 0 }).lean();
 
         for (const metadataConversation of metadataConversations) {
-            const conversation = await conversationModel.find({ conversationId: metadataConversation._id }).lean();
+            const conversation = await ConversationsModel.find({
+                conversationId: metadataConversation._id,
+            }).lean();
             conversations.push({
                 metadata: metadataConversation,
                 conversation,
@@ -133,12 +125,7 @@ class ConversationsService {
 
     private updateConversationMetadata = async (conversationId, fields) => {
         try {
-            const metadatConversationModel = mongoDbProvider.getModel(
-                'metadata_conversations',
-                metadataConversationSchema,
-            );
-
-            const res = await metadatConversationModel.updateOne(
+            const res = await MetadataConversationsModel.updateOne(
                 { _id: new mongoose.Types.ObjectId(conversationId) },
                 fields,
             );
@@ -166,9 +153,7 @@ class ConversationsService {
     };
 
     private createMessageDoc = async (message: Message, conversationId: string, messageNumber: number) => {
-        const conversationModel = mongoDbProvider.getModel('conversations', conversationSchema);
-
-        const res = await conversationModel.create({
+        const res = await ConversationsModel.create({
             content: message.content,
             role: message.role,
             conversationId,

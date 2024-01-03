@@ -1,7 +1,7 @@
 // Login.styles.ts
+import { IsMobile } from '@models/StylesModels';
 import { Box, Button, FormControlLabel, Grid, Paper, Radio, RadioGroup, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { IsMobile } from '../../models/StylesModels';
 
 export const SubFormMainContainer = styled(Box)<{ size?: string }>(({ size }) => ({
     marginTop: '4px',
@@ -112,7 +112,7 @@ export const TermsBox = styled(Box)({
     flexDirection: 'column',
 });
 
-export const TermsMenuContainer = styled('div')({
+export const TermsMenuContainer = styled(Box)({
     display: 'flex',
     justifyContent: 'space-between',
 });

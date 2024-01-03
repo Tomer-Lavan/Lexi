@@ -1,10 +1,10 @@
+import { MoreOptionsMenu } from '@components/common/MoreOptionsMenu';
+import { ExperimentType } from '@models/AppModels';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Collapse, IconButton, MenuItem, TableCell, TableRow, Tooltip } from '@mui/material';
 import React, { useState } from 'react';
-import { MoreOptionsMenu } from '../../../../../components/common/MoreOptionsMenu';
-import { ExperimentType } from '../../../../../models/AppModels';
 import { ExperimentDetails } from '../experiments-details/ExperimentDetails';
 import { ActiveExpSelect, ExpInfo, TableRowStyled } from './ExperimentRow.s';
 
@@ -13,7 +13,7 @@ export const ExperimentRow = (props: { row: ExperimentType; onStatusChange; hand
     const [open, setOpen] = useState(false);
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
-    const timeAgo = (timestamp) => {
+    const timeAgo = (timestamp: number) => {
         const now = Date.now();
         const elapsed = now - timestamp;
         const seconds = Math.floor(elapsed / 1000);

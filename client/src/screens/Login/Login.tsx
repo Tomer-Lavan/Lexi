@@ -1,10 +1,11 @@
 // Login.tsx
+import { LoginForm } from '@components/forms/LoginForm';
+import { RegisterForm } from '@components/forms/RegisterForm';
+import { useExperimentId } from '@hooks/useExperimentId';
 import { useMediaQuery } from '@mui/material';
+import theme from '@root/Theme';
 import React, { useState } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
-import theme from '../../Theme';
-import { LoginForm } from '../../components/forms/LoginForm';
-import { RegisterForm } from '../../components/forms/RegisterForm';
+import { useLocation } from 'react-router-dom';
 import { DividerButton, DividerButtonsContainer, FormSide, GradientSide, MainContainer } from './Login.s';
 
 const Login: React.FC = () => {
@@ -13,7 +14,7 @@ const Login: React.FC = () => {
     const [firstPathSegment] = location.pathname.split('/').slice(1);
     const isAdminPage = firstPathSegment === 'admin';
     const [isSignUp, setIsSignUp] = useState(!isAdminPage);
-    const { experimentId } = useParams();
+    const experimentId = useExperimentId();
 
     return (
         <MainContainer isMobile={isMobile}>

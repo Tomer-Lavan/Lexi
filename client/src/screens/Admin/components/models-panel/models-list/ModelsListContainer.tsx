@@ -1,3 +1,4 @@
+import { ModelType } from '@models/AppModels';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -5,6 +6,7 @@ import {
     Accordion,
     AccordionDetails,
     AccordionSummary,
+    Box,
     Dialog,
     Divider,
     IconButton,
@@ -15,7 +17,6 @@ import {
 } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import React, { useState } from 'react';
-import { ModelType } from '../../../../../models/AppModels';
 import { MainContainerStyled } from '../../experiments-panel/experiments/Experiments.s';
 import ModelForm from '../model-form/ModelForm';
 import { ModelDetails } from './ModelDetails';
@@ -60,7 +61,7 @@ export const ModelsListContainer: React.FC<ModelsListContainerProps> = ({ models
 
     return (
         <MainContainerStyled>
-            <div
+            <Box
                 style={{
                     display: 'flex',
                     alignItems: 'center',
@@ -71,7 +72,7 @@ export const ModelsListContainer: React.FC<ModelsListContainerProps> = ({ models
                 <Typography variant="h4" gutterBottom>
                     Models
                 </Typography>
-                <div
+                <Box
                     style={{
                         border: '1px solid black',
                         height: 'fit-content',
@@ -82,8 +83,8 @@ export const ModelsListContainer: React.FC<ModelsListContainerProps> = ({ models
                     onClick={() => setOpenModelFormDialog(true)}
                 >
                     <AddIcon />
-                </div>
-            </div>
+                </Box>
+            </Box>
             <List>
                 {models.length ? (
                     models.map((model, index) => (

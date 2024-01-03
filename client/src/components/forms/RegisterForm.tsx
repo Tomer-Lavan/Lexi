@@ -1,24 +1,13 @@
+import { setActiveUser } from '@DAL/redux/reducers/activeUserReducer';
+import { register } from '@DAL/server-requests/users';
+import { SnackbarStatus, useSnackbar } from '@contexts/SnackbarProvider';
+import { NewUserInfoType } from '@models/AppModels';
 import { Box, Container } from '@mui/material';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { setActiveUser } from '../../DAL/redux/reducers/activeUserReducer';
-import { register } from '../../DAL/server-requests/usersDAL';
-import { useSnackbar } from '../../contexts/SnackbarProvider';
 import { FinalRegisterForm } from './FinalRegestrationForm';
 import { FirstRegisterForm } from './FirstRegestrationForm';
 import TermsOfConditions from './TermsOfConditions';
-
-interface UserInfoType {
-    nickname: string;
-    age: number | string;
-    gender: string;
-    biologicalSex: string;
-    maritalStatus: string;
-    religiousAffiliation: string;
-    ethnicity: string;
-    politicalAffiliation: number;
-    childrenNumber: number;
-}
 
 export const RegisterForm = ({ experimentId }) => {
     const [page, setPage] = useState(1);
@@ -35,7 +24,7 @@ export const RegisterForm = ({ experimentId }) => {
         childrenNumber: '',
     });
 
-    const [values, setValues] = useState<UserInfoType>({
+    const [values, setValues] = useState<NewUserInfoType>({
         nickname: '',
         age: '',
         gender: '',
@@ -73,7 +62,7 @@ export const RegisterForm = ({ experimentId }) => {
                 }
             }
         } catch (error) {
-            openSnackbar('Registration Failed', 'error');
+            openSnackbar('Registration Failed', SnackbarStatus.ERROR);
         }
     };
 

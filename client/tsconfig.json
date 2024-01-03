@@ -6,6 +6,18 @@
       "dom.iterable",
       "esnext"
     ],
+    "baseUrl": "./", 
+    "paths": { 
+      "@components/*": ["src/components/*"],
+      "@utils/*": ["src/utils/*"],
+      "@screens/*": ["src/screens/*"],
+      "@models/*": ["src/models/*"],
+      "@hooks/*": ["src/hooks/*"],
+      "@DAL/*": ["src/DAL/*"],
+      "@contexts/*": ["src/contexts/*"],
+      "@app/*": ["src/app/*"],
+      "@root/*": ["src/*"],
+    },
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,

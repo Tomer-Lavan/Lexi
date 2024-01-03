@@ -1,9 +1,15 @@
 import { Box, Typography } from '@mui/material';
+import { MessageType } from '@root/models/AppModels';
 
-const Message = ({ message, role, size = 'lg' }) => {
+interface MessageProps {
+    message: MessageType;
+    role: string;
+    size?: 'sm' | 'lg';
+}
+
+const Message: React.FC<MessageProps> = ({ message, role, size = 'lg' }) => {
     const isUser = role === 'user';
 
-    // Function to split the message content into regular and bold segments
     const getFormattedMessage = (content) => {
         const parts = content
             .split(/(\*\*.*?\*\*)/g)

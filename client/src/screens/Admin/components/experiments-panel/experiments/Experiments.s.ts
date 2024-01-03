@@ -1,6 +1,6 @@
 import { IconButton, Typography } from '@mui/material';
 import { styled } from '@mui/system';
-import theme from '../../../../../Theme';
+import theme from '@root/Theme';
 
 export const MainContainerStyled = styled('div')({
     maxWidth: 'lg',

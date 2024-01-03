@@ -1,10 +1,10 @@
-import { Checkbox, CircularProgress, FormControlLabel, TextField, Typography } from '@mui/material';
+import { defaultExperiment } from '@DAL/constants';
+import { saveExperiment, updateExperiment } from '@DAL/server-requests/experiments';
+import { ActiveModelsForm } from '@components/forms/ActiveModelsForm';
+import { SnackbarStatus, useSnackbar } from '@contexts/SnackbarProvider';
+import { ExperimentType } from '@models/AppModels';
+import { Box, Checkbox, CircularProgress, FormControlLabel, TextField, Typography } from '@mui/material';
 import { useMemo, useState } from 'react';
-import { defaultExperiment } from '../../../../DAL/constants';
-import { saveExperiment, updateExperiment } from '../../../../DAL/server-requests/experimentsDAL';
-import { ActiveModelsForm } from '../../../../components/forms/ActiveModelsForm';
-import { useSnackbar } from '../../../../contexts/SnackbarProvider';
-import { ExperimentType } from '../../../../models/AppModels';
 import { MainContainer, SaveButton } from '../models-panel/model-form/ModelForm.s';
 
 const ExperimentForm = ({
@@ -69,11 +69,11 @@ const ExperimentForm = ({
                 await updateExperiment(parsedExperiment);
                 updateExperimentInList(parsedExperiment);
             }
-            openSnackbar('Experiment Saved !', 'success');
+            openSnackbar('Experiment Saved !', SnackbarStatus.SUCCESS);
             setIsSaveLoading(false);
             closeDialog();
         } catch (error) {
-            openSnackbar('Experiment Saving Failed', 'error');
+            openSnackbar('Experiment Saving Failed', SnackbarStatus.ERROR);
             setIsSaveLoading(false);
         }
     };
@@ -111,14 +111,14 @@ const ExperimentForm = ({
                 setExperiment={setExperiment}
                 isRow={false}
             />
-            <div style={{ width: '100%' }}>
+            <Box style={{ width: '100%' }}>
                 <FormControlLabel
                     control={
                         <Checkbox checked={isActive} onClick={() => setIsActive(!isActive)} name="isActive" />
                     }
                     label="Activate Experiment"
                 />
-            </div>
+            </Box>
             <SaveButton variant="contained" color="primary" onClick={handleSave} style={{ marginBottom: 0 }}>
                 {isSaveLoading ? <CircularProgress size={28} sx={{ color: 'white' }} /> : 'Save Experiment'}
             </SaveButton>

@@ -14,11 +14,11 @@ const LoadingDots = () => (
             float: 'left',
         }}
     >
-        <div className="loadingDots">
+        <Box className="loadingDots">
             <span />
             <span />
             <span />
-        </div>
+        </Box>
     </Box>
 );
 

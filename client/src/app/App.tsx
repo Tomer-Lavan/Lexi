@@ -1,30 +1,30 @@
+import LoadingPage from '@components/common/LoadingPage';
+import LoginExperimentRoute from '@components/common/LoginExperimentRoute';
+import PrivateExperimentRoute from '@components/common/ProtectedExperimentRoute';
+import useActiveUser from '@hooks/useActiveUser';
+import ProjectOverview from '@screens/ProjectOverview';
 import React, { FC, Suspense, lazy, useState } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
-import LoadingPage from '../components/common/LoadingPage';
-import LoginExperimentRoute from '../components/common/LoginExperimentRoute';
-import PrivateExperimentRoute from '../components/common/ProtectedExperimentRoute';
-import useActiveUser from '../hooks/useActiveUser';
-import ProjectOverview from '../screens/ProjectOverview';
 import './styles.css';
 
-export enum Pages {
-    PROJECT_OVERVIEW = '/project-overview',
-    ADMIN = '/admin',
-    ADMIN_LOGIN = '/admin/login',
-    EXPERIMENT = '/e/:experimentId',
-    EXPERIMENT_CONVERSATION = '/e/:experimentId/c/:conversationId',
-    EXPERIMENT_LOGIN = '/e/:experimentId/login',
-    GENERAL_LOGIN = 'login',
-}
+export const Pages = {
+    PROJECT_OVERVIEW: '/project-overview',
+    ADMIN: '/admin',
+    ADMIN_LOGIN: '/admin/login',
+    EXPERIMENT: '/e/:experimentId',
+    EXPERIMENT_CONVERSATION: '/e/:experimentId/c/:conversationId',
+    EXPERIMENT_LOGIN: '/e/:experimentId/login',
+    GENERAL_LOGIN: 'login',
+} as const;
 
 const App: FC = () => {
     const { activeUser, isLoading } = useActiveUser();
     const [openEndConversationDialog, setOpenEndConversationDialog] = useState(false);
-    const Home = lazy(() => import('../screens/Home/Home'));
-    const Admin = lazy(() => import('../screens/Admin/Admin'));
-    const ChatPage = lazy(() => import('../screens/Chat/ChatPage'));
-    const Login = lazy(() => import('../screens/Login/Login'));
-    const TopBar = lazy(() => import('../components/top-bar/TopBar'));
+    const Home = lazy(() => import('@screens/Home/Home'));
+    const Admin = lazy(() => import('@screens/Admin/Admin'));
+    const ChatPage = lazy(() => import('@screens/Chat/ChatPage'));
+    const Login = lazy(() => import('@screens/Login/Login'));
+    const TopBar = lazy(() => import('@components/top-bar/TopBar'));
 
     return (
         <BrowserRouter>

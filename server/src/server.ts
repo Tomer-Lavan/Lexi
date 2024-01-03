@@ -3,6 +3,7 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
+import { mongoDbProvider } from './mongoDBProvider';
 import { conversationsRouter } from './routers/conversationsRouter.router';
 import { dataAggregationRouter } from './routers/dataAggregationRouter.router';
 import { experimentsRouter } from './routers/experimentsRouter.router';
@@ -12,6 +13,8 @@ import { usersService } from './services/users.service';
 
 dotenv.config();
 
+mongoDbProvider.initialize();
+
 const createAdminUser = (username: string, password: string) => {
     if (!username || !password) {
         console.warn('Username and password are required');
@@ -19,7 +22,7 @@ const createAdminUser = (username: string, password: string) => {
     }
 
     usersService
-        .creatAdminUser(username, password)
+        .createAdminUser(username, password)
         .then(() => {
             console.log('Admin user created successfully');
             process.exit(0);

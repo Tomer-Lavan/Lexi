@@ -1,29 +1,37 @@
+import { getExperiments, updateExperimentsStatus } from '@DAL/server-requests/experiments';
+import { SnackbarStatus, useSnackbar } from '@contexts/SnackbarProvider';
+import useEffectAsync from '@hooks/useEffectAsync';
+import { ExperimentType, ModelType } from '@models/AppModels';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 import { Dialog, Typography } from '@mui/material';
 import { useState } from 'react';
-import { getExperiments, updateExperimentsStatus } from '../../../../../DAL/server-requests/experimentsDAL';
-import useEffectAsync from '../../../../../hooks/useEffectAsync';
-import { ModelType } from '../../../../../models/AppModels';
 import ExperimentForm from '../ExperimentForm';
 import ExperimentsList from '../experiments-list/ExperimentsList';
 import { FlexContainer, IconButtonStyled, MainContainerStyled, PointerDiv } from './Experiments.s';
 
 export const Experiments = ({ models }) => {
-    const [experiments, setExperiments] = useState([]);
+    const { openSnackbar } = useSnackbar();
+    const [experiments, setExperiments] = useState<ExperimentType[]>([]);
     const [isEditMode, setIsEditMode] = useState(false);
     const [isLoadingStatusChange, setIsLoadingStatusChange] = useState(false);
     const [isLoadingExperiments, setIsLoadingExperiments] = useState(true);
-    const [tempExperiments, setTempExperiments] = useState([]);
-    const [modifiedExperiments, setModifiedExperiments] = useState({});
+    const [tempExperiments, setTempExperiments] = useState<ExperimentType[]>([]);
+    const [modifiedExperiments, setModifiedExperiments] = useState<Record<string, ExperimentType>>({});
     const [openExperimentFormDialog, setOpenExperimentFormDialog] = useState(false);
     const [editExperiment, setEditExperiment] = useState<ModelType | undefined>(null);
 
     useEffectAsync(async () => {
         setIsLoadingExperiments(true);
-        const res = await getExperiments();
-        setExperiments(res);
-        setTempExperiments(res);
+        try {
+            const res = await getExperiments();
+            setExperiments(res);
+            setTempExperiments(res);
+        } catch (error) {
+            openSnackbar('Failed to load experiments', SnackbarStatus.ERROR);
+            setExperiments([]);
+            setTempExperiments([]);
+        }
         setIsLoadingExperiments(false);
     }, []);
 
@@ -52,10 +60,16 @@ export const Experiments = ({ models }) => {
     const handleSaveChanges = async () => {
         setIsLoadingStatusChange(true);
         const updatedExperiments = Object.values(modifiedExperiments);
-        await updateExperimentsStatus(updatedExperiments);
+        try {
+            await updateExperimentsStatus(updatedExperiments);
+            setExperiments(tempExperiments);
+            setModifiedExperiments({});
+        } catch {
+            openSnackbar('Failed to update experiments status', SnackbarStatus.ERROR);
+            setTempExperiments(experiments);
+            setModifiedExperiments({});
+        }
         setIsLoadingStatusChange(false);
-        setExperiments(tempExperiments);
-        setModifiedExperiments({});
     };
 
     const handleCancelChanges = () => {

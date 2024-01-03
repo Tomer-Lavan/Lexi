@@ -1,14 +1,15 @@
+import { getConversation } from '@DAL/server-requests/conversations';
+import FinishConversationDialog from '@components/common/FinishConversationDialog';
+import FontSizeSwitch from '@components/common/FontSizeSwitch';
+import LoadingPage from '@components/common/LoadingPage';
+import SurveyComponent from '@components/forms/SurveyForm';
+import { SnackbarStatus, useSnackbar } from '@contexts/SnackbarProvider';
+import { useConversationId } from '@hooks/useConversationId';
+import useEffectAsync from '@hooks/useEffectAsync';
 import { Dialog, Grid, useMediaQuery } from '@mui/material';
+import theme from '@root/Theme';
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { getConversation } from '../../DAL/server-requests/conversationsDAL';
-import theme from '../../Theme';
-import FinishConversationDialog from '../../components/common/FinishConversationDialog';
-import FontSizeSwitch from '../../components/common/FontSizeSwitch';
-import LoadingPage from '../../components/common/LoadingPage';
-import SurveyComponent from '../../components/forms/SurveyForm';
-import { useSnackbar } from '../../contexts/SnackbarProvider';
-import useEffectAsync from '../../hooks/useEffectAsync';
+import { useNavigate } from 'react-router-dom';
 import { ListItemText } from '../Admin/components/sidebar-admin/SideBar.s';
 import {
     EmptySection,
@@ -27,12 +28,12 @@ const ChatPage = ({ open, setIsOpen }) => {
     const [isPageLoading, setIsPageLoading] = useState(true);
     const { openSnackbar } = useSnackbar();
     const [messages, setMessages] = useState([]);
-    const [messageFontSize, setMessageFontSize] = useState('lg');
+    const [messageFontSize, setMessageFontSize] = useState<'sm' | 'lg'>('lg');
     const [surveyOpen, setIsSurveyOpen] = useState(false);
     const [isMessageLoading, setIsMessageLoading] = useState(false);
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const questionnaireLink = 'https://docs.google.com/forms/u/0/?tgif=d&ec=asw-forms-hero-goto';
-    const { conversationId } = useParams();
+    const conversationId = useConversationId();
 
     useEffect(() => {
         if (messagesRef.current) {
@@ -51,7 +52,7 @@ const ChatPage = ({ open, setIsOpen }) => {
             setMessages(conversation.length ? conversation : []);
             setIsPageLoading(false);
         } catch (err) {
-            openSnackbar('Failed to load conversation', 'error');
+            openSnackbar('Failed to load conversation', SnackbarStatus.ERROR);
             navigate(-1);
         }
     }, []);

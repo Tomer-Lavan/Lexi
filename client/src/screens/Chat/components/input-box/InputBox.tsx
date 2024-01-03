@@ -1,8 +1,8 @@
+import { sendStreamMessage } from '@DAL/server-requests/conversations';
+import { SnackbarStatus, useSnackbar } from '@contexts/SnackbarProvider';
 import SendIcon from '@mui/icons-material/Send';
-import { Button, IconButton } from '@mui/material';
+import { Box, Button, IconButton } from '@mui/material';
 import { useState } from 'react';
-import { sendStreamMessage } from '../../../../DAL/server-requests/conversationsDAL';
-import { useSnackbar } from '../../../../contexts/SnackbarProvider';
 import { StyledInputBase, StyledInputBox } from './InputBox.s';
 
 const InputBox = (props) => {
@@ -13,7 +13,7 @@ const InputBox = (props) => {
 
     const handleSendMessage = async () => {
         if (!message && !errorMessage && !messages.trim().length) {
-            openSnackbar('Message cannot be empty', 'warning');
+            openSnackbar('Message cannot be empty', SnackbarStatus.WARNING);
             return;
         }
         const messageContent = message || errorMessage;
@@ -33,7 +33,7 @@ const InputBox = (props) => {
     const onMessageError = (conversation, messageContent) => {
         setIsMessageLoading(false);
         setMessages([...conversation, { content: 'Network Error', role: 'assistant' }]);
-        openSnackbar('Failed to send message', 'error');
+        openSnackbar('Failed to send message', SnackbarStatus.ERROR);
         setErrorMessage(messageContent);
     };
 
@@ -61,7 +61,7 @@ const InputBox = (props) => {
     };
 
     return (
-        <div
+        <Box
             style={{
                 display: 'flex',
                 flexDirection: 'column',
@@ -98,7 +98,7 @@ const InputBox = (props) => {
                     </IconButton>
                 </StyledInputBox>
             )}
-        </div>
+        </Box>
     );
 };
 

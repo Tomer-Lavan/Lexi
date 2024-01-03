@@ -2,6 +2,38 @@ import { Grid, MenuItem, TextField, Typography } from '@mui/material';
 import RadioGroupRange from '../common/RadioGroupRange';
 import { ButtonBox, FieldTitle, FormButton, FormContainer, SubFormMainContainer } from './FormStyles.s';
 
+const biologicalSexOptions = [
+    { label: 'Male', value: 'male' },
+    { label: 'Female', value: 'female' },
+    { label: 'Other', value: 'other' },
+    { label: 'Prefer not to say', value: 'prefer not to say' },
+];
+const maritalStatusOptions = [
+    { label: 'Single', value: 'single' },
+    { label: 'Married', value: 'married' },
+    { label: 'Divorced', value: 'divorced' },
+    { label: 'Widowed', value: 'widowed' },
+];
+const religiousAffiliationOptions = [
+    { label: 'Jewish', value: 'jewish' },
+    { label: 'Islam', value: 'islam' },
+    { label: 'Christianity', value: 'christianity' },
+    { label: 'Hinduism', value: 'hinduism' },
+    { label: 'Buddhism', value: 'buddhism' },
+    { label: 'Atheist', value: 'atheist' },
+    { label: 'Other', value: 'other' },
+];
+const ethnicityOptions = [
+    { label: 'Israeli', value: 'israeli' },
+    { label: 'Arab', value: 'arab' },
+    { label: 'Palestinian', value: 'palestinian' },
+    { label: 'Caucasian', value: 'caucasian' },
+    { label: 'Hispanic', value: 'hispanic' },
+    { label: 'African', value: 'african' },
+    { label: 'Asian', value: 'asian' },
+    { label: 'Other', value: 'other' },
+];
+
 export const FinalRegisterForm = ({ values, errors, handleSubmit, handleChange, handleRadioChange, setPage }) => (
     <SubFormMainContainer>
         <FormContainer container spacing={2}>
@@ -22,10 +54,11 @@ export const FinalRegisterForm = ({ values, errors, handleSubmit, handleChange, 
                     value={values.biologicalSex}
                     onChange={handleChange}
                 >
-                    <MenuItem value="male">Male</MenuItem>
-                    <MenuItem value="female">Female</MenuItem>
-                    <MenuItem value="other">Other</MenuItem>
-                    <MenuItem value="prefer not to say">Prefer Not To Say</MenuItem>
+                    {biologicalSexOptions.map((option) => (
+                        <MenuItem key={option.value} value={option.value}>
+                            {option.label}
+                        </MenuItem>
+                    ))}
                 </TextField>
             </Grid>
             <Grid item xs={7}>
@@ -42,10 +75,11 @@ export const FinalRegisterForm = ({ values, errors, handleSubmit, handleChange, 
                     value={values.maritalStatus}
                     onChange={handleChange}
                 >
-                    <MenuItem value="single">Single</MenuItem>
-                    <MenuItem value="married">Married</MenuItem>
-                    <MenuItem value="divorced">Divorced</MenuItem>
-                    <MenuItem value="widowed">Widowed</MenuItem>
+                    {maritalStatusOptions.map((option) => (
+                        <MenuItem key={option.value} value={option.value}>
+                            {option.label}
+                        </MenuItem>
+                    ))}
                 </TextField>
             </Grid>
             <Grid item xs={5}>
@@ -78,13 +112,11 @@ export const FinalRegisterForm = ({ values, errors, handleSubmit, handleChange, 
                     value={values.religiousAffiliation}
                     onChange={handleChange}
                 >
-                    <MenuItem value="jewish">Jewish</MenuItem>
-                    <MenuItem value="islam">Islam</MenuItem>
-                    <MenuItem value="christianity">Christianity</MenuItem>
-                    <MenuItem value="hinduism">Hinduism</MenuItem>
-                    <MenuItem value="buddhism">Buddhism</MenuItem>
-                    <MenuItem value="atheist">Atheist</MenuItem>
-                    <MenuItem value="other">Other</MenuItem>
+                    {religiousAffiliationOptions.map((option) => (
+                        <MenuItem key={option.value} value={option.value}>
+                            {option.label}
+                        </MenuItem>
+                    ))}
                 </TextField>
             </Grid>
             <Grid item xs={12}>
@@ -101,14 +133,11 @@ export const FinalRegisterForm = ({ values, errors, handleSubmit, handleChange, 
                     value={values.ethnicity}
                     onChange={handleChange}
                 >
-                    <MenuItem value="israeli">Israeli</MenuItem>
-                    <MenuItem value="arab">Arab</MenuItem>
-                    <MenuItem value="palestinian">Palestinian</MenuItem>
-                    <MenuItem value="caucasian">Caucasian</MenuItem>
-                    <MenuItem value="hispanic">Hispanic</MenuItem>
-                    <MenuItem value="african">African</MenuItem>
-                    <MenuItem value="asian">Asian</MenuItem>
-                    <MenuItem value="other">Other</MenuItem>
+                    {ethnicityOptions.map((option) => (
+                        <MenuItem key={option.value} value={option.value}>
+                            {option.label}
+                        </MenuItem>
+                    ))}
                 </TextField>
             </Grid>
             <Grid item xs={12}>

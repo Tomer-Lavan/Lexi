@@ -1,6 +1,6 @@
+import { Pages } from '@app/App';
+import useActiveUser from '@hooks/useActiveUser';
 import { Navigate, Outlet, useParams } from 'react-router-dom';
-import { Pages } from '../../app/App';
-import useActiveUser from '../../hooks/useActiveUser';
 
 const LoginExperimentRoute = () => {
     const { activeUser } = useActiveUser();

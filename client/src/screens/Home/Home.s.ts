@@ -1,7 +1,7 @@
+import { IsMobile } from '@models/StylesModels';
 import { Button, Grid, TextField, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import theme from '../../Theme';
-import { IsMobile } from '../../models/StylesModels';
+import theme from '@root/Theme';
 
 export const Container = styled(Grid)<IsMobile>(({ isMobile }) => ({
     height: '93vh',

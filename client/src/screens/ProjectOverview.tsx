@@ -1,8 +1,8 @@
+import { Pages } from '@app/App';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import { AppBar, Box, Button, Paper, Toolbar, Typography } from '@mui/material';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Pages } from '../app/App';
 
 const ProjectOverview: React.FC = () => {
     const navigate = useNavigate();
@@ -15,7 +15,7 @@ const ProjectOverview: React.FC = () => {
     };
 
     return (
-        <div
+        <Box
             style={{
                 backgroundColor: 'white',
                 color: 'black',
@@ -78,7 +78,7 @@ const ProjectOverview: React.FC = () => {
             <Typography variant="body2" align="center" sx={{ color: 'grey.500', paddingBottom: 2 }}>
                 © {new Date().getFullYear()} Lexi Project. All Rights Reserved.
             </Typography>
-        </div>
+        </Box>
     );
 };
 

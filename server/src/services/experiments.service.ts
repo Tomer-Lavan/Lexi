@@ -1,42 +1,34 @@
-import mongoose from 'mongoose';
-import {
-    ExperimentsDocument,
-    ModelConfig,
-    ModelsMode,
-    SettingsDocument,
-    experimentsSchema,
-} from '../models/DbModels';
-import { mongoDbProvider } from '../mongoDBProvider';
+import mongoose, { UpdateWriteOpResult } from 'mongoose';
+import { ExperimentsModel } from '../models/ExperimentsModel';
+import { ABAgents, DisplaySettings, IAgent, IExperiment, ModelConfig, ModelsMode } from '../types';
 
-const ExperimentsModel = mongoDbProvider.getModel('experiments', experimentsSchema);
+type BulkWriteResult = ReturnType<typeof ExperimentsModel.bulkWrite>;
 
 class ExperimentsService {
-    async createExperiment(experiment) {
+    async createExperiment(experiment: IExperiment): Promise<IExperiment> {
         const response = await ExperimentsModel.create(experiment);
         return response;
     }
 
-    async getExperiment(experimentId): Promise<ExperimentsDocument> {
-        const experiment: ExperimentsDocument = await ExperimentsModel.findOne({
+    async getExperiment(experimentId: string): Promise<IExperiment> {
+        const experiment = await ExperimentsModel.findOne({
             _id: new mongoose.Types.ObjectId(experimentId),
         });
         return experiment;
     }
 
-    async getExperiments(): Promise<any[]> {
+    async getExperiments(): Promise<IExperiment[]> {
         const experiments = await ExperimentsModel.find({});
         return experiments;
     }
 
-    updateExperiment = async (experiment): Promise<any> => {
+    updateExperiment = async (experiment: IExperiment): Promise<UpdateWriteOpResult> => {
         const response = await ExperimentsModel.updateOne({ _id: experiment._id }, { $set: experiment });
         return response;
     };
 
-    addParticipant = async (experimentId): Promise<any> => {
-        const experimentModel = mongoDbProvider.getModel('experiments', experimentsSchema);
-
-        const updatedExperiment = await experimentModel.findOneAndUpdate(
+    addParticipant = async (experimentId: string): Promise<IExperiment> => {
+        const updatedExperiment = await ExperimentsModel.findOneAndUpdate(
             { _id: experimentId },
             { $inc: { numberOfParticipants: 1 } },
             { new: true },
@@ -45,7 +37,12 @@ class ExperimentsService {
         return updatedExperiment;
     };
 
-    updateActiveModel = async (experimentId, model: SettingsDocument, modelsConfig?, abModels?) => {
+    updateActiveModel = async (
+        experimentId: string,
+        model: IAgent,
+        modelsConfig: ModelConfig,
+        abModels: ABAgents,
+    ): Promise<UpdateWriteOpResult> => {
         const updateFields = { modelsConfig };
         if (modelsConfig === ModelConfig.SINGLE) {
             updateFields['activeModel'] = model;
@@ -60,7 +57,10 @@ class ExperimentsService {
         return response;
     };
 
-    updateExperimentDisplaySettings = async (experimentId, displaySettings) => {
+    updateExperimentDisplaySettings = async (
+        experimentId: string,
+        displaySettings: DisplaySettings,
+    ): Promise<UpdateWriteOpResult> => {
         const response = await ExperimentsModel.updateOne(
             { _id: new mongoose.Types.ObjectId(experimentId) },
             { $set: { displaySettings } },
@@ -69,10 +69,10 @@ class ExperimentsService {
         return response;
     };
 
-    updateExperimentsStatus = async (experimentsUpdates) => {
+    updateExperimentsStatus = async (experimentsUpdates: any[]): Promise<BulkWriteResult> => {
         const bulkOperations = experimentsUpdates.map((update) => ({
             updateOne: {
-                filter: { _id: new mongoose.Types.ObjectId(update.id) }, // assuming _id is used as the identifier
+                filter: { _id: new mongoose.Types.ObjectId(update.id) },
                 update: { $set: { isActive: update.isActive } },
             },
         }));
@@ -81,7 +81,7 @@ class ExperimentsService {
         return response;
     };
 
-    async getActiveModel(experimentId): Promise<SettingsDocument> {
+    async getActiveModel(experimentId: string): Promise<IAgent> {
         const experiment = await this.getExperiment(experimentId);
         if (experiment.modelsMode === ModelsMode.SINGLE) {
             return experiment.activeModel;

@@ -1,6 +1,7 @@
+import { Pages } from '@app/App';
+import useActiveUser from '@hooks/useActiveUser';
+import { Box } from '@mui/system';
 import { Navigate, Outlet, useParams } from 'react-router-dom';
-import { Pages } from '../../app/App';
-import useActiveUser from '../../hooks/useActiveUser';
 
 const PrivateExperimentRoute = ({ TopBar, setIsOpen }) => {
     const { activeUser } = useActiveUser();
@@ -11,10 +12,10 @@ const PrivateExperimentRoute = ({ TopBar, setIsOpen }) => {
     }
 
     return (
-        <div style={{ overflow: 'hidden', maxHeight: '100vh' }}>
+        <Box style={{ overflow: 'hidden', maxHeight: '100vh' }}>
             <TopBar setIsOpen={setIsOpen} />
             <Outlet />;
-        </div>
+        </Box>
     );
 };
 

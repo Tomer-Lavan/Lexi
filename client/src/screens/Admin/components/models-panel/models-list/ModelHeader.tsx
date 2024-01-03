@@ -1,7 +1,7 @@
+import { ModelType } from '@models/AppModels';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { IconButton, ListItem, ListItemText } from '@mui/material';
+import { Box, IconButton, ListItem, ListItemText } from '@mui/material';
 import Typography from '@mui/material/Typography';
-import { ModelType } from '../../../../../models/AppModels';
 
 interface ModelHeaderProps {
     model: ModelType;
@@ -19,7 +19,7 @@ export const ModelHeader: React.FC<ModelHeaderProps> = ({ model, setAnchorEl, se
         <ListItem>
             <ListItemText
                 primary={
-                    <div
+                    <Box
                         style={{
                             width: '100%',
                             display: 'flex',
@@ -36,7 +36,7 @@ export const ModelHeader: React.FC<ModelHeaderProps> = ({ model, setAnchorEl, se
                         >
                             <MoreVertIcon />
                         </IconButton>
-                    </div>
+                    </Box>
                 }
                 secondary={<Typography variant="subtitle1">{model.summary}</Typography>}
             />

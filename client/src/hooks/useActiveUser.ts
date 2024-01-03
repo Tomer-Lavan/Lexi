@@ -1,7 +1,7 @@
+import { setActiveUser } from '@DAL/redux/reducers/activeUserReducer';
+import { useAppDispatch, useAppSelector } from '@DAL/redux/store';
+import { getActiveUser } from '@DAL/server-requests/users';
 import { useEffect, useState } from 'react';
-import { setActiveUser } from '../DAL/redux/reducers/activeUserReducer';
-import { useAppDispatch, useAppSelector } from '../DAL/redux/store';
-import { getActiveUser } from '../DAL/server-requests/usersDAL';
 
 const useActiveUser = () => {
     const reduxUser = useAppSelector((state) => state.activeUser);
@@ -13,10 +13,15 @@ const useActiveUser = () => {
         if (!reduxUser) {
             const fetchUser = async () => {
                 setIsLoading(true);
-                const fetchedUser = await getActiveUser();
+                try {
+                    const fetchedUser = await getActiveUser();
+                    dispatch(setActiveUser(fetchedUser));
+                    setUser(fetchedUser);
+                } catch (error) {
+                    dispatch(setActiveUser(null));
+                    setUser(null);
+                }
                 setIsLoading(false);
-                dispatch(setActiveUser(fetchedUser));
-                setUser(fetchedUser);
             };
             fetchUser();
         }

@@ -1,6 +1,6 @@
+import { validateUserName } from '@DAL/server-requests/users';
 import { Grid, MenuItem, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
-import { checkUserNotExist } from '../../DAL/server-requests/usersDAL';
 import { ButtonBox, FormButton, FormContainer, SubFormMainContainer } from './FormStyles.s';
 
 export const FirstRegisterForm = ({ setPage, values, setValues, handleChange, experimentId }) => {
@@ -23,7 +23,7 @@ export const FirstRegisterForm = ({ setPage, values, setValues, handleChange, ex
 
             if (Object.values(currentErrors).every((error) => error === '')) {
                 try {
-                    await checkUserNotExist(values.nickname, experimentId);
+                    await validateUserName(values.nickname, experimentId);
                     setPage(2);
                 } catch (error) {
                     setErrors({ ...currentErrors, nickname: 'Nickname is already exist' });
