@@ -1,36 +1,36 @@
 import { validateUserName } from '@DAL/server-requests/users';
 import { Grid, MenuItem, TextField, Typography } from '@mui/material';
-import { useState } from 'react';
 import { ButtonBox, FormButton, FormContainer, SubFormMainContainer } from './FormStyles.s';
 
-export const FirstRegisterForm = ({ setPage, values, setValues, handleChange, experimentId }) => {
-    const [errors, setErrors] = useState<any>({
-        nickname: '',
-        age: '',
-        gender: '',
-    });
+const genderOptions = [
+    { label: 'Male', value: 'male' },
+    { label: 'Female', value: 'female' },
+    { label: 'Other', value: 'other' },
+    { label: 'Prefer Not To Say', value: 'prefer not to say' },
+];
 
-    const handleContinue = async (event) => {
-        event.preventDefault();
+export const FirstRegisterForm = ({
+    setPage,
+    register,
+    errors,
+    experimentId,
+    getValues,
+    setError,
+    handleSubmit,
+    setValue,
+}) => {
+    const handleContinue = async () => {
         try {
-            const currentErrors: any = {
-                nickname: values.nickname ? '' : 'Please fill necessary field',
-                age: values.age ? '' : 'Please fill necessary field',
-                gender: values.gender ? '' : 'Please fill necessary field',
-            };
-
-            setErrors(currentErrors);
-
-            if (Object.values(currentErrors).every((error) => error === '')) {
-                try {
-                    await validateUserName(values.nickname, experimentId);
-                    setPage(2);
-                } catch (error) {
-                    setErrors({ ...currentErrors, nickname: 'Nickname is already exist' });
-                }
-            }
+            const nickname = getValues('nickname');
+            debugger;
+            console.log(errors);
+            await validateUserName(nickname, experimentId);
+            setPage(2);
         } catch (error) {
-            console.log(error);
+            setError('nickname', {
+                type: 'manual',
+                message: 'Nickname already exists',
+            });
         }
     };
 
@@ -44,14 +44,12 @@ export const FirstRegisterForm = ({ setPage, values, setValues, handleChange, ex
                     <TextField
                         size="small"
                         error={Boolean(errors.nickname)}
-                        helperText={errors.nickname}
+                        helperText={errors.nickname?.message}
                         required
                         fullWidth
-                        value={values.nickname}
-                        name="nickname"
+                        {...register('nickname', { required: 'Please fill necessary field' })}
                         label="Nickname"
                         id="nickname"
-                        onChange={handleChange}
                     />
                 </Grid>
                 <Grid item xs={6}>
@@ -59,24 +57,20 @@ export const FirstRegisterForm = ({ setPage, values, setValues, handleChange, ex
                         type="number"
                         size="small"
                         error={Boolean(errors.age)}
-                        helperText={
-                            errors.age ||
-                            (Number(values.age) < 18 || Number(values.age) > 120 ? 'Age must be above 18' : '')
-                        }
+                        helperText={errors.age?.message}
                         required
                         fullWidth
-                        name="age"
+                        {...register('age', {
+                            required: 'Please fill necessary field',
+                            min: { value: 18, message: 'Age must be above 18' },
+                            max: { value: 200, message: 'Age must be below 200' },
+                        })}
+                        onChange={(e) => {
+                            setValue('age', e.target.value, { shouldValidate: true });
+                        }}
                         label="Age"
                         id="age"
-                        value={values.age}
-                        InputProps={{ inputProps: { min: 18, max: 120 } }}
-                        onChange={handleChange}
-                        onBlur={(event) => {
-                            let age = event.target.value ? parseInt(event.target.value) : '';
-                            if (Number(age) < 18) age = 18;
-                            if (Number(age) > 120) age = 120;
-                            setValues({ ...values, age: age.toString() });
-                        }}
+                        InputProps={{ inputProps: { min: 18, max: 200 } }}
                     />
                 </Grid>
                 <Grid item xs={6}>
@@ -84,24 +78,26 @@ export const FirstRegisterForm = ({ setPage, values, setValues, handleChange, ex
                         select
                         size="small"
                         error={Boolean(errors.gender)}
-                        helperText={errors.gender}
+                        helperText={errors.gender?.message}
                         required
                         fullWidth
-                        name="gender"
+                        {...register('gender', { required: 'Please fill necessary field' })}
                         label="Gender"
                         id="gender"
-                        value={values.gender}
-                        onChange={handleChange}
+                        onChange={(e) => {
+                            setValue('gender', e.target.value, { shouldValidate: true });
+                        }}
                     >
-                        <MenuItem value="male">Male</MenuItem>
-                        <MenuItem value="female">Female</MenuItem>
-                        <MenuItem value="other">Other</MenuItem>
-                        <MenuItem value="prefer not to say">Prefer Not To Say</MenuItem>
+                        {genderOptions.map((option) => (
+                            <MenuItem key={option.value} value={option.value}>
+                                {option.label}
+                            </MenuItem>
+                        ))}
                     </TextField>
                 </Grid>
                 <Grid item xs={12} display={'flex'} justifyContent={'center'}>
                     <ButtonBox flexDirection={'row'}>
-                        <FormButton variant="contained" color="primary" onClick={handleContinue}>
+                        <FormButton variant="contained" color="primary" onClick={handleSubmit(handleContinue)}>
                             Continue
                         </FormButton>
                     </ButtonBox>

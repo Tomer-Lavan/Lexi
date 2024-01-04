@@ -3,26 +3,26 @@ import { login } from '@DAL/server-requests/users';
 import { Pages } from '@app/App';
 import { Box, Button, Container, Grid, Link, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 export const LoginForm = ({ isSignUp, setIsSignUp, isAdminPage, experimentId }) => {
-    const [nickname, setNickname] = useState('');
-    const [isUserAdmin, setIsUserAdmin] = useState(false);
-    const [password, setPassword] = useState('');
-    const [errorMsg, setErrorMsg] = useState('');
+    const {
+        register,
+        handleSubmit,
+        setError,
+        formState: { errors },
+    } = useForm();
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const [isUserAdmin, setIsUserAdmin] = useState(false);
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
+    const getErrorMessage = (error) => (error && typeof error.message === 'string' ? error.message : '');
+
+    const onSubmit = async (data) => {
         try {
-            if (!nickname) {
-                setErrorMsg('Please fill out nickname');
-                return;
-            }
-
-            const { token, user } = await login(nickname, password, experimentId);
+            const { token, user } = await login(data.nickname, data.password, experimentId);
 
             if (user.isAdmin && !token) {
                 setIsUserAdmin(true);
@@ -33,49 +33,54 @@ export const LoginForm = ({ isSignUp, setIsSignUp, isAdminPage, experimentId }) 
         } catch (error) {
             console.error(error);
             if (error.response && error.response.status === 401) {
-                setErrorMsg('Nickname is Invalid, Try agian or Sign Up');
+                setError('nickname', {
+                    type: 'manual',
+                    message: `Nickname ${
+                        isUserAdmin || isAdminPage ? 'or Password are' : 'is'
+                    } Invalid, Try again or Sign Up`,
+                });
+            } else {
+                setError('nickname', { type: 'manual', message: 'Something went wrong, please try again later' });
             }
         }
     };
 
     return (
         <Container component="main" maxWidth="xs">
-            <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 3, width: '100%' }}>
+            <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate sx={{ mt: 3, width: '100%' }}>
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <TextField
-                            error={Boolean(errorMsg)}
-                            helperText={errorMsg}
+                            error={Boolean(errors.nickname)}
+                            helperText={getErrorMessage(errors.nickname)}
                             required
                             fullWidth
                             size="small"
-                            name="nickname"
+                            {...register('nickname', { required: 'Please fill out nickname' })}
                             label="Nickname"
                             id="nickname"
-                            onChange={(e) => setNickname(e.target.value)}
                         />
                     </Grid>
-                    {!isAdminPage && !isUserAdmin && (
+                    {!isAdminPage && (
                         <Grid item xs={12}>
                             <Typography variant="body2" color={'grey'}>
-                                please use the same nickname you sign up with.
+                                Please use the same nickname you signed up with.
                             </Typography>
                         </Grid>
                     )}
-                    {(isAdminPage || isUserAdmin) && (
+                    {(isAdminPage || true) && (
                         <Grid item xs={12}>
                             <TextField
-                                // error={Boolean(errors.password)}
-                                // helperText={errors.password}
+                                error={Boolean(errors.password)}
+                                helperText={getErrorMessage(errors.password)}
                                 required
                                 fullWidth
-                                name="password"
+                                {...register('password', { required: 'Password is required' })}
                                 label="Password"
                                 type="password"
                                 id="password"
                                 size="small"
                                 autoComplete="current-password"
-                                onChange={(e) => setPassword(e.target.value)}
                             />
                         </Grid>
                     )}
@@ -86,7 +91,6 @@ export const LoginForm = ({ isSignUp, setIsSignUp, isAdminPage, experimentId }) 
                         variant="contained"
                         color="primary"
                         sx={{ mt: 3, mb: 2, paddingLeft: 6, paddingRight: 6 }}
-                        onClick={handleSubmit}
                     >
                         Login
                     </Button>
@@ -95,7 +99,7 @@ export const LoginForm = ({ isSignUp, setIsSignUp, isAdminPage, experimentId }) 
                     <Grid container justifyContent="flex-end">
                         <Grid item>
                             <Link variant="body2" onClick={() => setIsSignUp(!isSignUp)}>
-                                First time? press here to get started
+                                First time? Press here to get started
                             </Link>
                         </Grid>
                     </Grid>

@@ -18,7 +18,7 @@ const Login: React.FC = () => {
 
     return (
         <MainContainer isMobile={isMobile}>
-            <FormSide elevation={1}>
+            <FormSide elevation={1} sx={{ overflowY: 'auto' }}>
                 {isSignUp ? (
                     <RegisterForm experimentId={experimentId} />
                 ) : (

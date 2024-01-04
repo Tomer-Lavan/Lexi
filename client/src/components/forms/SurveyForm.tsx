@@ -2,7 +2,8 @@ import { updateIMS } from '@DAL/server-requests/conversations';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Box, Grid, IconButton, Typography, useMediaQuery } from '@mui/material';
 import theme from '@root/Theme';
-import React, { useState } from 'react';
+import React from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import {
     FitButton,
@@ -54,23 +55,22 @@ interface SurveyComponentProps {
 }
 
 const SurveyComponent: React.FC<SurveyComponentProps> = ({ conversationId, isPreConversation, handleDone }) => {
-    const [selectedValues, setSelectedValues] = useState<Record<string, string | null>>({});
+    const { control, handleSubmit, watch } = useForm();
+    const watchedValues = watch();
     const feelingRatings = generateFeelingRatings(isPreConversation);
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const navigate = useNavigate();
 
-    const handleRadioChange = (key: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
-        setSelectedValues({ ...selectedValues, [key]: event.target.value });
-    };
-
-    const saveIms = async () => {
+    const onSubmit = async (data) => {
         try {
             handleDone();
-            await updateIMS(conversationId, selectedValues, isPreConversation);
+            await updateIMS(conversationId, data, isPreConversation);
         } catch (err) {
             console.log("Couldn't save IMS");
         }
     };
+
+    const allQuestionsAnswered = () => feelingRatings.slice(1).every((pair) => watchedValues[pair.key]);
 
     return (
         <SurveyContainer>
@@ -92,31 +92,45 @@ const SurveyComponent: React.FC<SurveyComponentProps> = ({ conversationId, isPre
                             <SurveyFieldTitle isMobile={isMobile}>{pair.feeling}</SurveyFieldTitle>
                         </Grid>
                         <RadioGroupContainer item xs={6}>
-                            <StyledRadioGroup
-                                row
-                                aria-label={pair.feeling}
-                                name={pair.feeling}
-                                value={selectedValues[pair.key] || ''}
-                                onChange={handleRadioChange(pair.key)}
-                                isMobile={isMobile}
-                            >
-                                {[1, 2, 3, 4, 5, 6, 7].map((value) => (
-                                    <StyledFormControlLabel
-                                        key={value}
-                                        value={String(value)}
-                                        control={
-                                            index === 0 ? (
+                            {index === 0 ? (
+                                <StyledRadioGroup row aria-label={pair.feeling} isMobile={isMobile}>
+                                    {[1, 2, 3, 4, 5, 6, 7].map((value) => (
+                                        <StyledFormControlLabel
+                                            key={value}
+                                            value={String(value)}
+                                            control={
                                                 <Typography textAlign={'center'} style={{ width: '24px' }}>
                                                     {value}
                                                 </Typography>
-                                            ) : (
-                                                <StyledRadio size="small" />
-                                            )
-                                        }
-                                        label=""
-                                    />
-                                ))}
-                            </StyledRadioGroup>
+                                            }
+                                            label=""
+                                        />
+                                    ))}
+                                </StyledRadioGroup>
+                            ) : (
+                                <Controller
+                                    name={pair.key}
+                                    control={control}
+                                    defaultValue=""
+                                    render={({ field }) => (
+                                        <StyledRadioGroup
+                                            {...field}
+                                            row
+                                            aria-label={pair.feeling}
+                                            isMobile={isMobile}
+                                        >
+                                            {[1, 2, 3, 4, 5, 6, 7].map((value) => (
+                                                <StyledFormControlLabel
+                                                    key={value}
+                                                    value={String(value)}
+                                                    control={<StyledRadio size="small" />}
+                                                    label=""
+                                                />
+                                            ))}
+                                        </StyledRadioGroup>
+                                    )}
+                                />
+                            )}
                         </RadioGroupContainer>
                         <Grid item xs={3}>
                             <SurveyFieldTitle>{pair.counterFeeling}</SurveyFieldTitle>
@@ -127,8 +141,8 @@ const SurveyComponent: React.FC<SurveyComponentProps> = ({ conversationId, isPre
                     <FitButton
                         variant="contained"
                         color="primary"
-                        disabled={Object.keys(selectedValues).length < feelingRatings?.length - 1}
-                        onClick={saveIms}
+                        disabled={!allQuestionsAnswered()}
+                        onClick={handleSubmit(onSubmit)}
                     >
                         Continue
                     </FitButton>

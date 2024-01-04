@@ -34,7 +34,9 @@ const ethnicityOptions = [
     { label: 'Other', value: 'other' },
 ];
 
-export const FinalRegisterForm = ({ values, errors, handleSubmit, handleChange, handleRadioChange, setPage }) => (
+const requiredMessage = 'Please fill necessary field';
+
+export const FinalRegisterForm = ({ register, errors, handleSubmit, setPage, setValue, control }) => (
     <SubFormMainContainer>
         <FormContainer container spacing={2}>
             <Grid item xs={12}>
@@ -45,14 +47,15 @@ export const FinalRegisterForm = ({ values, errors, handleSubmit, handleChange, 
                     select
                     size="small"
                     error={Boolean(errors.biologicalSex)}
-                    helperText={errors.biologicalSex}
+                    helperText={errors.biologicalSex?.message}
                     required
                     fullWidth
-                    name="biologicalSex"
+                    {...register('biologicalSex', { required: requiredMessage })}
+                    onChange={(e) => {
+                        setValue('biologicalSex', e.target.value, { shouldValidate: true });
+                    }}
                     label="Biological Sex"
                     id="biologicalSex"
-                    value={values.biologicalSex}
-                    onChange={handleChange}
                 >
                     {biologicalSexOptions.map((option) => (
                         <MenuItem key={option.value} value={option.value}>
@@ -66,14 +69,15 @@ export const FinalRegisterForm = ({ values, errors, handleSubmit, handleChange, 
                     select
                     size="small"
                     error={Boolean(errors.maritalStatus)}
-                    helperText={errors.maritalStatus}
+                    helperText={errors.maritalStatus?.message}
                     required
                     fullWidth
-                    name="maritalStatus"
+                    {...register('maritalStatus', { required: requiredMessage })}
+                    onChange={(e) => {
+                        setValue('maritalStatus', e.target.value, { shouldValidate: true });
+                    }}
                     label="Marital Status"
                     id="maritalStatus"
-                    value={values.maritalStatus}
-                    onChange={handleChange}
                 >
                     {maritalStatusOptions.map((option) => (
                         <MenuItem key={option.value} value={option.value}>
@@ -87,15 +91,19 @@ export const FinalRegisterForm = ({ values, errors, handleSubmit, handleChange, 
                     type="number"
                     size="small"
                     error={Boolean(errors.childrenNumber)}
-                    helperText={errors.childrenNumber}
+                    helperText={errors.childrenNumber?.message}
                     required
                     fullWidth
-                    name="childrenNumber"
+                    {...register('childrenNumber', {
+                        required: requiredMessage,
+                        min: { value: 0, message: 'Children number is invalid' },
+                    })}
+                    onChange={(e) => {
+                        setValue('childrenNumber', e.target.value, { shouldValidate: true });
+                    }}
                     label="Children Number"
                     id="childrenNumber"
-                    value={values.childrenNumber}
                     InputProps={{ inputProps: { min: 0, max: 99 } }}
-                    onChange={handleChange}
                 />
             </Grid>
             <Grid item xs={12}>
@@ -103,14 +111,16 @@ export const FinalRegisterForm = ({ values, errors, handleSubmit, handleChange, 
                     select
                     size="small"
                     error={Boolean(errors.religiousAffiliation)}
-                    helperText={errors.religiousAffiliation}
+                    helperText={errors.religiousAffiliation?.message}
                     required
                     fullWidth
-                    name="religiousAffiliation"
+                    {...register('religiousAffiliation', { required: requiredMessage })}
+                    onChange={(e) => {
+                        setValue('religiousAffiliation', e.target.value, { shouldValidate: true });
+                    }}
+                    control={control}
                     label="Religious Affiliation"
                     id="religiousAffiliation"
-                    value={values.religiousAffiliation}
-                    onChange={handleChange}
                 >
                     {religiousAffiliationOptions.map((option) => (
                         <MenuItem key={option.value} value={option.value}>
@@ -124,14 +134,15 @@ export const FinalRegisterForm = ({ values, errors, handleSubmit, handleChange, 
                     select
                     size="small"
                     error={Boolean(errors.ethnicity)}
-                    helperText={errors.ethnicity}
+                    helperText={errors.ethnicity?.message}
                     required
                     fullWidth
-                    name="ethnicity"
+                    {...register('ethnicity', { required: requiredMessage })}
+                    onChange={(e) => {
+                        setValue('ethnicity', e.target.value, { shouldValidate: true });
+                    }}
                     label="Ethnicity"
                     id="ethnicity"
-                    value={values.ethnicity}
-                    onChange={handleChange}
                 >
                     {ethnicityOptions.map((option) => (
                         <MenuItem key={option.value} value={option.value}>
@@ -147,10 +158,14 @@ export const FinalRegisterForm = ({ values, errors, handleSubmit, handleChange, 
                     right={'Right Wing'}
                     range={7}
                     field={'politicalAffiliation'}
-                    values={values}
-                    handleRadioChange={handleRadioChange}
                     gap="0px"
+                    control={control}
                 />
+                {errors['politicalAffiliation'] && (
+                    <Typography color="error" variant="caption">
+                        {errors['politicalAffiliation']?.message}
+                    </Typography>
+                )}
             </Grid>
             <Grid item xs={12} display={'flex'} justifyContent={'center'}>
                 <ButtonBox>

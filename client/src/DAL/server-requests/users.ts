@@ -11,7 +11,7 @@ export const getActiveUser = async (): Promise<UserType> => {
     }
 };
 
-export const register = async (userInfo: NewUserInfoType, experimentId: string): Promise<UserType> => {
+export const registerUser = async (userInfo: NewUserInfoType, experimentId: string): Promise<UserType> => {
     try {
         const response = await axiosInstance.post(`/${ApiPaths.USERS_PATH}/create`, { userInfo, experimentId });
         return response.data;
