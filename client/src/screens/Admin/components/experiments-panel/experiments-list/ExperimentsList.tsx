@@ -1,6 +1,7 @@
 import { downloadExperimentJSON, downloadExperimentXLSX } from '@DAL/server-requests/dataAggregation';
 import AsyncButton from '@components/common/AsyncButton';
 import { SnackbarStatus, useSnackbar } from '@contexts/SnackbarProvider';
+import AddIcon from '@mui/icons-material/Add';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import {
     Box,
@@ -22,7 +23,8 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 import { ExperimentRow } from '../experiment-row/ExperimentRow';
-import { ButtonsBox, ColumnTitle, ListBox, TablePaper } from './ExperimentsList.s';
+import { AddButton } from '../experiments/Experiments.s';
+import { ColumnTitle, ListBox, TablePaper } from './ExperimentsList.s';
 
 const ExperimentsList = ({
     experiments,
@@ -66,39 +68,54 @@ const ExperimentsList = ({
         }
     };
 
+    const areExperimentsModified = Object.values(modifiedExperiments).length !== 0;
+
     const handleCopyLink = () => {
         navigator.clipboard.writeText(shareLink);
         openSnackbar('Link copied to clipboard', SnackbarStatus.SUCCESS);
     };
 
     return (
-        <ListBox>
-            <ButtonsBox>
-                <Box>
-                    <AsyncButton
-                        sx={{ mr: 1 }}
-                        style={{ marginBottom: 0 }}
-                        variant="contained"
-                        isLoading={isLoadingStatusChange}
-                        color="primary"
-                        onClick={handleSaveChanges}
-                        disabled={Object.values(modifiedExperiments).length === 0}
-                        size="small"
-                    >
-                        Save Changes
-                    </AsyncButton>
-                    <Button
-                        variant="outlined"
-                        color="secondary"
-                        onClick={handleCancelChanges}
-                        disabled={Object.values(modifiedExperiments).length === 0}
-                        size="small"
-                    >
-                        Cancel
-                    </Button>
-                </Box>
-            </ButtonsBox>
+        <ListBox style={{ marginTop: '1vh' }}>
             <TablePaper>
+                <Box display={'flex'} justifyContent={'space-between'} padding={2} sx={{ paddingBottom: 0 }}>
+                    {areExperimentsModified ? (
+                        <Box>
+                            <AsyncButton
+                                sx={{ mr: 1 }}
+                                style={{ marginBottom: 0 }}
+                                variant="contained"
+                                isLoading={isLoadingStatusChange}
+                                color="primary"
+                                onClick={handleSaveChanges}
+                                disabled={!areExperimentsModified}
+                                size="small"
+                            >
+                                Save Changes
+                            </AsyncButton>
+                            <Button
+                                variant="outlined"
+                                color="primary"
+                                onClick={handleCancelChanges}
+                                disabled={!areExperimentsModified}
+                                size="small"
+                                style={{ marginBottom: 0 }}
+                            >
+                                Cancel
+                            </Button>
+                        </Box>
+                    ) : (
+                        <Box />
+                    )}
+                    <Box display={'flex'} justifyContent={'end'}>
+                        <AddButton onClick={() => setOpenExperimentFormDialog(true)} size="small">
+                            <AddIcon style={{ color: 'floralwhite' }} />
+                            <Typography variant="body2" fontWeight={500} color={'floralwhite'}>
+                                Add Experiment
+                            </Typography>
+                        </AddButton>
+                    </Box>
+                </Box>
                 <TableContainer>
                     <Table aria-label="collapsible experiments table">
                         <TableHead>

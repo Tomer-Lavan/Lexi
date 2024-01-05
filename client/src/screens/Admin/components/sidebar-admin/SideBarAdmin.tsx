@@ -6,19 +6,10 @@ import BookOutlinedIcon from '@mui/icons-material/BookOutlined';
 import ExitToAppOutlinedIcon from '@mui/icons-material/ExitToAppOutlined';
 import InsertChartOutlinedOutlinedIcon from '@mui/icons-material/InsertChartOutlinedOutlined';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
-import { Box, Divider, List, ListItem, Typography } from '@mui/material';
+import { Divider, List, ListItem, Typography } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { MainContainer, StyledListItemIcon } from './SideBar.s';
 import { StyledListItem } from './SideBarAdmin.s';
-
-const gradientCircleStyle = {
-    width: '50px',
-    height: '50px',
-    borderRadius: '50%',
-    background: 'linear-gradient(to right, floralwhite, lightgrey, rgba(0, 112, 243, 0.25))', // Example gradient
-    margin: '10px auto',
-    opacity: '0.6',
-};
 
 const sectionsConfig = [
     { id: AdminSections.EXPERIMENTS, label: 'Experiments', Icon: BookOutlinedIcon },
@@ -56,17 +47,13 @@ export const SidebarAdmin = ({ section, setSection }) => {
     return (
         <MainContainer>
             <List>
-                <ListItem>
-                    <Box style={gradientCircleStyle} />
+                <ListItem sx={{ display: 'flex', justifyContent: 'center', padding: 0, paddingRight: '5%' }}>
+                    <img src="lexi_logo.png" alt="logo" width={160} height={90} />
                 </ListItem>
-                <Divider style={{ backgroundColor: 'floralwhite' }} />
+                <Divider style={{ backgroundColor: 'rgba(250,250,255,0.5)', marginBottom: '3vh' }} />
                 {sectionsConfig.map(renderListItem)}
             </List>
-            <ListItem
-                button
-                style={{ paddingRight: '16px', paddingLeft: '16px', marginBottom: '16px' }}
-                onClick={handleLogout}
-            >
+            <ListItem button style={{ paddingLeft: '15%', marginBottom: '16px' }} onClick={handleLogout}>
                 <Divider style={{ backgroundColor: 'floralwhite' }} />
                 <StyledListItemIcon>
                     <ExitToAppOutlinedIcon style={{ color: 'floralwhite', fontSize: '1.25rem' }} />

@@ -17,7 +17,7 @@ import {
 } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import React, { useState } from 'react';
-import { MainContainerStyled } from '../../experiments-panel/experiments/Experiments.s';
+import { AddButton, MainContainerStyled } from '../../experiments-panel/experiments/Experiments.s';
 import ModelForm from '../model-form/ModelForm';
 import { ModelDetails } from './ModelDetails';
 import { ModelHeader } from './ModelHeader';
@@ -61,7 +61,32 @@ export const ModelsListContainer: React.FC<ModelsListContainerProps> = ({ models
 
     return (
         <MainContainerStyled>
+            <Typography variant="h6" gutterBottom style={{ borderBottom: '1px solid gray', marginBottom: '24px' }}>
+                Models
+            </Typography>
             <Box
+                style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                }}
+            >
+                <Typography variant="h5" gutterBottom fontWeight={500}>
+                    Manage Your Models
+                </Typography>
+                <Box display={'flex'} justifyContent={'end'}>
+                    <AddButton onClick={() => setOpenModelFormDialog(true)} size="small">
+                        <AddIcon style={{ color: 'floralwhite' }} />
+                        <Typography variant="body2" fontWeight={500} color={'floralwhite'}>
+                            Add Model
+                        </Typography>
+                    </AddButton>
+                </Box>
+            </Box>
+            <Typography variant="body2" gutterBottom fontWeight={500} marginBottom={2}>
+                Manage your models, create a unique agent by prompt engineering, revisite your prompts and more.
+            </Typography>
+            {/* <Box
                 style={{
                     display: 'flex',
                     alignItems: 'center',
@@ -84,7 +109,7 @@ export const ModelsListContainer: React.FC<ModelsListContainerProps> = ({ models
                 >
                     <AddIcon />
                 </Box>
-            </Box>
+            </Box> */}
             <List>
                 {models.length ? (
                     models.map((model, index) => (

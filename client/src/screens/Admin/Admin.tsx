@@ -27,10 +27,10 @@ const Admin = () => {
 
     return (
         <MainContainer container>
-            <Grid item xs={1.5} sm={1.5} md={1.5} lg={1.5} style={{ backgroundColor: '#102C57' }}>
+            <Grid item xs={2} sm={2} md={2} lg={2} style={{ backgroundColor: '#1d262a' }}>
                 <SidebarAdmin section={section} setSection={setSection} />
             </Grid>
-            <Grid item xs={10.5} sm={10.5} md={10.5} lg={10.5}>
+            <Grid item xs={10} sm={10} md={10} lg={10}>
                 <SectionContainer>
                     <SectionInnerContainer container>
                         {section === AdminSections.EXPERIMENTS ? (

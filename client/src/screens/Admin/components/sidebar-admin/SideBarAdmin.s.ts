@@ -24,9 +24,17 @@ export const ListItemText = styled(Typography)({
 
 export const StyledListItem = styled(ListItemButton)<{ currentSection?: string; section?: string }>(
     ({ currentSection, section }) => ({
-        paddingRight: '16px',
-        paddingLeft: '16px',
+        paddingLeft: '15%',
         marginTop: '12px',
-        backgroundColor: currentSection === section ? 'rgba(200,200,255,0.20)' : '',
+        position: 'relative',
+        '&::before': {
+            content: '""',
+            position: 'absolute',
+            top: 0,
+            bottom: 0,
+            left: 0,
+            width: '8px',
+            backgroundColor: currentSection === section ? 'rgba(142, 243, 253, 0.8)' : 'transparent',
+        },
     }),
 );
