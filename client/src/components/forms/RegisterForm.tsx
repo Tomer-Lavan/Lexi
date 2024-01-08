@@ -1,16 +1,25 @@
 import { setActiveUser } from '@DAL/redux/reducers/activeUserReducer';
 import { registerUser } from '@DAL/server-requests/users';
 import { SnackbarStatus, useSnackbar } from '@contexts/SnackbarProvider';
+import { NewUserInfoType } from '@models/AppModels';
 import { Box, Container } from '@mui/material';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
-import { FinalRegisterForm } from './FinalRegestrationForm';
 import { FirstRegisterForm } from './FirstRegestrationForm';
-import TermsOfConditions from './TermsOfConditions';
+import { FinalRegisterForm } from './final-register-form/FinalRegestrationForm';
+import TermsOfConditions from './terms-of-conditions/TermsOfConditions';
 
-export const RegisterForm = ({ experimentId }) => {
+interface RegisterFormProps {
+    experimentId: string;
+    setShowFormTypeButtons: (show: boolean) => void;
+}
+
+export const RegisterForm: React.FC<RegisterFormProps> = ({ experimentId, setShowFormTypeButtons }) => {
     const [page, setPage] = useState(1);
+    const dispatch = useDispatch();
+    const { openSnackbar } = useSnackbar();
+    const [isAgreedTerms, setIsAgreedTerms] = useState(false);
     const {
         register,
         handleSubmit,
@@ -20,11 +29,17 @@ export const RegisterForm = ({ experimentId }) => {
         control,
         formState: { errors },
     } = useForm();
-    const dispatch = useDispatch();
-    const { openSnackbar } = useSnackbar();
-    const [isAgreedTerms, setIsAgreedTerms] = useState(false);
 
-    const onSubmit = async (data) => {
+    const goToPage = (page: number) => {
+        if (page === 1) {
+            setShowFormTypeButtons(true);
+        } else {
+            setShowFormTypeButtons(false);
+        }
+        setPage(page);
+    };
+
+    const onSubmit = async (data: NewUserInfoType) => {
         try {
             const user = await registerUser(data, experimentId);
             dispatch(setActiveUser(user));
@@ -34,11 +49,11 @@ export const RegisterForm = ({ experimentId }) => {
     };
 
     return (
-        <Container component="main" maxWidth="sm">
-            <Box sx={{ mt: 1, width: '100%', display: 'flex', justifyContent: 'center' }}>
+        <Container component="main" maxWidth={page !== 1 ? 'sm' : 'xs'}>
+            <Box display={'flex'} justifyContent={'center'} marginTop={page === 2 ? 0 : 3}>
                 {page === 1 ? (
                     <FirstRegisterForm
-                        setPage={setPage}
+                        setPage={goToPage}
                         getValues={getValues}
                         setError={setError}
                         handleSubmit={handleSubmit}
@@ -48,15 +63,20 @@ export const RegisterForm = ({ experimentId }) => {
                         errors={errors}
                     />
                 ) : page === 2 ? (
-                    <TermsOfConditions setPage={setPage} isAgreed={isAgreedTerms} setIsAgreed={setIsAgreedTerms} />
+                    <TermsOfConditions
+                        setPage={goToPage}
+                        isAgreed={isAgreedTerms}
+                        setIsAgreed={setIsAgreedTerms}
+                    />
                 ) : (
                     <FinalRegisterForm
                         setValue={setValue}
                         register={register}
                         errors={errors}
+                        getValues={getValues}
                         handleSubmit={handleSubmit(onSubmit)}
                         control={control}
-                        setPage={setPage}
+                        setPage={goToPage}
                     />
                 )}
             </Box>

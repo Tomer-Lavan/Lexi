@@ -1,6 +1,16 @@
 import { validateUserName } from '@DAL/server-requests/users';
-import { Grid, MenuItem, TextField, Typography } from '@mui/material';
-import { ButtonBox, FormButton, FormContainer, SubFormMainContainer } from './FormStyles.s';
+import { Box, Grid, MenuItem, TextField } from '@mui/material';
+import { getFormErrorMessage } from '@utils/commonFunctions';
+import {
+    FieldErrors,
+    FieldValues,
+    UseFormGetValues,
+    UseFormHandleSubmit,
+    UseFormRegister,
+    UseFormSetError,
+    UseFormSetValue,
+} from 'react-hook-form';
+import { FormButton, FormContainer, NoteText, StyledContainer } from './CommonFormStyles.s';
 
 const genderOptions = [
     { label: 'Male', value: 'male' },
@@ -9,7 +19,18 @@ const genderOptions = [
     { label: 'Prefer Not To Say', value: 'prefer not to say' },
 ];
 
-export const FirstRegisterForm = ({
+interface FirstRegisterFormProps {
+    setPage: (page: number) => void;
+    register: UseFormRegister<FieldValues>;
+    errors: FieldErrors;
+    experimentId: string;
+    getValues: UseFormGetValues<FieldValues>;
+    setError: UseFormSetError<FieldValues>;
+    handleSubmit: UseFormHandleSubmit<FieldValues, undefined>;
+    setValue: UseFormSetValue<FieldValues>;
+}
+
+export const FirstRegisterForm: React.FC<FirstRegisterFormProps> = ({
     setPage,
     register,
     errors,
@@ -22,8 +43,6 @@ export const FirstRegisterForm = ({
     const handleContinue = async () => {
         try {
             const nickname = getValues('nickname');
-            debugger;
-            console.log(errors);
             await validateUserName(nickname, experimentId);
             setPage(2);
         } catch (error) {
@@ -35,16 +54,14 @@ export const FirstRegisterForm = ({
     };
 
     return (
-        <SubFormMainContainer size={'80%'}>
+        <StyledContainer>
             <FormContainer container spacing={2}>
-                <Grid item xs={12}>
-                    <Typography fontSize={'0.75rem'} color={'rgba(0, 0, 0, 0.6)'} style={{ padding: '8px' }}>
-                        Fields marked with a '*' are mandatory.
-                    </Typography>
+                <Grid item xs={12} style={{ paddingTop: 0 }}>
+                    <NoteText>Fields marked with a '*' are mandatory.</NoteText>
                     <TextField
                         size="small"
                         error={Boolean(errors.nickname)}
-                        helperText={errors.nickname?.message}
+                        helperText={getFormErrorMessage(errors.nickname)}
                         required
                         fullWidth
                         {...register('nickname', { required: 'Please fill necessary field' })}
@@ -57,7 +74,7 @@ export const FirstRegisterForm = ({
                         type="number"
                         size="small"
                         error={Boolean(errors.age)}
-                        helperText={errors.age?.message}
+                        helperText={getFormErrorMessage(errors.age)}
                         required
                         fullWidth
                         {...register('age', {
@@ -78,7 +95,7 @@ export const FirstRegisterForm = ({
                         select
                         size="small"
                         error={Boolean(errors.gender)}
-                        helperText={errors.gender?.message}
+                        helperText={getFormErrorMessage(errors.gender)}
                         required
                         fullWidth
                         {...register('gender', { required: 'Please fill necessary field' })}
@@ -87,6 +104,7 @@ export const FirstRegisterForm = ({
                         onChange={(e) => {
                             setValue('gender', e.target.value, { shouldValidate: true });
                         }}
+                        defaultValue={getValues('gender') || ''}
                     >
                         {genderOptions.map((option) => (
                             <MenuItem key={option.value} value={option.value}>
@@ -95,14 +113,12 @@ export const FirstRegisterForm = ({
                         ))}
                     </TextField>
                 </Grid>
-                <Grid item xs={12} display={'flex'} justifyContent={'center'}>
-                    <ButtonBox flexDirection={'row'}>
-                        <FormButton variant="contained" color="primary" onClick={handleSubmit(handleContinue)}>
-                            Continue
-                        </FormButton>
-                    </ButtonBox>
-                </Grid>
             </FormContainer>
-        </SubFormMainContainer>
+            <Box display={'flex'} justifyContent={'center'}>
+                <FormButton type="submit" onClick={handleSubmit(handleContinue)}>
+                    Continue
+                </FormButton>
+            </Box>
+        </StyledContainer>
     );
 };

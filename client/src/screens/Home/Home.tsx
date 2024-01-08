@@ -12,7 +12,7 @@ import { useExperimentId } from '@hooks/useExperimentId';
 import CancelIcon from '@mui/icons-material/Cancel';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
-import { Box, Button, Grid, useMediaQuery } from '@mui/material';
+import { Button, useMediaQuery } from '@mui/material';
 import theme from '@root/Theme';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
@@ -20,13 +20,10 @@ import { useNavigate } from 'react-router-dom';
 import './Home.css';
 import {
     BodyContent,
-    Container,
-    ContentContainer,
-    DividerGrid,
-    GridItem,
+    ButtonsBox,
     StartButton,
+    StyledContainer,
     TextFieldStyled,
-    TitleBackgroundHighlight,
     TitleContent,
     TitleTextField,
 } from './Home.s';
@@ -114,59 +111,43 @@ const Home: React.FC = () => {
     return isLoadingPage ? (
         <LoadingPage />
     ) : (
-        <Container container isMobile={isMobile}>
-            <GridItem item md={8} xs={10}>
-                <ContentContainer isMobile={isMobile}>
-                    {isEditing ? (
-                        <TitleTextField
-                            variant="outlined"
-                            multiline
-                            name="welcomeHeader"
-                            value={editedContent.welcomeHeader}
-                            onChange={handleContentChange}
-                            fullWidth
-                            inputProps={{ style: { whiteSpace: 'normal' } }}
-                        />
-                    ) : (
-                        <TitleContent variant={'h2'}>
-                            {experimentContent ? experimentContent.welcomeHeader : ''}
-                        </TitleContent>
-                    )}
-                    <TitleBackgroundHighlight />
-                    {isEditing ? (
-                        <TextFieldStyled
-                            variant="outlined"
-                            multiline
-                            name="welcomeContent"
-                            rows={4}
-                            value={editedContent.welcomeContent}
-                            onChange={handleContentChange}
-                            fullWidth
-                            inputProps={{ style: { whiteSpace: 'normal' } }}
-                        />
-                    ) : (
-                        <BodyContent variant={'h6'}>
-                            {experimentContent ? experimentContent.welcomeContent : ''}
-                        </BodyContent>
-                    )}
-                </ContentContainer>
-            </GridItem>
-            <DividerGrid item md={4} xs={6} isMobile={isMobile}>
-                <Grid container spacing={2} justifyContent="center">
-                    <Grid item>
-                        <StartButton
-                            variant="contained"
-                            color="primary"
-                            onClick={startConversation}
-                            isMobile={isMobile}
-                        >
-                            Start Conversation
-                        </StartButton>
-                    </Grid>
-                </Grid>
-            </DividerGrid>
+        <StyledContainer>
+            {isEditing ? (
+                <TitleTextField
+                    variant="outlined"
+                    multiline
+                    name="welcomeHeader"
+                    value={editedContent.welcomeHeader}
+                    onChange={handleContentChange}
+                    fullWidth
+                    inputProps={{ style: { whiteSpace: 'normal' } }}
+                />
+            ) : (
+                <TitleContent variant={'h2'}>
+                    {experimentContent ? experimentContent.welcomeHeader : ''}
+                </TitleContent>
+            )}
+            {isEditing ? (
+                <TextFieldStyled
+                    variant="outlined"
+                    multiline
+                    name="welcomeContent"
+                    rows={4}
+                    value={editedContent.welcomeContent}
+                    onChange={handleContentChange}
+                    fullWidth
+                    inputProps={{ style: { whiteSpace: 'normal' } }}
+                />
+            ) : (
+                <BodyContent variant={'h6'} textAlign={'center'} width={'60%'}>
+                    {experimentContent ? experimentContent.welcomeContent : ''}
+                </BodyContent>
+            )}
+            <StartButton variant="contained" color="primary" onClick={startConversation} isMobile={isMobile}>
+                Start Conversation
+            </StartButton>
             {activeUser?.isAdmin && (
-                <Box style={{ position: 'absolute', top: '8vh', right: '1vw', display: 'flex' }}>
+                <ButtonsBox>
                     <AsyncButton
                         isLoading={isLoadingUpdate}
                         variant="outlined"
@@ -190,9 +171,9 @@ const Home: React.FC = () => {
                             <CancelIcon sx={{ fontSize: '1.25rem' }} />
                         </Button>
                     )}
-                </Box>
+                </ButtonsBox>
             )}
-        </Container>
+        </StyledContainer>
     );
 };
 

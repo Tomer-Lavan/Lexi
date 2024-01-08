@@ -1,6 +1,16 @@
 import { Grid, MenuItem, TextField, Typography } from '@mui/material';
-import RadioGroupRange from '../common/RadioGroupRange';
-import { ButtonBox, FieldTitle, FormButton, FormContainer, SubFormMainContainer } from './FormStyles.s';
+import { getFormErrorMessage } from '@utils/commonFunctions';
+import {
+    Control,
+    FieldErrors,
+    FieldValues,
+    UseFormGetValues,
+    UseFormRegister,
+    UseFormSetValue,
+} from 'react-hook-form';
+import RadioGroupRange from '../../common/RadioGroupRange';
+import { FormContainer, NoteText, StyledContainer } from '../CommonFormStyles.s';
+import { ButtonBox, FormButton, SliderTitle } from './FinalRegestrationForm.s';
 
 const biologicalSexOptions = [
     { label: 'Male', value: 'male' },
@@ -36,24 +46,41 @@ const ethnicityOptions = [
 
 const requiredMessage = 'Please fill necessary field';
 
-export const FinalRegisterForm = ({ register, errors, handleSubmit, setPage, setValue, control }) => (
-    <SubFormMainContainer>
+interface FinalRegisterFormProps {
+    register: UseFormRegister<FieldValues>;
+    errors: FieldErrors;
+    handleSubmit: (any) => void;
+    setPage: (page: number) => void;
+    setValue: UseFormSetValue<FieldValues>;
+    control: Control<FieldValues>;
+    getValues: UseFormGetValues<FieldValues>;
+}
+
+export const FinalRegisterForm: React.FC<FinalRegisterFormProps> = ({
+    setPage,
+    register,
+    setValue,
+    getValues,
+    handleSubmit,
+    control,
+    errors,
+}) => (
+    <StyledContainer>
         <FormContainer container spacing={2}>
             <Grid item xs={12}>
-                <Typography fontSize={'0.75rem'} color={'rgba(0, 0, 0, 0.6)'} style={{ padding: '8px' }}>
-                    Fields marked with a '*' are mandatory.
-                </Typography>
+                <NoteText>Fields marked with a '*' are mandatory.</NoteText>
                 <TextField
                     select
                     size="small"
                     error={Boolean(errors.biologicalSex)}
-                    helperText={errors.biologicalSex?.message}
+                    helperText={getFormErrorMessage(errors.biologicalSex)}
                     required
                     fullWidth
                     {...register('biologicalSex', { required: requiredMessage })}
                     onChange={(e) => {
                         setValue('biologicalSex', e.target.value, { shouldValidate: true });
                     }}
+                    defaultValue={getValues('biologicalSex') || ''}
                     label="Biological Sex"
                     id="biologicalSex"
                 >
@@ -69,7 +96,7 @@ export const FinalRegisterForm = ({ register, errors, handleSubmit, setPage, set
                     select
                     size="small"
                     error={Boolean(errors.maritalStatus)}
-                    helperText={errors.maritalStatus?.message}
+                    helperText={getFormErrorMessage(errors.maritalStatus)}
                     required
                     fullWidth
                     {...register('maritalStatus', { required: requiredMessage })}
@@ -78,6 +105,7 @@ export const FinalRegisterForm = ({ register, errors, handleSubmit, setPage, set
                     }}
                     label="Marital Status"
                     id="maritalStatus"
+                    defaultValue={getValues('maritalStatus') || ''}
                 >
                     {maritalStatusOptions.map((option) => (
                         <MenuItem key={option.value} value={option.value}>
@@ -91,7 +119,7 @@ export const FinalRegisterForm = ({ register, errors, handleSubmit, setPage, set
                     type="number"
                     size="small"
                     error={Boolean(errors.childrenNumber)}
-                    helperText={errors.childrenNumber?.message}
+                    helperText={getFormErrorMessage(errors.childrenNumber)}
                     required
                     fullWidth
                     {...register('childrenNumber', {
@@ -103,6 +131,7 @@ export const FinalRegisterForm = ({ register, errors, handleSubmit, setPage, set
                     }}
                     label="Children Number"
                     id="childrenNumber"
+                    defaultValue={getValues('childrenNumber') || 0}
                     InputProps={{ inputProps: { min: 0, max: 99 } }}
                 />
             </Grid>
@@ -111,16 +140,16 @@ export const FinalRegisterForm = ({ register, errors, handleSubmit, setPage, set
                     select
                     size="small"
                     error={Boolean(errors.religiousAffiliation)}
-                    helperText={errors.religiousAffiliation?.message}
+                    helperText={getFormErrorMessage(errors.religiousAffiliation)}
                     required
                     fullWidth
                     {...register('religiousAffiliation', { required: requiredMessage })}
                     onChange={(e) => {
                         setValue('religiousAffiliation', e.target.value, { shouldValidate: true });
                     }}
-                    control={control}
                     label="Religious Affiliation"
                     id="religiousAffiliation"
+                    defaultValue={getValues('religiousAffiliation') || ''}
                 >
                     {religiousAffiliationOptions.map((option) => (
                         <MenuItem key={option.value} value={option.value}>
@@ -134,7 +163,7 @@ export const FinalRegisterForm = ({ register, errors, handleSubmit, setPage, set
                     select
                     size="small"
                     error={Boolean(errors.ethnicity)}
-                    helperText={errors.ethnicity?.message}
+                    helperText={getFormErrorMessage(errors.ethnicity)}
                     required
                     fullWidth
                     {...register('ethnicity', { required: requiredMessage })}
@@ -143,6 +172,7 @@ export const FinalRegisterForm = ({ register, errors, handleSubmit, setPage, set
                     }}
                     label="Ethnicity"
                     id="ethnicity"
+                    defaultValue={getValues('ethnicity') || ''}
                 >
                     {ethnicityOptions.map((option) => (
                         <MenuItem key={option.value} value={option.value}>
@@ -152,7 +182,7 @@ export const FinalRegisterForm = ({ register, errors, handleSubmit, setPage, set
                 </TextField>
             </Grid>
             <Grid item xs={12}>
-                <FieldTitle>Political Affiliation *</FieldTitle>
+                <SliderTitle>Political Affiliation *</SliderTitle>
                 <RadioGroupRange
                     left={'Left Wing'}
                     right={'Right Wing'}
@@ -163,19 +193,13 @@ export const FinalRegisterForm = ({ register, errors, handleSubmit, setPage, set
                 />
                 {errors['politicalAffiliation'] && (
                     <Typography color="error" variant="caption">
-                        {errors['politicalAffiliation']?.message}
+                        {getFormErrorMessage(errors['politicalAffiliation'])}
                     </Typography>
                 )}
             </Grid>
             <Grid item xs={12} display={'flex'} justifyContent={'center'}>
                 <ButtonBox>
-                    <FormButton
-                        type="submit"
-                        variant="contained"
-                        color="primary"
-                        onClick={handleSubmit}
-                        style={{ marginBottom: 0, marginTop: 4 }}
-                    >
+                    <FormButton type="submit" variant="contained" color="primary" onClick={handleSubmit}>
                         Sign Up
                     </FormButton>
                     <FormButton
@@ -190,5 +214,5 @@ export const FinalRegisterForm = ({ register, errors, handleSubmit, setPage, set
                 </ButtonBox>
             </Grid>
         </FormContainer>
-    </SubFormMainContainer>
+    </StyledContainer>
 );

@@ -1,24 +1,29 @@
 import { setActiveUser } from '@DAL/redux/reducers/activeUserReducer';
 import { login } from '@DAL/server-requests/users';
 import { Pages } from '@app/App';
-import { Box, Button, Container, Grid, Link, TextField, Typography } from '@mui/material';
+import { Box, Container, Grid, TextField } from '@mui/material';
+import { getFormErrorMessage } from '@utils/commonFunctions';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { FormButton, NoteText } from './CommonFormStyles.s';
 
-export const LoginForm = ({ isSignUp, setIsSignUp, isAdminPage, experimentId }) => {
+interface LoginFormProps {
+    isAdminPage: boolean;
+    experimentId: string;
+}
+
+export const LoginForm: React.FC<LoginFormProps> = ({ isAdminPage, experimentId }) => {
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const [isUserAdmin, setIsUserAdmin] = useState(false);
     const {
         register,
         handleSubmit,
         setError,
         formState: { errors },
     } = useForm();
-    const navigate = useNavigate();
-    const dispatch = useDispatch();
-    const [isUserAdmin, setIsUserAdmin] = useState(false);
-
-    const getErrorMessage = (error) => (error && typeof error.message === 'string' ? error.message : '');
 
     const onSubmit = async (data) => {
         try {
@@ -47,12 +52,13 @@ export const LoginForm = ({ isSignUp, setIsSignUp, isAdminPage, experimentId }) 
 
     return (
         <Container component="main" maxWidth="xs">
-            <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate sx={{ mt: 3, width: '100%' }}>
+            <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate padding={2}>
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
+                        {!isAdminPage && <NoteText>Please use the same nickname you signed up with.</NoteText>}
                         <TextField
                             error={Boolean(errors.nickname)}
-                            helperText={getErrorMessage(errors.nickname)}
+                            helperText={getFormErrorMessage(errors.nickname)}
                             required
                             fullWidth
                             size="small"
@@ -61,18 +67,11 @@ export const LoginForm = ({ isSignUp, setIsSignUp, isAdminPage, experimentId }) 
                             id="nickname"
                         />
                     </Grid>
-                    {!isAdminPage && (
-                        <Grid item xs={12}>
-                            <Typography variant="body2" color={'grey'}>
-                                Please use the same nickname you signed up with.
-                            </Typography>
-                        </Grid>
-                    )}
-                    {(isAdminPage || true) && (
-                        <Grid item xs={12}>
+                    <Grid item xs={12}>
+                        {(isAdminPage || isUserAdmin) && (
                             <TextField
                                 error={Boolean(errors.password)}
-                                helperText={getErrorMessage(errors.password)}
+                                helperText={getFormErrorMessage(errors.password)}
                                 required
                                 fullWidth
                                 {...register('password', { required: 'Password is required' })}
@@ -82,28 +81,12 @@ export const LoginForm = ({ isSignUp, setIsSignUp, isAdminPage, experimentId }) 
                                 size="small"
                                 autoComplete="current-password"
                             />
-                        </Grid>
-                    )}
-                </Grid>
-                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                    <Button
-                        type="submit"
-                        variant="contained"
-                        color="primary"
-                        sx={{ mt: 3, mb: 2, paddingLeft: 6, paddingRight: 6 }}
-                    >
-                        Login
-                    </Button>
-                </Box>
-                {!isAdminPage && (
-                    <Grid container justifyContent="flex-end">
-                        <Grid item>
-                            <Link variant="body2" onClick={() => setIsSignUp(!isSignUp)}>
-                                First time? Press here to get started
-                            </Link>
-                        </Grid>
+                        )}
                     </Grid>
-                )}
+                </Grid>
+                <Box display="flex" justifyContent="center">
+                    <FormButton type="submit">Login</FormButton>
+                </Box>
             </Box>
         </Container>
     );

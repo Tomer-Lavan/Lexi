@@ -5,8 +5,8 @@ import theme from '@root/Theme';
 import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
+import { FitButton } from '../CommonFormStyles.s';
 import {
-    FitButton,
     RadioGroupContainer,
     StyledFormControlLabel,
     StyledRadio,
@@ -15,7 +15,7 @@ import {
     SurveyContainer,
     SurveyFieldTitle,
     SurveyTitle,
-} from './FormStyles.s';
+} from './SurveyForm.s';
 
 interface FeelingRating {
     feeling: string;

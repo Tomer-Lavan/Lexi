@@ -66,7 +66,7 @@ const InputBox = (props) => {
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'center',
-                width: '100%',
+                width: '85%',
                 alignItems: 'center',
             }}
         >

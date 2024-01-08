@@ -1,3 +1,5 @@
+import { AbModelsType, ModelType } from '@models/AppModels';
+
 export const defaultSliderSettings = {
     temperature: 1,
     maxTokens: 256,
@@ -8,7 +10,7 @@ export const defaultSliderSettings = {
 
 export const modelsOptions = ['gpt-3.5-turbo', 'gpt-4-1106-preview'] as const;
 
-export const defaultSettings = {
+export const defaultSettings: ModelType = {
     _id: '',
     title: '',
     summary: '',
@@ -23,9 +25,9 @@ export const defaultSettings = {
     frequencyPenalty: null,
     presencePenalty: null,
     stopSequences: [],
-} as const;
+};
 
-export const defaultAbModels = {
+export const defaultAbModels: AbModelsType = {
     modelA: defaultSettings,
     distA: 50,
     modelB: defaultSettings,

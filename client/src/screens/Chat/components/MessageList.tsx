@@ -10,7 +10,7 @@ interface MessageListProps {
 }
 
 const MessageList: React.FC<MessageListProps> = ({ messages, isMessageLoading, size }) => (
-    <Box sx={{ height: '100%', padding: 2 }}>
+    <Box height="100%" width="85%" padding={2}>
         {messages.map((message, index) => (
             <Message key={index} message={message} role={message.role} size={size} />
         ))}

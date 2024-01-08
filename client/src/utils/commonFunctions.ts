@@ -1,3 +1,5 @@
+import { FieldError, FieldErrorsImpl } from 'react-hook-form';
+
 export const formatDate = (date: Date): string => {
     const day = String(date.getDate()).padStart(2, '0');
     const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -7,3 +9,6 @@ export const formatDate = (date: Date): string => {
 
     return `${day}/${month}/${year} ${hour}:${minute}`;
 };
+
+export const getFormErrorMessage = (error: FieldError | FieldErrorsImpl<any> | undefined) =>
+    error && typeof error.message === 'string' ? error.message : '';

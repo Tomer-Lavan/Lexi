@@ -4,6 +4,7 @@ import { SnackbarStatus, useSnackbar } from '@contexts/SnackbarProvider';
 import useEffectAsync from '@hooks/useEffectAsync';
 import { ModelType } from '@models/AppModels';
 import { Grid } from '@mui/material';
+import theme from '@root/Theme';
 import { useState } from 'react';
 import { MainContainer, SectionContainer, SectionInnerContainer } from './Admin.s';
 import { Experiments } from './components/experiments-panel/experiments/Experiments';
@@ -27,7 +28,7 @@ const Admin = () => {
 
     return (
         <MainContainer container>
-            <Grid item xs={2} sm={2} md={2} lg={2} style={{ backgroundColor: '#1d262a' }}>
+            <Grid item xs={2} sm={2} md={2} lg={2} style={{ backgroundColor: theme.palette.primary.main }}>
                 <SidebarAdmin section={section} setSection={setSection} />
             </Grid>
             <Grid item xs={10} sm={10} md={10} lg={10}>

@@ -2,7 +2,7 @@ import LoadingPage from '@components/common/LoadingPage';
 import LoginExperimentRoute from '@components/common/LoginExperimentRoute';
 import PrivateExperimentRoute from '@components/common/ProtectedExperimentRoute';
 import useActiveUser from '@hooks/useActiveUser';
-import ProjectOverview from '@screens/ProjectOverview';
+import ProjectOverview from '@screens/Project-Overview/ProjectOverview';
 import React, { FC, Suspense, lazy, useState } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import './styles.css';
@@ -33,7 +33,15 @@ const App: FC = () => {
                     <LoadingPage />
                 ) : (
                     <Routes>
-                        <Route path={Pages.PROJECT_OVERVIEW} element={<ProjectOverview />} />
+                        <Route
+                            path={Pages.PROJECT_OVERVIEW}
+                            element={
+                                <>
+                                    <TopBar setIsOpen={setOpenEndConversationDialog} />
+                                    <ProjectOverview />
+                                </>
+                            }
+                        />
 
                         {/* Admin Routes */}
                         <Route
@@ -46,7 +54,10 @@ const App: FC = () => {
                                 activeUser && activeUser?.isAdmin ? (
                                     <Navigate to={Pages.ADMIN} replace />
                                 ) : (
-                                    <Login />
+                                    <>
+                                        <TopBar setIsOpen={setOpenEndConversationDialog} />
+                                        <Login />
+                                    </>
                                 )
                             }
                         />
@@ -63,13 +74,18 @@ const App: FC = () => {
                                 path={Pages.EXPERIMENT_CONVERSATION.replace(`${Pages.EXPERIMENT}/`, '')}
                                 element={
                                     <ChatPage
-                                        open={openEndConversationDialog}
-                                        setIsOpen={setOpenEndConversationDialog}
+                                        isFinishDialogOpen={openEndConversationDialog}
+                                        setIsFinishDialogOpen={setOpenEndConversationDialog}
                                     />
                                 }
                             />
                         </Route>
-                        <Route path={Pages.EXPERIMENT_LOGIN} element={<LoginExperimentRoute />}>
+                        <Route
+                            path={Pages.EXPERIMENT_LOGIN}
+                            element={
+                                <LoginExperimentRoute TopBar={TopBar} setIsOpen={setOpenEndConversationDialog} />
+                            }
+                        >
                             <Route path="" element={<Login />} />
                         </Route>
 

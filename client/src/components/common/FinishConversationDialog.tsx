@@ -12,7 +12,7 @@ import {
 import theme from '@root/Theme';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import SurveyComponent from '../forms/SurveyForm';
+import SurveyComponent from '../forms/survey-form/SurveyForm';
 
 const FinishConversationDialog = ({ open, setIsOpen, questionnaireLink, conversationId }) => {
     const [page, setPage] = useState(1);

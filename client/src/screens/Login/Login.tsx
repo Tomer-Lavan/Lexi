@@ -2,58 +2,45 @@
 import { LoginForm } from '@components/forms/LoginForm';
 import { RegisterForm } from '@components/forms/RegisterForm';
 import { useExperimentId } from '@hooks/useExperimentId';
-import { useMediaQuery } from '@mui/material';
-import theme from '@root/Theme';
+import { Box } from '@mui/material';
 import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { DividerButton, DividerButtonsContainer, FormSide, GradientSide, MainContainer } from './Login.s';
+import { DividerButtonsContainer, FormSide, FormTypeButton, MainContainer } from './Login.s';
 
 const Login: React.FC = () => {
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const location = useLocation();
     const [firstPathSegment] = location.pathname.split('/').slice(1);
     const isAdminPage = firstPathSegment === 'admin';
     const [isSignUp, setIsSignUp] = useState(!isAdminPage);
+    const [showFormTypeButtons, setShowFormTypeButtons] = useState(true);
     const experimentId = useExperimentId();
 
     return (
-        <MainContainer isMobile={isMobile}>
-            <FormSide elevation={1} sx={{ overflowY: 'auto' }}>
-                {isSignUp ? (
-                    <RegisterForm experimentId={experimentId} />
-                ) : (
-                    <LoginForm
-                        isAdminPage={isAdminPage}
-                        isSignUp={isSignUp}
-                        setIsSignUp={setIsSignUp}
-                        experimentId={experimentId}
-                    />
-                )}
-            </FormSide>
-            <GradientSide isMobile={isMobile}>
-                {!isAdminPage && (
-                    <DividerButtonsContainer isMobile={isMobile}>
-                        <DividerButton
-                            isActive={isSignUp}
-                            isMobile={isMobile}
-                            variant="contained"
-                            fullWidth
-                            onClick={() => setIsSignUp(true)}
-                        >
-                            First Time
-                        </DividerButton>
-                        <DividerButton
-                            isActive={!isSignUp}
-                            isMobile={isMobile}
-                            variant="contained"
-                            fullWidth
-                            onClick={() => setIsSignUp(false)}
-                        >
-                            Not First Time?
-                        </DividerButton>
+        <MainContainer>
+            <FormSide elevation={4}>
+                {showFormTypeButtons && (
+                    <DividerButtonsContainer>
+                        {!isAdminPage && (
+                            <FormTypeButton variant="text" onClick={() => setIsSignUp(true)} isSignUp={isSignUp}>
+                                First Time
+                            </FormTypeButton>
+                        )}
+                        <FormTypeButton variant="text" onClick={() => setIsSignUp(false)} isSignUp={!isSignUp}>
+                            {!isAdminPage ? 'Not First Time?' : 'Sign In'}
+                        </FormTypeButton>
                     </DividerButtonsContainer>
                 )}
-            </GradientSide>
+                <Box style={{ flex: '1 1 auto' }}>
+                    {isSignUp ? (
+                        <RegisterForm
+                            experimentId={experimentId}
+                            setShowFormTypeButtons={setShowFormTypeButtons}
+                        />
+                    ) : (
+                        <LoginForm isAdminPage={isAdminPage} experimentId={experimentId} />
+                    )}
+                </Box>
+            </FormSide>
         </MainContainer>
     );
 };

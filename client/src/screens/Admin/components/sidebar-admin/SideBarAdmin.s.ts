@@ -1,4 +1,4 @@
-import { Box, ListItemButton, ListItemIcon, Typography } from '@mui/material';
+import { Box, ListItemButton } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 export const MainContainer = styled(Box)({
@@ -8,18 +8,6 @@ export const MainContainer = styled(Box)({
     justifyContent: 'space-between',
     height: '100%',
     borderRight: '1px solid #ccc',
-});
-
-export const StyledListItemIcon = styled(ListItemIcon)({
-    minWidth: '32px',
-    gap: '8px',
-    color: 'rgba(0, 0, 0, 0.7)',
-});
-
-export const ListItemText = styled(Typography)({
-    fontSize: '1.1rem',
-    fontWeight: '500',
-    color: 'rgba(0, 0, 0, 0.7)',
 });
 
 export const StyledListItem = styled(ListItemButton)<{ currentSection?: string; section?: string }>(

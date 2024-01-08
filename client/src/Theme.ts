@@ -3,10 +3,13 @@ import { PaletteColor, PaletteColorOptions } from '@mui/material/styles/createPa
 
 declare module '@mui/material/styles' {
     interface Palette {
-        old?: PaletteColor;
+        assistantMessage?: PaletteColor;
+        userMessage?: PaletteColor;
     }
+
     interface PaletteOptions {
-        old?: PaletteColorOptions;
+        assistantMessage?: PaletteColorOptions;
+        userMessage?: PaletteColorOptions;
     }
 }
 
@@ -26,12 +29,15 @@ const theme = createTheme({
         success: {
             main: '#388E3C',
         },
-        old: {
-            main: '#102C57',
+        assistantMessage: {
+            main: '#2C8FCF',
+        },
+        userMessage: {
+            main: '#CADEEA',
         },
     },
     typography: {
-        fontFamily: 'Roboto, Work Sans, sans-serif',
+        fontFamily: 'Roboto, sans-serif',
         fontWeightLight: 300,
         fontWeightRegular: 400,
         fontWeightMedium: 500,
@@ -40,6 +46,15 @@ const theme = createTheme({
     spacing: 8,
     shape: {
         borderRadius: 8,
+    },
+    breakpoints: {
+        values: {
+            xs: 0,
+            sm: 600,
+            md: 960,
+            lg: 1280,
+            xl: 1920,
+        },
     },
 });
 
