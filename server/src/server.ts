@@ -44,6 +44,7 @@ const setupServer = () => {
     app.use(cookieParser());
 
     const PORT = process.env.PORT || 5000;
+    app.use('/health', (req, res) => res.status(200).send('OK'));
     app.use('/conversations', conversationsRouter());
     app.use('/experiments', experimentsRouter());
     app.use('/users', usersRouter());
