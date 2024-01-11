@@ -94,6 +94,7 @@ export interface ExperimentType {
     isActive: boolean;
     title: string;
     description: string;
+    numberOfParticipants: number;
 }
 
 export interface NewUserInfoType {

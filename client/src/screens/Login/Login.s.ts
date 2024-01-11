@@ -1,4 +1,5 @@
 // Login.styles.ts
+import { IsMobile } from '@models/StylesModels';
 import { Box, Button, Paper } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import theme from '@root/Theme';
@@ -11,16 +12,17 @@ export const MainContainer = styled(Box)({
     alignItems: 'center',
 });
 
-export const FormSide = styled(Paper)({
+export const FormSide = styled(Paper)<IsMobile>(({ isMobile }) => ({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: '32px',
+    padding: isMobile ? '16px' : '32px',
     overflowY: 'auto',
     marginBottom: '5vh',
     maxHeight: '75vh',
-});
+    width: isMobile ? '90%' : 'auto',
+}));
 
 export const DividerButtonsContainer = styled(Box)({
     display: 'flex',

@@ -73,7 +73,7 @@ const SurveyComponent: React.FC<SurveyComponentProps> = ({ conversationId, isPre
     const allQuestionsAnswered = () => feelingRatings.slice(1).every((pair) => watchedValues[pair.key]);
 
     return (
-        <SurveyContainer>
+        <SurveyContainer isMobile={isMobile}>
             {isPreConversation && (
                 <Box style={{ display: 'flex', alignItems: 'center' }}>
                     <IconButton color="inherit" onClick={() => navigate(-1)}>
@@ -85,7 +85,7 @@ const SurveyComponent: React.FC<SurveyComponentProps> = ({ conversationId, isPre
             <SurveyTitle variant="h6" gutterBottom>
                 On a scale of 1 to 7, please rate how you feel now.
             </SurveyTitle>
-            <Grid container spacing={isMobile ? 2 : 1} alignItems="center">
+            <Grid container spacing={isMobile ? 1.5 : 1}>
                 {feelingRatings.map((pair, index) => (
                     <React.Fragment key={pair.feeling}>
                         <Grid item xs={3}>
@@ -133,7 +133,7 @@ const SurveyComponent: React.FC<SurveyComponentProps> = ({ conversationId, isPre
                             )}
                         </RadioGroupContainer>
                         <Grid item xs={3}>
-                            <SurveyFieldTitle>{pair.counterFeeling}</SurveyFieldTitle>
+                            <SurveyFieldTitle isMobile={isMobile}>{pair.counterFeeling}</SurveyFieldTitle>
                         </Grid>
                     </React.Fragment>
                 ))}

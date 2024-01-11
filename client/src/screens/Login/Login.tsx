@@ -2,13 +2,15 @@
 import { LoginForm } from '@components/forms/LoginForm';
 import { RegisterForm } from '@components/forms/RegisterForm';
 import { useExperimentId } from '@hooks/useExperimentId';
-import { Box } from '@mui/material';
+import { Box, useMediaQuery } from '@mui/material';
+import theme from '@root/Theme';
 import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { DividerButtonsContainer, FormSide, FormTypeButton, MainContainer } from './Login.s';
 
 const Login: React.FC = () => {
     const location = useLocation();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const [firstPathSegment] = location.pathname.split('/').slice(1);
     const isAdminPage = firstPathSegment === 'admin';
     const [isSignUp, setIsSignUp] = useState(!isAdminPage);
@@ -17,7 +19,7 @@ const Login: React.FC = () => {
 
     return (
         <MainContainer>
-            <FormSide elevation={4}>
+            <FormSide elevation={4} isMobile={isMobile}>
                 {showFormTypeButtons && (
                     <DividerButtonsContainer>
                         {!isAdminPage && (

@@ -4,13 +4,14 @@ import { MessageType } from '@root/models/AppModels';
 import Message from './Message';
 
 interface MessageListProps {
+    isMobile: boolean;
     messages: MessageType[];
     isMessageLoading: boolean;
     size: 'sm' | 'lg';
 }
 
-const MessageList: React.FC<MessageListProps> = ({ messages, isMessageLoading, size }) => (
-    <Box height="100%" width="85%" padding={2}>
+const MessageList: React.FC<MessageListProps> = ({ isMobile, messages, isMessageLoading, size }) => (
+    <Box height="100%" width={isMobile ? '100%' : '85%'} padding={2}>
         {messages.map((message, index) => (
             <Message key={index} message={message} role={message.role} size={size} />
         ))}

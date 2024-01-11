@@ -3,7 +3,8 @@ import { ExperimentType } from '@models/AppModels';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { Collapse, IconButton, MenuItem, TableCell, TableRow, Tooltip } from '@mui/material';
+import { Box, Collapse, IconButton, MenuItem, TableCell, TableRow, Tooltip, Typography } from '@mui/material';
+import theme from '@root/Theme';
 import React, { useState } from 'react';
 import { ExperimentDetails } from '../experiments-details/ExperimentDetails';
 import { ActiveExpSelect, ExpInfo, TableRowStyled } from './ExperimentRow.s';
@@ -83,6 +84,11 @@ export const ExperimentRow = (props: { row: ExperimentType; onStatusChange; hand
                             {row.description}
                         </span>
                     </Tooltip>
+                </TableCell>
+                <TableCell component="th" scope="row">
+                    <Box display={'flex'} justifyContent={'left'} paddingLeft={4}>
+                        <Typography color={theme.palette.secondary.main}>{row.numberOfParticipants}</Typography>
+                    </Box>
                 </TableCell>
                 <TableCell>{timeAgo(row.timestamp)}</TableCell>
                 <TableCell>

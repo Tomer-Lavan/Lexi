@@ -62,6 +62,14 @@ const ChatPage: React.FC<ChatPageProps> = ({ isFinishDialogOpen, setIsFinishDial
 
     return isPageLoading ? (
         <LoadingPage />
+    ) : isMobile && surveyOpen ? (
+        <Dialog open={surveyOpen} maxWidth={'md'} fullScreen={isMobile}>
+            <SurveyComponent
+                conversationId={conversationId}
+                isPreConversation={true}
+                handleDone={handleImsSurveyDone}
+            />
+        </Dialog>
     ) : (
         <MainContainer container>
             {!isMobile && (
@@ -78,6 +86,7 @@ const ChatPage: React.FC<ChatPageProps> = ({ isFinishDialogOpen, setIsFinishDial
                     <SectionInnerContainer container direction="column">
                         <MessageListContainer ref={messagesRef} item>
                             <MessageList
+                                isMobile={isMobile}
                                 messages={messages}
                                 isMessageLoading={isMessageLoading}
                                 size={messageFontSize}
@@ -85,6 +94,7 @@ const ChatPage: React.FC<ChatPageProps> = ({ isFinishDialogOpen, setIsFinishDial
                         </MessageListContainer>
                         <Grid item display={'flex'} justifyContent={'center'}>
                             <InputBox
+                                isMobile={isMobile}
                                 messages={messages}
                                 setMessages={setMessages}
                                 conversationId={conversationId}

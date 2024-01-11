@@ -51,7 +51,7 @@ const TopBar: React.FC<TopBarProps> = (props) => {
     return (
         <StyledAppBar position="static">
             <StyledToolBar sx={{ height: '8vh', minHeight: '8vh' }}>
-                {isMobile && location.pathname.includes('/chat/') ? (
+                {isMobile && /\/e\/.+\/c\/.+/.test(location.pathname) ? (
                     <StyledIconButton color="inherit" onClick={() => setIsOpen(true)} style={{}}>
                         <ExitToAppOutlinedIcon />
                         <AppBarText>Finish</AppBarText>

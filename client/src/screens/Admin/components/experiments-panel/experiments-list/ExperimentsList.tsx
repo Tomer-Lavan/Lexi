@@ -1,7 +1,6 @@
 import { downloadExperimentJSON, downloadExperimentXLSX } from '@DAL/server-requests/dataAggregation';
 import AsyncButton from '@components/common/AsyncButton';
 import { SnackbarStatus, useSnackbar } from '@contexts/SnackbarProvider';
-import AddIcon from '@mui/icons-material/Add';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import {
     Box,
@@ -23,7 +22,6 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 import { ExperimentRow } from '../experiment-row/ExperimentRow';
-import { AddButton } from '../experiments/Experiments.s';
 import { ColumnTitle, ListBox, TablePaper } from './ExperimentsList.s';
 
 const ExperimentsList = ({
@@ -107,25 +105,18 @@ const ExperimentsList = ({
                     ) : (
                         <Box />
                     )}
-                    <Box display={'flex'} justifyContent={'end'}>
-                        <AddButton onClick={() => setOpenExperimentFormDialog(true)} size="small">
-                            <AddIcon style={{ color: 'floralwhite' }} />
-                            <Typography variant="body2" fontWeight={500} color={'floralwhite'}>
-                                Add Experiment
-                            </Typography>
-                        </AddButton>
-                    </Box>
                 </Box>
                 <TableContainer>
                     <Table aria-label="collapsible experiments table">
                         <TableHead>
                             <TableRow>
-                                <TableCell />
-                                <ColumnTitle>Title</ColumnTitle>
-                                <ColumnTitle>Description</ColumnTitle>
-                                <ColumnTitle>Launch Time</ColumnTitle>
-                                <ColumnTitle>Status</ColumnTitle>
-                                <TableCell />
+                                <TableCell style={{ width: '3%' }} />
+                                <ColumnTitle style={{ width: '10%' }}>Title</ColumnTitle>
+                                <ColumnTitle style={{ width: '22%' }}>Description</ColumnTitle>
+                                <ColumnTitle style={{ width: '6%' }}>Participants</ColumnTitle>
+                                <ColumnTitle style={{ width: '10%' }}>Launch Time</ColumnTitle>
+                                <ColumnTitle style={{ width: '8%' }}>Status</ColumnTitle>
+                                <TableCell style={{ width: '2%' }} />
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -185,7 +176,6 @@ const ExperimentsList = ({
                     <Button onClick={() => setOpenShareDialog(false)} color="primary">
                         Close
                     </Button>
-                    {/* Optional: Add additional actions here */}
                 </DialogActions>
             </Dialog>
         </ListBox>

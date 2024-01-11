@@ -139,7 +139,7 @@ const Home: React.FC = () => {
                     inputProps={{ style: { whiteSpace: 'normal' } }}
                 />
             ) : (
-                <BodyContent variant={'h6'} textAlign={'center'} width={'60%'}>
+                <BodyContent variant={'h6'} textAlign={'center'} width={isMobile ? '90%' : '60%'}>
                     {experimentContent ? experimentContent.welcomeContent : ''}
                 </BodyContent>
             )}

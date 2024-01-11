@@ -64,15 +64,13 @@ export const ModelsListContainer: React.FC<ModelsListContainerProps> = ({ models
             <Typography variant="h6" gutterBottom style={{ borderBottom: '1px solid gray', marginBottom: '24px' }}>
                 Models
             </Typography>
-            <Box
-                style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                }}
-            >
-                <Typography variant="h5" gutterBottom fontWeight={500}>
-                    Manage Your Models
+            <Typography variant="h5" gutterBottom fontWeight={500}>
+                Manage Your Models
+            </Typography>
+            <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
+                <Typography variant="body2" gutterBottom fontWeight={500} marginBottom={2}>
+                    Manage your models, create a unique agent by prompt engineering, revisite your prompts and
+                    more.
                 </Typography>
                 <Box display={'flex'} justifyContent={'end'}>
                     <AddButton onClick={() => setOpenModelFormDialog(true)} size="small">
@@ -83,33 +81,6 @@ export const ModelsListContainer: React.FC<ModelsListContainerProps> = ({ models
                     </AddButton>
                 </Box>
             </Box>
-            <Typography variant="body2" gutterBottom fontWeight={500} marginBottom={2}>
-                Manage your models, create a unique agent by prompt engineering, revisite your prompts and more.
-            </Typography>
-            {/* <Box
-                style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    borderBottom: '1px solid black',
-                }}
-            >
-                <Typography variant="h4" gutterBottom>
-                    Models
-                </Typography>
-                <Box
-                    style={{
-                        border: '1px solid black',
-                        height: 'fit-content',
-                        display: 'flex',
-                        borderRadius: '8px',
-                        cursor: 'pointer',
-                    }}
-                    onClick={() => setOpenModelFormDialog(true)}
-                >
-                    <AddIcon />
-                </Box>
-            </Box> */}
             <List>
                 {models.length ? (
                     models.map((model, index) => (

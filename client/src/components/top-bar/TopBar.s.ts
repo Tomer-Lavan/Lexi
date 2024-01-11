@@ -18,6 +18,7 @@ export const StyledToolBar = styled(Toolbar)({
 
 export const StyledIconButton = styled(IconButton)({
     padding: '0px',
+    gap: '4px',
 });
 
 export const AppBarText = styled(Typography)({
@@ -35,4 +36,5 @@ export const LogoutButton = styled(Button)({
     borderRadius: '0',
     padding: 0,
     textTransform: 'none',
+    marginRight: '4px',
 });

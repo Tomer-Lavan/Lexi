@@ -2,10 +2,10 @@ import { IsMobile } from '@models/StylesModels';
 import { Box, FormControlLabel, Grid, Radio, RadioGroup, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
-export const SurveyContainer = styled(Box)({
+export const SurveyContainer = styled(Box)<IsMobile>(({ isMobile }) => ({
     width: '100%',
-    padding: '16px',
-});
+    padding: isMobile ? '8px' : '16px',
+}));
 
 export const SurveyTitle = styled(Typography)({
     margin: '16px',

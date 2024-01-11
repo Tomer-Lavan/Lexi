@@ -2,12 +2,13 @@ import { getExperiments, updateExperimentsStatus } from '@DAL/server-requests/ex
 import { SnackbarStatus, useSnackbar } from '@contexts/SnackbarProvider';
 import useEffectAsync from '@hooks/useEffectAsync';
 import { ExperimentType, ModelType } from '@models/AppModels';
+import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
-import { Dialog, Typography } from '@mui/material';
+import { Box, Dialog, Typography } from '@mui/material';
 import { useState } from 'react';
 import ExperimentForm from '../ExperimentForm';
 import ExperimentsList from '../experiments-list/ExperimentsList';
-import { IconButtonStyled, MainContainerStyled } from './Experiments.s';
+import { AddButton, IconButtonStyled, MainContainerStyled } from './Experiments.s';
 
 export const Experiments = ({ models }) => {
     const { openSnackbar } = useSnackbar();
@@ -84,9 +85,20 @@ export const Experiments = ({ models }) => {
             <Typography variant="h5" gutterBottom fontWeight={500}>
                 Manage Your Experiments
             </Typography>
-            <Typography variant="body2" gutterBottom fontWeight={500} marginBottom={2}>
-                Manage your experiments, attcach to them a model, launch them, share with participants and more.
-            </Typography>
+            <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
+                <Typography variant="body2" gutterBottom fontWeight={500} marginBottom={2}>
+                    Manage your experiments, attcach to them a model, launch them, share with participants and
+                    more.
+                </Typography>
+                <Box display={'flex'} justifyContent={'end'}>
+                    <AddButton onClick={() => setOpenExperimentFormDialog(true)} size="small">
+                        <AddIcon style={{ color: 'floralwhite' }} />
+                        <Typography variant="body2" fontWeight={500} color={'floralwhite'}>
+                            Add Experiment
+                        </Typography>
+                    </AddButton>
+                </Box>
+            </Box>
             <ExperimentsList
                 experiments={tempExperiments}
                 modifiedExperiments={modifiedExperiments}

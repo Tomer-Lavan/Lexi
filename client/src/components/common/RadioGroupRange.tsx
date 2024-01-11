@@ -40,7 +40,21 @@ const RadioGroupRange = ({ left, right, range, field, gap = '16px', control }) =
                                 <FormControlLabel
                                     key={val}
                                     value={String(val)}
-                                    control={<Radio size="small" />}
+                                    sx={{ margin: 0 }}
+                                    control={
+                                        <Radio
+                                            size="small"
+                                            sx={{
+                                                padding: '3px',
+                                                '& .MuiSvgIcon-root': {
+                                                    // Adjust the radio icon size
+                                                    padding: 0,
+                                                    margin: 0,
+                                                    fontSize: '1rem', // Smaller size (adjust as needed)
+                                                },
+                                            }}
+                                        />
+                                    }
                                     label=""
                                 />
                             ))}
