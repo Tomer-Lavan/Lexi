@@ -62,6 +62,7 @@ const ask = (question) =>
   MONGODB_DB_NAME="${mongodbDbName}"
   FRONTEND_URL="${frontendUrl}"
   JWT_SECRET_KEY="${jwtSecretKey}"
+  PORT=5000
   `.trim();
 
   fs.writeFileSync(".env", envContent);
