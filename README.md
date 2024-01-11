@@ -19,6 +19,7 @@ To set up and start using the project, follow these steps:
 Node.JS - <a href="https://nodejs.org/en">https://nodejs.org/en</a><br>
 Npm - <a href="https://docs.npmjs.com/downloading-and-installing-node-js-and-npm">https://docs.npmjs.com/downloading-and-installing-node-js-and-npm</a><br>
 Git - <a href ="https://git-scm.com/downloads">https://git-scm.com/downloads</a>
+OpenAI api key - <a href ="https://help.openai.com/en/articles/4936850-where-do-i-find-my-api-key">OpenAI api key info</a>
 
 ### Step 1: Set Up MongoDB Database
 
@@ -30,6 +31,7 @@ Before setting up the project, you'll need a MongoDB database. You can set this 
 - **Setting up MongoDB on Atlas:**
   MongoDB Atlas offers a cloud-based solution. You can set up a free cluster following [this guide](https://docs.atlas.mongodb.com/getting-started/).
 
+  **Make sure you are adding your ip to be white listed**
 
 ### Step 2: Clone the Repository
 
@@ -42,13 +44,13 @@ git clone https://github.com/Tomer-Lavan/Lexi
 - For the client:
   ```bash
   cd client
-  npm install
+  npm run setup
   ```
 
 - For the server:
   ```bash
   cd server
-  npm setup
+  npm run setup
   ```
 
 ### Setup Process Details
@@ -58,8 +60,8 @@ During the setup process, you'll be guided through a series of prompts to config
 - `OPENAI_API_KEY`: Enter your OpenAI API key.
 - `MONGODB_USER`: Enter the MongoDB username.
 - `MONGODB_PASSWORD`: Enter the password for MongoDB.
-- `MONGODB_URL`: Provide the MongoDB URL.
-- `MONGODB_DB_NAME`: Specify the name of your MongoDB database.
+- `MONGODB_URL`: Provide the MongoDB URL (mongodb+srv://<cluster-name>.mongodb.net).
+- `MONGODB_DB_NAME`: Choose a name for your MongoDB database.
 
 Additionally, the setup script will guide you in creating an administrative user for your system. You'll need to provide a username and password for this user.
 
@@ -94,6 +96,8 @@ This comprehensive setup ensures that all necessary components are correctly con
     npm run dev
     ``` 
 **server will run on: http://localhost:5000**
+
+Encountering difficulties with your local environment setup? Consult our [Troubleshooting Guide](TROUBLESHOOTING.md) for assistance in resolving your issues.
 
 ## 🌐 Deployment
 
