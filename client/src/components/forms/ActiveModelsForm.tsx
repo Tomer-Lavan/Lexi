@@ -1,14 +1,26 @@
+import { defaultAbModels, defaultSettings } from '@DAL/constants';
+import { AbModelsType, ExperimentType, ModelType, ModelsModes } from '@models/AppModels';
 import { FormControl, MenuItem, Select, Typography } from '@mui/material';
-import { useState } from 'react';
-import { defaultAbModels, defaultSettings } from '../../DAL/constants';
-import { ModelsModes } from '../../models/AppModels';
-import { AbModels } from '../../screens/Admin/components/models-panel/active-models/AbModels';
-import { MainContainer } from '../../screens/Admin/components/models-panel/model-form/ModelForm.s';
+import { AbModels } from '@screens/Admin/components/models-panel/active-models/AbModels';
+import { MainContainer } from '@screens/Admin/components/models-panel/model-form/ModelForm.s';
+import React, { useState } from 'react';
 
-const modelsModes = ['Single', 'A/B'];
+const modelsModes = ['Single', 'A/B'] as const;
 
-export const ActiveModelsForm = ({ experiment, setExperiment, models, isRow = true }) => {
-    const [abModels, setAbModels] = useState(experiment.abModels || defaultAbModels);
+interface ActiveModelsFormProps {
+    experiment: ExperimentType;
+    setExperiment: (experiment: ExperimentType) => void;
+    models: ModelType[];
+    isRow?: boolean;
+}
+
+export const ActiveModelsForm: React.FC<ActiveModelsFormProps> = ({
+    experiment,
+    setExperiment,
+    models,
+    isRow = true,
+}) => {
+    const [abModels, setAbModels] = useState<AbModelsType>(experiment.abModels || defaultAbModels);
 
     const handleActiveModelChange = (event) => {
         const { value } = event.target;

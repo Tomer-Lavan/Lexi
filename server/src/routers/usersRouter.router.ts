@@ -7,7 +7,7 @@ export const usersRouter = () => {
     router.post('/login', usersController.login);
     router.post('/logout', usersController.logout);
     router.get('/user', usersController.getActiveUser);
-    router.get('/checkUserNotExist', usersController.checkUserNotExist);
+    router.get('/validate', usersController.validateUserName);
 
     return router;
 };

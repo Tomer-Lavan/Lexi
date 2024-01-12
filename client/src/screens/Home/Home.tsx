@@ -1,31 +1,29 @@
+import { setActiveUser } from '@DAL/redux/reducers/activeUserReducer';
+import { createConversation } from '@DAL/server-requests/conversations';
+import { getExperimentContent, updateExperimentDisplaySettings } from '@DAL/server-requests/experiments';
+import { logout } from '@DAL/server-requests/users';
+import { Pages } from '@app/App';
+import AsyncButton from '@components/common/AsyncButton';
+import LoadingPage from '@components/common/LoadingPage';
+import { SnackbarStatus, useSnackbar } from '@contexts/SnackbarProvider';
+import useActiveUser from '@hooks/useActiveUser';
+import useEffectAsync from '@hooks/useEffectAsync';
+import { useExperimentId } from '@hooks/useExperimentId';
 import CancelIcon from '@mui/icons-material/Cancel';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
-import { Button, Grid, useMediaQuery } from '@mui/material';
+import { Button, useMediaQuery } from '@mui/material';
+import theme from '@root/Theme';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom';
-import { setActiveUser } from '../../DAL/redux/reducers/activeUserReducer';
-import { createConversation } from '../../DAL/server-requests/conversationsDAL';
-import { getExperimentContent, updateExperimentDisplaySettings } from '../../DAL/server-requests/experimentsDAL';
-import { logout } from '../../DAL/server-requests/usersDAL';
-import theme from '../../Theme';
-import { Pages } from '../../app/App';
-import AsynchButton from '../../components/common/AsynchButton';
-import LoadingPage from '../../components/common/LoadingPage';
-import { useSnackbar } from '../../contexts/SnackbarProvider';
-import useActiveUser from '../../hooks/useActiveUser';
-import useEffectAsync from '../../hooks/useEffectAsync';
+import { useNavigate } from 'react-router-dom';
 import './Home.css';
 import {
     BodyContent,
-    Container,
-    ContentContainer,
-    DividerGrid,
-    GridItem,
+    ButtonsBox,
     StartButton,
+    StyledContainer,
     TextFieldStyled,
-    TitleBackgroundHighlight,
     TitleContent,
     TitleTextField,
 } from './Home.s';
@@ -36,7 +34,7 @@ const Home: React.FC = () => {
     const dispatch = useDispatch();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const navigate = useNavigate();
-    const { experimentId } = useParams();
+    const experimentId = useExperimentId();
     const [isLoadingPage, setIsLoadingPage] = useState(true);
     const [isLoadingUpdate, setIsLoadingUpdate] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -49,16 +47,20 @@ const Home: React.FC = () => {
             setExperimentContent(content);
             if (!isActive) {
                 if (activeUser.isAdmin) {
-                    openSnackbar('Experiment is not active', 'warning');
+                    openSnackbar('Experiment is not active', SnackbarStatus.WARNING);
                 } else {
-                    await logout();
+                    try {
+                        await logout();
+                    } catch (err) {
+                        console.log(err);
+                    }
                     navigate(Pages.PROJECT_OVERVIEW);
                     dispatch(setActiveUser(null));
-                    openSnackbar('Experiment is not active', 'warning');
+                    openSnackbar('Experiment is not active', SnackbarStatus.WARNING);
                 }
             }
         } catch (err) {
-            openSnackbar('Failed to load experiment', 'error');
+            openSnackbar('Failed to load experiment', SnackbarStatus.ERROR);
             navigate(Pages.PROJECT_OVERVIEW);
         }
         setIsLoadingPage(false);
@@ -76,9 +78,13 @@ const Home: React.FC = () => {
 
     const handleSave = async () => {
         setIsLoadingUpdate(true);
-        await updateExperimentDisplaySettings(experimentId, editedContent);
-        setExperimentContent(editedContent);
-        openSnackbar('Update Success', 'success');
+        try {
+            await updateExperimentDisplaySettings(experimentId, editedContent);
+            setExperimentContent(editedContent);
+            openSnackbar('Update Success', SnackbarStatus.SUCCESS);
+        } catch (err) {
+            openSnackbar('Update Failed', SnackbarStatus.ERROR);
+        }
         setIsEditing(false);
         setIsLoadingUpdate(false);
     };
@@ -98,67 +104,51 @@ const Home: React.FC = () => {
                 )}`,
             );
         } catch (err) {
-            openSnackbar('Failed to start a new conversation', 'error');
+            openSnackbar('Failed to start a new conversation', SnackbarStatus.ERROR);
         }
     };
 
     return isLoadingPage ? (
         <LoadingPage />
     ) : (
-        <Container container isMobile={isMobile}>
-            <GridItem item md={8} xs={10}>
-                <ContentContainer isMobile={isMobile}>
-                    {isEditing ? (
-                        <TitleTextField
-                            variant="outlined"
-                            multiline
-                            name="welcomeHeader"
-                            value={editedContent.welcomeHeader}
-                            onChange={handleContentChange}
-                            fullWidth
-                            inputProps={{ style: { whiteSpace: 'normal' } }}
-                        />
-                    ) : (
-                        <TitleContent variant={'h2'}>
-                            {experimentContent ? experimentContent.welcomeHeader : ''}
-                        </TitleContent>
-                    )}
-                    <TitleBackgroundHighlight />
-                    {isEditing ? (
-                        <TextFieldStyled
-                            variant="outlined"
-                            multiline
-                            name="welcomeContent"
-                            rows={4}
-                            value={editedContent.welcomeContent}
-                            onChange={handleContentChange}
-                            fullWidth
-                            inputProps={{ style: { whiteSpace: 'normal' } }}
-                        />
-                    ) : (
-                        <BodyContent variant={'h6'}>
-                            {experimentContent ? experimentContent.welcomeContent : ''}
-                        </BodyContent>
-                    )}
-                </ContentContainer>
-            </GridItem>
-            <DividerGrid item md={4} xs={6} isMobile={isMobile}>
-                <Grid container spacing={2} justifyContent="center">
-                    <Grid item>
-                        <StartButton
-                            variant="contained"
-                            color="primary"
-                            onClick={startConversation}
-                            isMobile={isMobile}
-                        >
-                            Start Conversation
-                        </StartButton>
-                    </Grid>
-                </Grid>
-            </DividerGrid>
+        <StyledContainer>
+            {isEditing ? (
+                <TitleTextField
+                    variant="outlined"
+                    multiline
+                    name="welcomeHeader"
+                    value={editedContent.welcomeHeader}
+                    onChange={handleContentChange}
+                    fullWidth
+                    inputProps={{ style: { whiteSpace: 'normal' } }}
+                />
+            ) : (
+                <TitleContent variant={'h2'}>
+                    {experimentContent ? experimentContent.welcomeHeader : ''}
+                </TitleContent>
+            )}
+            {isEditing ? (
+                <TextFieldStyled
+                    variant="outlined"
+                    multiline
+                    name="welcomeContent"
+                    rows={4}
+                    value={editedContent.welcomeContent}
+                    onChange={handleContentChange}
+                    fullWidth
+                    inputProps={{ style: { whiteSpace: 'normal' } }}
+                />
+            ) : (
+                <BodyContent variant={'h6'} textAlign={'center'} width={isMobile ? '90%' : '60%'}>
+                    {experimentContent ? experimentContent.welcomeContent : ''}
+                </BodyContent>
+            )}
+            <StartButton variant="contained" color="primary" onClick={startConversation} isMobile={isMobile}>
+                Start Conversation
+            </StartButton>
             {activeUser?.isAdmin && (
-                <div style={{ position: 'absolute', top: '8vh', right: '1vw', display: 'flex' }}>
-                    <AsynchButton
+                <ButtonsBox>
+                    <AsyncButton
                         isLoading={isLoadingUpdate}
                         variant="outlined"
                         onClick={isEditing ? handleSave : handleEdit}
@@ -170,7 +160,7 @@ const Home: React.FC = () => {
                         ) : (
                             <EditIcon sx={{ fontSize: '1.25rem' }} />
                         )}
-                    </AsynchButton>
+                    </AsyncButton>
                     {isEditing && (
                         <Button
                             variant="outlined"
@@ -181,9 +171,9 @@ const Home: React.FC = () => {
                             <CancelIcon sx={{ fontSize: '1.25rem' }} />
                         </Button>
                     )}
-                </div>
+                </ButtonsBox>
             )}
-        </Container>
+        </StyledContainer>
     );
 };
 

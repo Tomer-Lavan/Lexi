@@ -1,112 +1,82 @@
+import { setActiveUser } from '@DAL/redux/reducers/activeUserReducer';
+import { registerUser } from '@DAL/server-requests/users';
+import { SnackbarStatus, useSnackbar } from '@contexts/SnackbarProvider';
+import { NewUserInfoType } from '@models/AppModels';
 import { Box, Container } from '@mui/material';
 import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
-import { setActiveUser } from '../../DAL/redux/reducers/activeUserReducer';
-import { register } from '../../DAL/server-requests/usersDAL';
-import { useSnackbar } from '../../contexts/SnackbarProvider';
-import { FinalRegisterForm } from './FinalRegestrationForm';
 import { FirstRegisterForm } from './FirstRegestrationForm';
-import TermsOfConditions from './TermsOfConditions';
+import { FinalRegisterForm } from './final-register-form/FinalRegestrationForm';
+import TermsOfConditions from './terms-of-conditions/TermsOfConditions';
 
-interface UserInfoType {
-    nickname: string;
-    age: number | string;
-    gender: string;
-    biologicalSex: string;
-    maritalStatus: string;
-    religiousAffiliation: string;
-    ethnicity: string;
-    politicalAffiliation: number;
-    childrenNumber: number;
+interface RegisterFormProps {
+    experimentId: string;
+    setShowFormTypeButtons: (show: boolean) => void;
 }
 
-export const RegisterForm = ({ experimentId }) => {
+export const RegisterForm: React.FC<RegisterFormProps> = ({ experimentId, setShowFormTypeButtons }) => {
     const [page, setPage] = useState(1);
     const dispatch = useDispatch();
     const { openSnackbar } = useSnackbar();
     const [isAgreedTerms, setIsAgreedTerms] = useState(false);
+    const {
+        register,
+        handleSubmit,
+        setError,
+        getValues,
+        setValue,
+        control,
+        formState: { errors },
+    } = useForm();
 
-    const [errors, setErrors] = useState<any>({
-        biologicalSex: '',
-        maritalStatus: '',
-        religiousAffiliation: '',
-        ethnicity: '',
-        politicalAffiliation: '',
-        childrenNumber: '',
-    });
+    const goToPage = (page: number) => {
+        if (page === 1) {
+            setShowFormTypeButtons(true);
+        } else {
+            setShowFormTypeButtons(false);
+        }
+        setPage(page);
+    };
 
-    const [values, setValues] = useState<UserInfoType>({
-        nickname: '',
-        age: '',
-        gender: '',
-        biologicalSex: '',
-        maritalStatus: '',
-        religiousAffiliation: '',
-        ethnicity: '',
-        politicalAffiliation: null,
-        childrenNumber: 0,
-    });
-
-    const handleSubmit = async (event) => {
-        event.preventDefault();
+    const onSubmit = async (data: NewUserInfoType) => {
         try {
-            const currentErrors: any = {
-                ...errors,
-                biologicalSex: values.biologicalSex ? '' : 'Please fill necessary field',
-                maritalStatus: values.maritalStatus ? '' : 'Please fill necessary field',
-                religiousAffiliation: values.religiousAffiliation ? '' : 'Please fill necessary field',
-                ethnicity: values.ethnicity ? '' : 'Please fill necessary field',
-                politicalAffiliation: values.politicalAffiliation ? '' : 'Please fill necessary field',
-                childrenNumber: '',
-            };
-
-            Object.keys(values).forEach((key) => {
-                if (!values[key] && key !== 'age' && key !== 'childrenNumber')
-                    currentErrors[key] = 'Please fill necessary field';
-            });
-            setErrors(currentErrors);
-
-            if (Object.values(currentErrors).every((error) => error === '')) {
-                const user = await register(values, experimentId);
-                if (user) {
-                    dispatch(setActiveUser(user));
-                }
-            }
+            const user = await registerUser(data, experimentId);
+            dispatch(setActiveUser(user));
         } catch (error) {
-            openSnackbar('Registration Failed', 'error');
+            openSnackbar('Registration Failed', SnackbarStatus.ERROR);
         }
     };
 
-    const handleChange = (event) => {
-        const { name, value } = event.target;
-        setValues({ ...values, [name]: value });
-    };
-
-    const handleRadioChange = (key: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
-        setValues({ ...values, [key]: event.target.value });
-    };
-
     return (
-        <Container component="main" maxWidth="sm">
-            <Box sx={{ mt: 1, width: '100%', display: 'flex', justifyContent: 'center' }}>
+        <Container component="main" maxWidth={page !== 1 ? 'sm' : 'xs'}>
+            <Box display={'flex'} justifyContent={'center'} marginTop={page === 2 ? 0 : 3}>
                 {page === 1 ? (
                     <FirstRegisterForm
-                        setPage={setPage}
-                        values={values}
-                        setValues={setValues}
-                        handleChange={handleChange}
+                        setPage={goToPage}
+                        getValues={getValues}
+                        setError={setError}
+                        handleSubmit={handleSubmit}
+                        setValue={setValue}
                         experimentId={experimentId}
+                        register={register}
+                        errors={errors}
                     />
                 ) : page === 2 ? (
-                    <TermsOfConditions setPage={setPage} isAgreed={isAgreedTerms} setIsAgreed={setIsAgreedTerms} />
+                    <TermsOfConditions
+                        setPage={goToPage}
+                        isAgreed={isAgreedTerms}
+                        setIsAgreed={setIsAgreedTerms}
+                    />
                 ) : (
                     <FinalRegisterForm
-                        values={values}
-                        handleChange={handleChange}
+                        setValue={setValue}
+                        register={register}
                         errors={errors}
-                        handleSubmit={handleSubmit}
-                        handleRadioChange={handleRadioChange}
-                        setPage={setPage}
+                        getValues={getValues}
+                        handleSubmit={handleSubmit(onSubmit)}
+                        control={control}
+                        setPage={goToPage}
                     />
                 )}
             </Box>

@@ -1,3 +1,6 @@
+import { downloadExperimentJSON, downloadExperimentXLSX } from '@DAL/server-requests/dataAggregation';
+import AsyncButton from '@components/common/AsyncButton';
+import { SnackbarStatus, useSnackbar } from '@contexts/SnackbarProvider';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import {
     Box,
@@ -18,14 +21,8 @@ import {
     Typography,
 } from '@mui/material';
 import { useState } from 'react';
-import {
-    downloadExperimentJSON,
-    downloadExperimentXLSX,
-} from '../../../../../DAL/server-requests/dataAggregationDAL';
-import AsynchButton from '../../../../../components/common/AsynchButton';
-import { useSnackbar } from '../../../../../contexts/SnackbarProvider';
 import { ExperimentRow } from '../experiment-row/ExperimentRow';
-import { ButtonsBox, ColumnTitle, ListBox, TablePaper } from './ExperimentsList.s';
+import { ColumnTitle, ListBox, TablePaper } from './ExperimentsList.s';
 
 const ExperimentsList = ({
     experiments,
@@ -49,19 +46,19 @@ const ExperimentsList = ({
             setOpenExperimentFormDialog(true);
         } else if (action === 'downloadJSON') {
             try {
-                openSnackbar('Downloading JSON...', 'info');
+                openSnackbar('Downloading JSON...', SnackbarStatus.INFO);
                 await downloadExperimentJSON(row._id, row.title);
-                openSnackbar('Download JSON Success !', 'success');
+                openSnackbar('Download JSON Success !', SnackbarStatus.SUCCESS);
             } catch (err) {
-                openSnackbar('Failed to Download JSON', 'error');
+                openSnackbar('Failed to Download JSON', SnackbarStatus.ERROR);
             }
         } else if (action === 'downloadExcel') {
             try {
-                openSnackbar('Downloading Excel...', 'info');
+                openSnackbar('Downloading Excel...', SnackbarStatus.INFO);
                 await downloadExperimentXLSX(row._id, row.title);
-                openSnackbar('Download Excel Success !', 'success');
+                openSnackbar('Download Excel Success !', SnackbarStatus.SUCCESS);
             } catch (err) {
-                openSnackbar('Failed to Download Excel', 'error');
+                openSnackbar('Failed to Download Excel', SnackbarStatus.ERROR);
             }
         } else if (action === 'share') {
             setShareLink(`${process.env.REACT_APP_FRONTEND_URL}/e/${row._id}`);
@@ -69,49 +66,57 @@ const ExperimentsList = ({
         }
     };
 
+    const areExperimentsModified = Object.values(modifiedExperiments).length !== 0;
+
     const handleCopyLink = () => {
         navigator.clipboard.writeText(shareLink);
-        openSnackbar('Link copied to clipboard', 'success');
+        openSnackbar('Link copied to clipboard', SnackbarStatus.SUCCESS);
     };
 
     return (
-        <ListBox>
-            <ButtonsBox>
-                <Box>
-                    <AsynchButton
-                        sx={{ mr: 1 }}
-                        style={{ marginBottom: 0 }}
-                        variant="contained"
-                        isLoading={isLoadingStatusChange}
-                        color="primary"
-                        onClick={handleSaveChanges}
-                        disabled={Object.values(modifiedExperiments).length === 0}
-                        size="small"
-                    >
-                        Save Changes
-                    </AsynchButton>
-                    <Button
-                        variant="outlined"
-                        color="secondary"
-                        onClick={handleCancelChanges}
-                        disabled={Object.values(modifiedExperiments).length === 0}
-                        size="small"
-                    >
-                        Cancel
-                    </Button>
-                </Box>
-            </ButtonsBox>
+        <ListBox style={{ marginTop: '1vh' }}>
             <TablePaper>
+                <Box display={'flex'} justifyContent={'space-between'} padding={2} sx={{ paddingBottom: 0 }}>
+                    {areExperimentsModified ? (
+                        <Box>
+                            <AsyncButton
+                                sx={{ mr: 1 }}
+                                style={{ marginBottom: 0 }}
+                                variant="contained"
+                                isLoading={isLoadingStatusChange}
+                                color="primary"
+                                onClick={handleSaveChanges}
+                                disabled={!areExperimentsModified}
+                                size="small"
+                            >
+                                Save Changes
+                            </AsyncButton>
+                            <Button
+                                variant="outlined"
+                                color="primary"
+                                onClick={handleCancelChanges}
+                                disabled={!areExperimentsModified}
+                                size="small"
+                                style={{ marginBottom: 0 }}
+                            >
+                                Cancel
+                            </Button>
+                        </Box>
+                    ) : (
+                        <Box />
+                    )}
+                </Box>
                 <TableContainer>
                     <Table aria-label="collapsible experiments table">
                         <TableHead>
                             <TableRow>
-                                <TableCell />
-                                <ColumnTitle>Title</ColumnTitle>
-                                <ColumnTitle>Description</ColumnTitle>
-                                <ColumnTitle>Launch Time</ColumnTitle>
-                                <ColumnTitle>Status</ColumnTitle>
-                                <TableCell />
+                                <TableCell style={{ width: '3%' }} />
+                                <ColumnTitle style={{ width: '10%' }}>Title</ColumnTitle>
+                                <ColumnTitle style={{ width: '22%' }}>Description</ColumnTitle>
+                                <ColumnTitle style={{ width: '6%' }}>Participants</ColumnTitle>
+                                <ColumnTitle style={{ width: '10%' }}>Launch Time</ColumnTitle>
+                                <ColumnTitle style={{ width: '8%' }}>Status</ColumnTitle>
+                                <TableCell style={{ width: '2%' }} />
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -171,7 +176,6 @@ const ExperimentsList = ({
                     <Button onClick={() => setOpenShareDialog(false)} color="primary">
                         Close
                     </Button>
-                    {/* Optional: Add additional actions here */}
                 </DialogActions>
             </Dialog>
         </ListBox>

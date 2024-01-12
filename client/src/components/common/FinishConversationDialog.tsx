@@ -1,3 +1,5 @@
+import { Pages } from '@app/App';
+import { useExperimentId } from '@hooks/useExperimentId';
 import {
     Button,
     Dialog,
@@ -7,28 +9,23 @@ import {
     DialogTitle,
     useMediaQuery,
 } from '@mui/material';
+import theme from '@root/Theme';
 import { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import theme from '../../Theme';
-import { Pages } from '../../app/App';
-import SurveyComponent from '../forms/SurveyForm';
+import { useNavigate } from 'react-router-dom';
+import SurveyComponent from '../forms/survey-form/SurveyForm';
 
 const FinishConversationDialog = ({ open, setIsOpen, questionnaireLink, conversationId }) => {
     const [page, setPage] = useState(1);
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-    const { experimentId } = useParams();
+    const experimentId = useExperimentId();
     const navigate = useNavigate();
 
-    const handleYes = () => {
-        setPage(2);
-    };
+    const handleYes = () => setPage(2);
+
+    const handleNo = () => setIsOpen(false);
 
     const handleDone = () => {
         navigate(`${Pages.EXPERIMENT.replace(':experimentId', experimentId)}`);
-        setIsOpen(false);
-    };
-
-    const handleNo = () => {
         setIsOpen(false);
     };
 

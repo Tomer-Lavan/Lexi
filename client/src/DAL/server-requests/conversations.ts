@@ -1,29 +1,32 @@
+import { MessageType } from '@root/models/AppModels';
+import { ApiPaths } from '../constants';
 import axiosInstance from './AxiosInstance';
-
-interface Message {
-    role: 'system' | 'user' | 'assistant';
-    content: string;
-}
-
-const CONVERSATIONS_PATH = 'conversations';
 
 const serialize = (obj) =>
     Object.keys(obj)
         .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(obj[key])}`)
         .join('&');
 
-export const sendMessage = async (message: Message, conversationId: string): Promise<{ message: string }> => {
+export const sendMessage = async (message: MessageType, conversationId: string): Promise<{ message: string }> => {
     try {
-        const response = await axiosInstance.post(`/${CONVERSATIONS_PATH}/message`, { message, conversationId });
+        const response = await axiosInstance.post(`/${ApiPaths.CONVERSATIONS_PATH}/message`, {
+            message,
+            conversationId,
+        });
         return response.data;
     } catch (error) {
         throw error;
     }
 };
 
-export const sendStreamMessage = (message: Message, conversationId: string, onMessageReceived, onError?) => {
+export const sendStreamMessage = (
+    message: MessageType,
+    conversationId: string,
+    onMessageReceived: (message: string) => void,
+    onError?: (error?: string) => void,
+) => {
     const eventSource = new EventSource(
-        `${process.env.REACT_APP_API_URL}/${CONVERSATIONS_PATH}/message/stream?${serialize(
+        `${process.env.REACT_APP_API_URL}/${ApiPaths.CONVERSATIONS_PATH}/message/stream?${serialize(
             message,
         )}&conversationId=${conversationId}`,
     );
@@ -61,39 +64,47 @@ export const sendStreamMessage = (message: Message, conversationId: string, onMe
     };
 };
 
-export const createConversation = async (userId, numberOfConversations, experimentId): Promise<string> => {
+export const createConversation = async (
+    userId: string,
+    numberOfConversations: number,
+    experimentId: string,
+): Promise<string> => {
     try {
-        const response = await axiosInstance.post(`/${CONVERSATIONS_PATH}/create`, {
+        const response = await axiosInstance.post(`/${ApiPaths.CONVERSATIONS_PATH}/create`, {
             userId,
             numberOfConversations,
             experimentId,
         });
         return response.data;
     } catch (error) {
-        return null;
+        throw error;
     }
 };
 
-export const getConversation = async (conversationId): Promise<Message[]> => {
+export const getConversation = async (conversationId: string): Promise<MessageType[]> => {
     try {
         const response = await axiosInstance.get(
-            `/${CONVERSATIONS_PATH}/conversation?conversationId=${conversationId}`,
+            `/${ApiPaths.CONVERSATIONS_PATH}/conversation?conversationId=${conversationId}`,
         );
         return response.data;
     } catch (error) {
-        return null;
+        throw error;
     }
 };
 
-export const updateIMS = async (conversationId, imsValues, isPreConversation): Promise<any> => {
+export const updateIMS = async (
+    conversationId: string,
+    imsValues: object,
+    isPreConversation: boolean,
+): Promise<void> => {
     try {
-        const response = await axiosInstance.put(`/${CONVERSATIONS_PATH}/ims`, {
+        await axiosInstance.put(`/${ApiPaths.CONVERSATIONS_PATH}/ims`, {
             conversationId,
             imsValues,
             isPreConversation,
         });
-        return response.data;
+        return;
     } catch (error) {
-        return null;
+        throw error;
     }
 };

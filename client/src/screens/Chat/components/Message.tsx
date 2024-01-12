@@ -1,9 +1,16 @@
 import { Box, Typography } from '@mui/material';
+import theme from '@root/Theme';
+import { MessageType } from '@root/models/AppModels';
 
-const Message = ({ message, role, size = 'lg' }) => {
+interface MessageProps {
+    message: MessageType;
+    role: string;
+    size?: 'sm' | 'lg';
+}
+
+const Message: React.FC<MessageProps> = ({ message, role, size = 'lg' }) => {
     const isUser = role === 'user';
 
-    // Function to split the message content into regular and bold segments
     const getFormattedMessage = (content) => {
         const parts = content
             .split(/(\*\*.*?\*\*)/g)
@@ -19,7 +26,7 @@ const Message = ({ message, role, size = 'lg' }) => {
                 marginBottom: 1.5,
                 padding: '16px 16px 24px 16px',
                 borderRadius: isUser ? '26px 26px 0 26px' : '26px 26px 26px 0',
-                background: !isUser ? 'rgba(228, 193, 173, 0.7)' : 'rgba(0, 112, 243, 0.15)',
+                background: isUser ? theme.palette.userMessage.main : theme.palette.assistantMessage.main,
                 maxWidth: '80%',
                 display: 'inline-block',
                 clear: 'both',
@@ -29,7 +36,11 @@ const Message = ({ message, role, size = 'lg' }) => {
         >
             <Typography
                 variant="body2"
-                sx={{ whiteSpace: 'pre-line', fontSize: size === 'sm' ? '1rem' : '1.25rem', fontWeight: 450 }}
+                sx={{
+                    whiteSpace: 'pre-line',
+                    fontSize: size === 'sm' ? '1rem' : '1.25rem',
+                    fontWeight: 500,
+                }}
             >
                 {getFormattedMessage(message.content)}
             </Typography>

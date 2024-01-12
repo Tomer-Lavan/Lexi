@@ -1,7 +1,8 @@
 import { FormControlLabel, Grid, Radio, RadioGroup, Typography } from '@mui/material';
 import { Box } from '@mui/system';
+import { Controller } from 'react-hook-form';
 
-const RadioGroupRange = ({ left, right, range, field, values, handleRadioChange, gap = '16px' }) => {
+const RadioGroupRange = ({ left, right, range, field, gap = '16px', control }) => {
     const valuesArray = Array.from({ length: range }, (_, i) => i + 1);
 
     return (
@@ -22,23 +23,44 @@ const RadioGroupRange = ({ left, right, range, field, values, handleRadioChange,
                     alignItems: 'center',
                 }}
             >
-                <RadioGroup
-                    row
-                    aria-label={left}
-                    name={left}
-                    value={values[field] || ''}
-                    onChange={handleRadioChange(field)}
-                    sx={{ gap }}
-                >
-                    {valuesArray.map((value) => (
-                        <FormControlLabel
-                            key={value}
-                            value={String(value)}
-                            control={<Radio size="small" />}
-                            label=""
-                        />
-                    ))}
-                </RadioGroup>
+                <Controller
+                    name={field}
+                    control={control}
+                    rules={{ required: 'This field is required' }}
+                    render={({ field: { onChange, value } }) => (
+                        <RadioGroup
+                            row
+                            value={value}
+                            onChange={onChange}
+                            aria-label={field}
+                            name={field}
+                            sx={{ gap }}
+                        >
+                            {valuesArray.map((val) => (
+                                <FormControlLabel
+                                    key={val}
+                                    value={String(val)}
+                                    sx={{ margin: 0 }}
+                                    control={
+                                        <Radio
+                                            size="small"
+                                            sx={{
+                                                padding: '3px',
+                                                '& .MuiSvgIcon-root': {
+                                                    // Adjust the radio icon size
+                                                    padding: 0,
+                                                    margin: 0,
+                                                    fontSize: '1rem', // Smaller size (adjust as needed)
+                                                },
+                                            }}
+                                        />
+                                    }
+                                    label=""
+                                />
+                            ))}
+                        </RadioGroup>
+                    )}
+                />
             </Grid>
             <Grid item xs={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
                 <Typography textAlign={'right'} color={'grey'}>

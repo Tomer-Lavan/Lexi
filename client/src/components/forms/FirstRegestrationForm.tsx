@@ -1,57 +1,72 @@
-import { Grid, MenuItem, TextField, Typography } from '@mui/material';
-import { useState } from 'react';
-import { checkUserNotExist } from '../../DAL/server-requests/usersDAL';
-import { ButtonBox, FormButton, FormContainer, SubFormMainContainer } from './FormStyles.s';
+import { validateUserName } from '@DAL/server-requests/users';
+import { Box, Grid, MenuItem, TextField } from '@mui/material';
+import { getFormErrorMessage } from '@utils/commonFunctions';
+import {
+    FieldErrors,
+    FieldValues,
+    UseFormGetValues,
+    UseFormHandleSubmit,
+    UseFormRegister,
+    UseFormSetError,
+    UseFormSetValue,
+} from 'react-hook-form';
+import { FormButton, FormContainer, NoteText, StyledContainer } from './CommonFormStyles.s';
 
-export const FirstRegisterForm = ({ setPage, values, setValues, handleChange, experimentId }) => {
-    const [errors, setErrors] = useState<any>({
-        nickname: '',
-        age: '',
-        gender: '',
-    });
+const genderOptions = [
+    { label: 'Male', value: 'male' },
+    { label: 'Female', value: 'female' },
+    { label: 'Other', value: 'other' },
+    { label: 'Prefer Not To Say', value: 'prefer not to say' },
+];
 
-    const handleContinue = async (event) => {
-        event.preventDefault();
+interface FirstRegisterFormProps {
+    setPage: (page: number) => void;
+    register: UseFormRegister<FieldValues>;
+    errors: FieldErrors;
+    experimentId: string;
+    getValues: UseFormGetValues<FieldValues>;
+    setError: UseFormSetError<FieldValues>;
+    handleSubmit: UseFormHandleSubmit<FieldValues, undefined>;
+    setValue: UseFormSetValue<FieldValues>;
+}
+
+export const FirstRegisterForm: React.FC<FirstRegisterFormProps> = ({
+    setPage,
+    register,
+    errors,
+    experimentId,
+    getValues,
+    setError,
+    handleSubmit,
+    setValue,
+}) => {
+    const handleContinue = async () => {
         try {
-            const currentErrors: any = {
-                nickname: values.nickname ? '' : 'Please fill necessary field',
-                age: values.age ? '' : 'Please fill necessary field',
-                gender: values.gender ? '' : 'Please fill necessary field',
-            };
-
-            setErrors(currentErrors);
-
-            if (Object.values(currentErrors).every((error) => error === '')) {
-                try {
-                    await checkUserNotExist(values.nickname, experimentId);
-                    setPage(2);
-                } catch (error) {
-                    setErrors({ ...currentErrors, nickname: 'Nickname is already exist' });
-                }
-            }
+            const nickname = getValues('nickname');
+            await validateUserName(nickname, experimentId);
+            setPage(2);
         } catch (error) {
-            console.log(error);
+            setError('nickname', {
+                type: 'manual',
+                message: 'Nickname already exists',
+            });
         }
     };
 
     return (
-        <SubFormMainContainer size={'80%'}>
+        <StyledContainer>
             <FormContainer container spacing={2}>
-                <Grid item xs={12}>
-                    <Typography fontSize={'0.75rem'} color={'rgba(0, 0, 0, 0.6)'} style={{ padding: '8px' }}>
-                        Fields marked with a '*' are mandatory.
-                    </Typography>
+                <Grid item xs={12} style={{ paddingTop: 0 }}>
+                    <NoteText>Fields marked with a '*' are mandatory.</NoteText>
                     <TextField
                         size="small"
                         error={Boolean(errors.nickname)}
-                        helperText={errors.nickname}
+                        helperText={getFormErrorMessage(errors.nickname)}
                         required
                         fullWidth
-                        value={values.nickname}
-                        name="nickname"
+                        {...register('nickname', { required: 'Please fill necessary field' })}
                         label="Nickname"
                         id="nickname"
-                        onChange={handleChange}
                     />
                 </Grid>
                 <Grid item xs={6}>
@@ -59,24 +74,20 @@ export const FirstRegisterForm = ({ setPage, values, setValues, handleChange, ex
                         type="number"
                         size="small"
                         error={Boolean(errors.age)}
-                        helperText={
-                            errors.age ||
-                            (Number(values.age) < 18 || Number(values.age) > 120 ? 'Age must be above 18' : '')
-                        }
+                        helperText={getFormErrorMessage(errors.age)}
                         required
                         fullWidth
-                        name="age"
+                        {...register('age', {
+                            required: 'Please fill necessary field',
+                            min: { value: 18, message: 'Age must be above 18' },
+                            max: { value: 200, message: 'Age must be below 200' },
+                        })}
+                        onChange={(e) => {
+                            setValue('age', e.target.value, { shouldValidate: true });
+                        }}
                         label="Age"
                         id="age"
-                        value={values.age}
-                        InputProps={{ inputProps: { min: 18, max: 120 } }}
-                        onChange={handleChange}
-                        onBlur={(event) => {
-                            let age = event.target.value ? parseInt(event.target.value) : '';
-                            if (Number(age) < 18) age = 18;
-                            if (Number(age) > 120) age = 120;
-                            setValues({ ...values, age: age.toString() });
-                        }}
+                        InputProps={{ inputProps: { min: 18, max: 200 } }}
                     />
                 </Grid>
                 <Grid item xs={6}>
@@ -84,29 +95,30 @@ export const FirstRegisterForm = ({ setPage, values, setValues, handleChange, ex
                         select
                         size="small"
                         error={Boolean(errors.gender)}
-                        helperText={errors.gender}
+                        helperText={getFormErrorMessage(errors.gender)}
                         required
                         fullWidth
-                        name="gender"
+                        {...register('gender', { required: 'Please fill necessary field' })}
                         label="Gender"
                         id="gender"
-                        value={values.gender}
-                        onChange={handleChange}
+                        onChange={(e) => {
+                            setValue('gender', e.target.value, { shouldValidate: true });
+                        }}
+                        defaultValue={getValues('gender') || ''}
                     >
-                        <MenuItem value="male">Male</MenuItem>
-                        <MenuItem value="female">Female</MenuItem>
-                        <MenuItem value="other">Other</MenuItem>
-                        <MenuItem value="prefer not to say">Prefer Not To Say</MenuItem>
+                        {genderOptions.map((option) => (
+                            <MenuItem key={option.value} value={option.value}>
+                                {option.label}
+                            </MenuItem>
+                        ))}
                     </TextField>
                 </Grid>
-                <Grid item xs={12} display={'flex'} justifyContent={'center'}>
-                    <ButtonBox flexDirection={'row'}>
-                        <FormButton variant="contained" color="primary" onClick={handleContinue}>
-                            Continue
-                        </FormButton>
-                    </ButtonBox>
-                </Grid>
             </FormContainer>
-        </SubFormMainContainer>
+            <Box display={'flex'} justifyContent={'center'}>
+                <FormButton type="submit" onClick={handleSubmit(handleContinue)}>
+                    Continue
+                </FormButton>
+            </Box>
+        </StyledContainer>
     );
 };

@@ -3,6 +3,66 @@ import { conversationsService } from './conversations.service';
 import { experimentsService } from './experiments.service';
 import { usersService } from './users.service';
 
+const mainSheetCol = [
+    { header: 'Models Mode', key: 'modelsMode' },
+    { header: 'Total Number of Participants', key: 'totalParticipants' },
+];
+
+const modelsSheetCol = [
+    { header: 'Number of Participants', key: 'numParticipants' },
+    { header: 'Condition Title', key: 'conditionTitle' },
+    { header: 'Summary', key: 'summary' },
+    { header: 'System Starter Prompt', key: 'systemStarterPrompt' },
+    { header: 'Before User Sentence Prompt', key: 'beforeUserSentencePrompt' },
+    { header: 'After User Sentence Prompt', key: 'afterUserSentencePrompt' },
+    { header: 'First Chat Sentence', key: 'firstChatSentence' },
+    { header: 'Chat Model', key: 'chatModel' },
+    { header: 'Temperature', key: 'temperature' },
+    { header: 'Max Tokens', key: 'maxTokens' },
+    { header: 'Top P', key: 'topP' },
+    { header: 'Frequency Penalty', key: 'frequencyPenalty' },
+    { header: 'Presence Penalty', key: 'presencePenalty' },
+    { header: 'Stop Sequences', key: 'stopSequences' },
+];
+
+const usersSheetCol = [
+    { header: 'Model Link', key: 'modelLink' },
+    { header: 'User ID', key: 'userId' },
+    { header: 'Number of Conversations', key: 'numberOfConversations' },
+    { header: 'Age', key: 'age' },
+    { header: 'Gender', key: 'gender' },
+    { header: 'Biological Sex', key: 'biologicalSex' },
+    { header: 'Marital Status', key: 'maritalStatus' },
+    { header: 'Religious Affiliation', key: 'religiousAffiliation' },
+    { header: 'Ethnicity', key: 'ethnicity' },
+    { header: 'Political Affiliation', key: 'politicalAffiliation' },
+    { header: 'Number of Children', key: 'childrenNumber' },
+    { header: 'Created At', key: 'createdAt' },
+];
+
+const conversationsSheetCol = [
+    { header: 'Model Link', key: 'modelLink' },
+    { header: 'User Link', key: 'userLink' },
+    { header: 'Conversation ID', key: 'conversationId' },
+    { header: 'Conversation Number', key: 'conversationNumber' },
+    { header: 'Number Of Messages', key: 'messagesNumber' },
+    { header: 'Created At', key: 'createdAt' },
+    { header: 'Last Message Date', key: 'lastMessageDate' },
+    { header: 'Ims Pre', key: 'imsPre' },
+    { header: 'Ims Post', key: 'imsPost' },
+];
+
+const messagesSheetCol = [
+    { header: 'Model Link', key: 'modelLink' },
+    { header: 'User Link', key: 'userLink' },
+    { header: 'Conversation Link', key: 'conversationLink' },
+    { header: 'User Conversation Nuber', key: 'conversationNumber' },
+    { header: 'Message ID', key: 'messageId' },
+    { header: 'Content', key: 'content' },
+    { header: 'Role', key: 'role' },
+    { header: 'Created At', key: 'createdAt' },
+];
+
 class DataAggregationService {
     getExperimentData = async (experimentId: string) => {
         const [experimentUsers, experiment] = await Promise.all([
@@ -44,84 +104,23 @@ class DataAggregationService {
         const experimentData = await this.getExperimentData(experimentId);
         const workbook = new ExcelJS.Workbook();
 
-        // Creating sheets
         const mainSheet = workbook.addWorksheet('Main');
         const modelsSheet = workbook.addWorksheet('Models');
         const usersSheet = workbook.addWorksheet('Users');
         const conversationsSheet = workbook.addWorksheet('Conversations');
         const messagesSheet = workbook.addWorksheet('Messages');
 
-        // Populate Main Sheet
-        mainSheet.columns = [
-            { header: 'Models Mode', key: 'modelsMode' },
-            { header: 'Total Number of Participants', key: 'totalParticipants' },
-        ];
+        mainSheet.columns = mainSheetCol;
+        modelsSheet.columns = modelsSheetCol;
+        usersSheet.columns = usersSheetCol;
+        conversationsSheet.columns = conversationsSheetCol;
+        messagesSheet.columns = messagesSheetCol;
+
         mainSheet.addRow({
             modelsMode: experimentData.modelsMode,
             totalParticipants: experimentData.numberOfParticipants,
         });
 
-        // Populate Models Sheet
-        modelsSheet.columns = [
-            { header: 'Number of Participants', key: 'numParticipants' },
-            { header: 'Condition Title', key: 'conditionTitle' },
-            { header: 'Summary', key: 'summary' },
-            { header: 'System Starter Prompt', key: 'systemStarterPrompt' },
-            { header: 'Before User Sentence Prompt', key: 'beforeUserSentencePrompt' },
-            { header: 'After User Sentence Prompt', key: 'afterUserSentencePrompt' },
-            { header: 'First Chat Sentence', key: 'firstChatSentence' },
-            { header: 'Chat Model', key: 'chatModel' },
-            { header: 'Temperature', key: 'temperature' },
-            { header: 'Max Tokens', key: 'maxTokens' },
-            { header: 'Top P', key: 'topP' },
-            { header: 'Frequency Penalty', key: 'frequencyPenalty' },
-            { header: 'Presence Penalty', key: 'presencePenalty' },
-            { header: 'Stop Sequences', key: 'stopSequences' },
-            // Add other condition fields as needed
-        ];
-
-        usersSheet.columns = [
-            { header: 'Model Link', key: 'modelLink' },
-            { header: 'User ID', key: 'userId' },
-            { header: 'Number of Conversations', key: 'numberOfConversations' },
-            { header: 'Age', key: 'age' },
-            { header: 'Gender', key: 'gender' },
-            { header: 'Biological Sex', key: 'biologicalSex' },
-            { header: 'Marital Status', key: 'maritalStatus' },
-            { header: 'Religious Affiliation', key: 'religiousAffiliation' },
-            { header: 'Ethnicity', key: 'ethnicity' },
-            { header: 'Political Affiliation', key: 'politicalAffiliation' },
-            { header: 'Number of Children', key: 'childrenNumber' },
-            { header: 'Created At', key: 'createdAt' },
-            // Add other user-specific columns here
-        ];
-
-        conversationsSheet.columns = [
-            { header: 'Model Link', key: 'modelLink' },
-            { header: 'User Link', key: 'userLink' },
-            { header: 'Conversation ID', key: 'conversationId' },
-            { header: 'Conversation Number', key: 'conversationNumber' },
-            { header: 'Number Of Messages', key: 'messagesNumber' },
-            { header: 'Created At', key: 'createdAt' },
-            { header: 'Last Message Date', key: 'lastMessageDate' },
-            { header: 'Ims Pre', key: 'imsPre' },
-            { header: 'Ims Post', key: 'imsPost' },
-            // Add other conversation-specific columns here
-        ];
-
-        messagesSheet.columns = [
-            { header: 'Model Link', key: 'modelLink' },
-            { header: 'User Link', key: 'userLink' },
-            { header: 'Conversation Link', key: 'conversationLink' },
-            { header: 'User Conversation Nuber', key: 'conversationNumber' },
-            { header: 'Message ID', key: 'messageId' },
-            { header: 'Content', key: 'content' },
-            { header: 'Role', key: 'role' },
-            { header: 'Created At', key: 'createdAt' },
-            // Add other message-specific columns here
-        ];
-
-        // Prepare to populate Users, Conversations, and Messages Sheets
         let userRowIndex = 1;
         let conversationRowIndex = 1;
         let modelRowIndex = 1;
@@ -142,11 +141,9 @@ class DataAggregationService {
                 frequencyPenalty: model.condition.frequencyPenalty,
                 presencePenalty: model.condition.presencePenalty,
                 stopSequences: model.condition.stopSequences,
-                // Add other condition data
             });
 
             model.data.forEach((user) => {
-                // Populate Users Sheet
                 usersSheet.addRow({
                     modelLink: {
                         text: `Model ${modelRowIndex}`,
@@ -163,11 +160,9 @@ class DataAggregationService {
                     politicalAffiliation: user.user.politicalAffiliation,
                     childrenNumber: user.user.childrenNumber,
                     createdAt: user.user.createdAt,
-                    // Add other user-specific data
                 });
 
                 user.conversations.forEach((conversation) => {
-                    // Populate Conversations Sheet
                     conversationsSheet.addRow({
                         modelLink: {
                             text: `Model ${modelRowIndex}`,
@@ -184,10 +179,8 @@ class DataAggregationService {
                         lastMessageDate: conversation.metadata.lastMessageDate,
                         imsPre: conversation.metadata.imsPost ? Object.values(conversation.metadata.imsPre) : [],
                         imsPost: conversation.metadata.imsPost ? Object.values(conversation.metadata.imsPost) : [],
-                        // Add other conversation-specific data
                     });
 
-                    // Populate Messages Sheet
                     conversation.conversation.forEach((message) => {
                         messagesSheet.addRow({
                             modelLink: {
@@ -207,7 +200,6 @@ class DataAggregationService {
                             content: message.content,
                             role: message.role,
                             createdAt: message.createdAt,
-                            // Add other message-specific data
                         });
                     });
 
@@ -218,8 +210,6 @@ class DataAggregationService {
             });
             modelRowIndex++;
         });
-
-        // Add hyperlinks and formatting as needed
 
         return workbook;
     };

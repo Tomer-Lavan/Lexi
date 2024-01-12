@@ -1,41 +1,44 @@
+// MongoDbProvider.ts
+
 import dotenv from 'dotenv';
-import mongoose, { Connection, Model, Schema } from 'mongoose';
+import mongoose from 'mongoose';
 
 dotenv.config();
 
-export class MongoDbProvider {
-    private dbConnection: Connection | null;
-
+class MongoDbProvider {
     constructor() {
-        this.dbConnection = null;
+        console.log('Create MongoDbProvider');
     }
 
-    private connect(): Connection {
-        console.log('Connecting to DB...');
-        return mongoose.createConnection(`${process.env.MONGODB_URL}/${process.env.MONGODB_DB_NAME}`, {
-            ssl: true,
-            auth: {
-                username: process.env.MONGODB_USER,
-                password: process.env.MONGODB_PASSWORD,
-            },
-            retryWrites: true,
-            w: 'majority',
-        });
+    private initializeConnection() {
+        console.log('Connecting to MongoDB...');
+        mongoose
+            .connect(`${process.env.MONGODB_URL}/${process.env.MONGODB_DB_NAME}`, {
+                ssl: true,
+                auth: {
+                    username: process.env.MONGODB_USER,
+                    password: process.env.MONGODB_PASSWORD,
+                },
+                retryWrites: true,
+                w: 'majority',
+            })
+            .then(() => {
+                console.log('Successfully connected to MongoDB');
+            })
+            .catch((err) => {
+                console.error('Could not connect to MongoDB...', err);
+            });
     }
 
-    public getMongoConnection(): Connection {
-        if (!this.dbConnection || this.dbConnection.readyState !== 1) {
-            this.dbConnection = this.connect();
+    public initialize() {
+        this.initializeConnection();
+    }
+
+    public getModel<T>(modelName: string, schema: mongoose.Schema<T>): mongoose.Model<T> {
+        if (mongoose.models[modelName]) {
+            return mongoose.model<T>(modelName);
         }
-        return this.dbConnection;
-    }
-
-    public closeConnection(connection: Connection): void {
-        connection.close();
-    }
-
-    public getModel<T>(modelName: string, schema: Schema): Model<T> {
-        return this.getMongoConnection().model<T>(modelName, schema);
+        return mongoose.model<T>(modelName, schema);
     }
 }
 

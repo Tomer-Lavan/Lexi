@@ -1,6 +1,6 @@
-import { IconButton, Typography } from '@mui/material';
+import { Button, IconButton, Typography } from '@mui/material';
 import { styled } from '@mui/system';
-import theme from '../../../../../Theme';
+import theme from '@root/Theme';
 
 export const MainContainerStyled = styled('div')({
     maxWidth: 'lg',
@@ -12,7 +12,7 @@ export const FlexContainer = styled('div')({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    borderBottom: '1px solid black',
+    // borderBottom: '1px solid black',
 });
 
 export const TypographyStyled = styled(Typography)({
@@ -27,10 +27,20 @@ export const IconButtonStyled = styled(IconButton)({
     color: theme.palette.grey[500],
 });
 
-export const PointerDiv = styled('div')({
-    border: '1px solid black',
+export const AddButton = styled(Button)({
     height: 'fit-content',
     display: 'flex',
     borderRadius: '8px',
     cursor: 'pointer',
+    width: 'fit-content',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingLeft: '4px',
+    paddingRight: '16px',
+    textDecoration: 'none',
+    textTransform: 'none',
+    backgroundColor: theme.palette.secondary.main,
+    '&:hover': {
+        backgroundColor: theme.palette.secondary.dark,
+    },
 });

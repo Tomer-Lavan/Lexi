@@ -2,8 +2,12 @@ import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
 import React, { createContext, useContext, useState } from 'react';
 
+export type SnackbarStatusType = 'success' | 'error' | 'warning' | 'info';
+
+export const SnackbarStatus = { SUCCESS: 'success', ERROR: 'error', WARNING: 'warning', INFO: 'info' } as const;
+
 interface SnackbarContextProps {
-    openSnackbar: (message: string, status: 'success' | 'error' | 'warning' | 'info') => void;
+    openSnackbar: (message: string, status: SnackbarStatusType) => void;
 }
 
 const SnackbarContext = createContext<SnackbarContextProps | undefined>(undefined);
@@ -15,9 +19,9 @@ interface SnackbarProviderProps {
 export const SnackbarProvider: React.FC<SnackbarProviderProps> = ({ children }) => {
     const [open, setOpen] = useState(false);
     const [message, setMessage] = useState('');
-    const [status, setStatus] = useState<'success' | 'error' | 'warning' | 'info'>('success');
+    const [status, setStatus] = useState<SnackbarStatusType>(SnackbarStatus.SUCCESS);
 
-    const openSnackbar = (message: string, status: 'success' | 'error' | 'warning' | 'info') => {
+    const openSnackbar = (message: string, status: SnackbarStatusType) => {
         setMessage(message);
         setStatus(status);
         setOpen(true);

@@ -1,87 +1,72 @@
-import { Button, Grid, TextField, Typography } from '@mui/material';
+import { IsMobile } from '@models/StylesModels';
+import { Box, Button, TextField, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import theme from '../../Theme';
-import { IsMobile } from '../../models/StylesModels';
+import theme from '@root/Theme';
 
-export const Container = styled(Grid)<IsMobile>(({ isMobile }) => ({
-    height: '93vh',
+export const StyledContainer = styled(Box)({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    flexDirection: isMobile ? 'column' : 'row',
-    flexWrap: isMobile ? 'nowrap' : 'wrap',
-}));
-
-export const ContentContainer = styled('div')<IsMobile>(({ isMobile }) => ({
-    display: 'flex',
     flexDirection: 'column',
-    alignItems: 'flex-start',
-    marginBottom: !isMobile && '67px',
-    width: isMobile ? '100%' : '80%',
-}));
-
-export const GridItem = styled(Grid)({
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
+    height: '92vh',
+    gap: '3vh',
+    paddingBottom: '6vh',
 });
 
 export const TitleContent = styled(Typography)({
-    marginBottom: '16px',
-    animation: 'fadeIn 1.5s ease-out forwards', // Added 'forwards' here
+    animation: 'fadeIn 1.5s ease-out forwards',
     opacity: 0,
     transform: 'scale(0.9)',
-    width: 'fit-content',
+    width: '100%',
+    textAlign: 'center',
     zIndex: 2,
-});
-
-export const TitleBackgroundHighlight = styled('div')({
-    height: '6vh',
-    backgroundColor: 'rgba(228, 193, 173, 0.7)',
-    width: '60%',
-    bottom: '45px',
-    position: 'relative',
-    marginBottom: '-20px',
-    zIndex: 1,
+    fontFamily: 'Work Sans',
+    fontWeight: 500,
+    fontSize: '4.5rem',
 });
 
 export const BodyContent = styled(Typography)({
-    // lineHeight: '1.1rem',
     whiteSpace: 'pre-line',
     animation: 'slideIn 1.5s 0.5s ease-out forwards',
     opacity: 0,
     zIndex: 2,
+    fontFamily: 'Work Sans',
+    fontWeight: 400,
 });
 
 export const TextFieldStyled = styled(TextField)({
-    width: '100%',
+    width: '60%',
     '& .MuiInputBase-input': {
-        // lineHeight: '1.1rem',
         whiteSpace: 'pre-line',
         animation: 'slideIn 1.5s 0.5s ease-out forwards',
         opacity: 0,
         zIndex: 2,
-        // color: theme.palette.text.primary,
+        fontFamily: 'Work Sans',
+        fontWeight: 400,
+        width: '100%',
+        textAlign: 'center',
         ...theme.typography.h6,
     },
 });
 
 export const TitleTextField = styled(TextField)({
-    width: '100%',
+    width: 'fit-content',
     padding: 0,
     '& .MuiInputBase-input': {
         marginBottom: '16px',
         animation: 'fadeIn 1.5s ease-out forwards',
         opacity: 0,
         transform: 'scale(0.9)',
-        width: 'fit-content',
         zIndex: 2,
         ...theme.typography.h2,
+        textAlign: 'center',
+        fontFamily: 'Work Sans',
+        fontWeight: 500,
+        fontSize: '4.5rem',
         padding: 0,
     },
     '& .MuiInputBase-root': {
-        padding: '0', // Change this to your desired padding
+        padding: 0,
     },
 });
 
@@ -89,11 +74,27 @@ export const StartButton = styled(Button)<IsMobile>(({ isMobile }) => ({
     fontSize: '1.2rem',
     padding: '4px 10px',
     width: !isMobile && '22vw',
+    textTransform: 'none',
+    fontFamily: 'Work Sans',
+    border: `2px solid ${theme.palette.secondary.main}`,
+    marginTop: '16px',
+    color: 'black',
+
+    background: `linear-gradient(to right, ${theme.palette.secondary.main} 0%, ${theme.palette.secondary.main} 50%, white 50%)`,
+    backgroundSize: '200% 100%',
+    backgroundPosition: 'right bottom',
+
+    transition: 'background-position 1s ease, color 1s ease',
+
+    '&:hover': {
+        color: 'white',
+        backgroundPosition: 'left bottom',
+    },
 }));
 
-export const DividerGrid = styled(Grid)<IsMobile>(({ isMobile }) => ({
-    borderLeft: !isMobile && '1px solid #ccc',
-    height: '100%',
-    alignItems: 'center',
+export const ButtonsBox = styled(Box)({
+    position: 'absolute',
+    top: '9vh',
+    right: '1vw',
     display: 'flex',
-}));
+});

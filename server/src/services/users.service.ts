@@ -3,26 +3,25 @@ import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
-import { UserDocument, userSchema } from '../models/DbModels';
-import { mongoDbProvider } from '../mongoDBProvider';
+import { UsersModel } from '../models/UsersModel';
+import { IUser } from '../types';
 import { experimentsService } from './experiments.service';
 
 dotenv.config();
 
 class UsersService {
-    creatAdminUser = async (username, password) => {
-        const usersModel = mongoDbProvider.getModel('users', userSchema);
+    createAdminUser = async (username: string, password: string): Promise<IUser> => {
         const hashedPassword = await bcrypt.hash(password, 10);
-        const res = await usersModel.create({
+        const user = await UsersModel.create({
             nickname: username,
             password: hashedPassword,
             isAdmin: true,
         });
 
-        return { user: res };
+        return user;
     };
 
-    createUser = async (user: UserDocument, experimentId) => {
+    createUser = async (user: IUser, experimentId: string): Promise<{ user: IUser; token: string }> => {
         const {
             nickname,
             age,
@@ -34,10 +33,8 @@ class UsersService {
             politicalAffiliation,
             childrenNumber,
         } = user;
-        const usersModel = mongoDbProvider.getModel('users', userSchema);
-        // const hashedPassword = await bcrypt.hash(password, 10);
         const model = await experimentsService.getActiveModel(experimentId);
-        const res = await usersModel.create({
+        const res = await UsersModel.create({
             experimentId,
             nickname,
             age,
@@ -49,16 +46,21 @@ class UsersService {
             politicalAffiliation,
             childrenNumber,
             model,
-            // password: hashedPassword
         });
 
+        const savedUser = res.toObject() as IUser;
+
         experimentsService.addParticipant(experimentId);
-        const token = jwt.sign({ id: res._id }, process.env.JWT_SECRET_KEY);
-        return { user: res, token };
+        const token = jwt.sign({ id: savedUser._id }, process.env.JWT_SECRET_KEY);
+        return { user: savedUser, token };
     };
 
-    login = async (nickname, experimentId?, userPassword?) => {
-        const user: UserDocument = await this.getUserByName(nickname, experimentId);
+    login = async (
+        nickname: string,
+        experimentId?: string,
+        userPassword?: string,
+    ): Promise<{ user: IUser; token?: string }> => {
+        const user: IUser = await this.getUserByName(nickname, experimentId);
 
         if (!user) {
             const error = new Error('Invalid Nickname');
@@ -86,11 +88,9 @@ class UsersService {
         return { token, user: userWithoutPassword };
     };
 
-    getActiveUser = async (token) => {
-        const usersModel = mongoDbProvider.getModel('users', userSchema);
-
+    getActiveUser = async (token: string): Promise<{ user: IUser; newToken: string }> => {
         const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
-        const user: UserDocument = await usersModel.findOne({ _id: decoded.id }).lean();
+        const user: IUser = await UsersModel.findOne({ _id: decoded.id }).lean();
 
         if (!user) throw Object.assign(new Error('User not found'), { status: 401 });
 
@@ -100,39 +100,33 @@ class UsersService {
         return { user: userWithoutPassword, newToken };
     };
 
-    updateUser = async (filter, fields) => {
-        const usersModel = mongoDbProvider.getModel('users', userSchema);
+    addConversation = async (userId: string): Promise<IUser> => {
+        const updatedUser: IUser = await UsersModel.findOneAndUpdate(
+            { _id: new mongoose.Types.ObjectId(userId) },
+            { $inc: { numberOfConversations: 1 } },
+            { new: true },
+        );
 
-        const res = await usersModel.updateMany(filter, { $set: fields });
-
-        return res;
+        return updatedUser;
     };
 
-    getUserByName = async (userName, experimentId) => {
-        const usersModel = mongoDbProvider.getModel('users', userSchema);
-
-        const user: UserDocument = await usersModel
-            .findOne({
-                $or: [
-                    { nickname: userName, isAdmin: true },
-                    { nickname: userName, experimentId },
-                ],
-            })
-            .lean();
+    getUserByName = async (userName: string, experimentId: string): Promise<IUser> => {
+        const user: IUser = await UsersModel.findOne({
+            $or: [
+                { nickname: userName, isAdmin: true },
+                { nickname: userName, experimentId },
+            ],
+        }).lean();
         return user;
     };
 
-    getUserById = async (userId) => {
-        const usersModel = mongoDbProvider.getModel('users', userSchema);
-
-        const user: UserDocument = await usersModel.findOne({ _id: new mongoose.Types.ObjectId(userId) }).lean();
+    getUserById = async (userId: string): Promise<IUser> => {
+        const user: IUser = await UsersModel.findOne({ _id: new mongoose.Types.ObjectId(userId) }).lean();
         return user;
     };
 
-    getExperimentUsers = async (experimentId) => {
-        const usersModel = mongoDbProvider.getModel('users', userSchema);
-
-        const users = await usersModel.aggregate([
+    getExperimentUsers = async (experimentId: string): Promise<any[]> => {
+        const users = await UsersModel.aggregate([
             { $match: { experimentId } },
             { $group: { _id: '$model', data: { $push: '$$ROOT' } } },
             { $project: { _id: 0, model: '$_id', data: 1 } },

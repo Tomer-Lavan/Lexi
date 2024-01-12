@@ -1,3 +1,4 @@
+import { ModelType } from '@models/AppModels';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -5,6 +6,7 @@ import {
     Accordion,
     AccordionDetails,
     AccordionSummary,
+    Box,
     Dialog,
     Divider,
     IconButton,
@@ -15,8 +17,7 @@ import {
 } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import React, { useState } from 'react';
-import { ModelType } from '../../../../../models/AppModels';
-import { MainContainerStyled } from '../../experiments-panel/experiments/Experiments.s';
+import { AddButton, MainContainerStyled } from '../../experiments-panel/experiments/Experiments.s';
 import ModelForm from '../model-form/ModelForm';
 import { ModelDetails } from './ModelDetails';
 import { ModelHeader } from './ModelHeader';
@@ -60,30 +61,26 @@ export const ModelsListContainer: React.FC<ModelsListContainerProps> = ({ models
 
     return (
         <MainContainerStyled>
-            <div
-                style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    borderBottom: '1px solid black',
-                }}
-            >
-                <Typography variant="h4" gutterBottom>
-                    Models
+            <Typography variant="h6" gutterBottom style={{ borderBottom: '1px solid gray', marginBottom: '24px' }}>
+                Models
+            </Typography>
+            <Typography variant="h5" gutterBottom fontWeight={500}>
+                Manage Your Models
+            </Typography>
+            <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
+                <Typography variant="body2" gutterBottom fontWeight={500} marginBottom={2}>
+                    Manage your models, create a unique agent by prompt engineering, revisite your prompts and
+                    more.
                 </Typography>
-                <div
-                    style={{
-                        border: '1px solid black',
-                        height: 'fit-content',
-                        display: 'flex',
-                        borderRadius: '8px',
-                        cursor: 'pointer',
-                    }}
-                    onClick={() => setOpenModelFormDialog(true)}
-                >
-                    <AddIcon />
-                </div>
-            </div>
+                <Box display={'flex'} justifyContent={'end'}>
+                    <AddButton onClick={() => setOpenModelFormDialog(true)} size="small">
+                        <AddIcon style={{ color: 'floralwhite' }} />
+                        <Typography variant="body2" fontWeight={500} color={'floralwhite'}>
+                            Add Model
+                        </Typography>
+                    </AddButton>
+                </Box>
+            </Box>
             <List>
                 {models.length ? (
                     models.map((model, index) => (

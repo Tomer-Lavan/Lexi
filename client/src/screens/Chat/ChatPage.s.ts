@@ -36,4 +36,7 @@ export const MessageListContainer = styled(Grid)({
     flex: 1,
     overflow: 'auto',
     marginBottom: '8px',
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'center',
 });

@@ -17,6 +17,8 @@ export const ButtonsBox = styled(Box)({
 
 export const ColumnTitle = styled(TableCell)({
     fontWeight: 'bold',
+    paddingTop: 0,
+    paddingBottom: '4px',
 });
 
 export const TablePaper = styled(Paper)({

@@ -1,10 +1,11 @@
+import { ApiPaths } from '../constants';
 import axiosInstance from './AxiosInstance';
 
-const DATA_AGGREGATION_PATH = 'dataAggregation';
-
-export const downloadExperimentJSON = async (experimentId, title): Promise<any> => {
+export const downloadExperimentJSON = async (experimentId: string, title: string): Promise<void> => {
     try {
-        const response = await axiosInstance.get(`/${DATA_AGGREGATION_PATH}?experimentId=${experimentId}`);
+        const response = await axiosInstance.get(
+            `/${ApiPaths.DATA_AGGREGATION_PATH}?experimentId=${experimentId}`,
+        );
 
         const file = new Blob([JSON.stringify(response.data, null, 2)], {
             type: 'application/json',
@@ -16,11 +17,14 @@ export const downloadExperimentJSON = async (experimentId, title): Promise<any> 
     }
 };
 
-export const downloadExperimentXLSX = async (experimentId, title): Promise<any> => {
+export const downloadExperimentXLSX = async (experimentId: string, title: string): Promise<void> => {
     try {
-        const response = await axiosInstance.get(`/${DATA_AGGREGATION_PATH}/excel?experimentId=${experimentId}`, {
-            responseType: 'blob',
-        });
+        const response = await axiosInstance.get(
+            `/${ApiPaths.DATA_AGGREGATION_PATH}/excel?experimentId=${experimentId}`,
+            {
+                responseType: 'blob',
+            },
+        );
 
         const file = new Blob([response.data], {
             type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
@@ -28,11 +32,11 @@ export const downloadExperimentXLSX = async (experimentId, title): Promise<any> 
 
         downloadFile(file, title, 'xlsx');
     } catch (error) {
-        console.error('Error downloading the file');
+        throw error;
     }
 };
 
-const downloadFile = (file, title, fileType) => {
+const downloadFile = (file: Blob, title: string, fileType: string) => {
     const fileURL = URL.createObjectURL(file);
     const link = document.createElement('a');
     link.href = fileURL;

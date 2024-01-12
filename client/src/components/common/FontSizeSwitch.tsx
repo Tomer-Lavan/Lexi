@@ -1,5 +1,5 @@
 import AbcIcon from '@mui/icons-material/Abc';
-import { IconButton } from '@mui/material';
+import { Box, IconButton } from '@mui/material';
 
 const FontSizeSwitch = ({ fontSize, setFontSize }) => {
     const toggleFontSize = () => {
@@ -13,7 +13,7 @@ const FontSizeSwitch = ({ fontSize, setFontSize }) => {
     };
 
     return (
-        <div style={{ display: 'flex', alignItems: 'end' }}>
+        <Box style={{ display: 'flex', alignItems: 'end' }}>
             <IconButton
                 style={{ ...buttonStyle }}
                 color={fontSize === 'lg' ? 'primary' : 'default'}
@@ -30,7 +30,7 @@ const FontSizeSwitch = ({ fontSize, setFontSize }) => {
             >
                 <AbcIcon fontSize="medium" />
             </IconButton>
-        </div>
+        </Box>
     );
 };
 

@@ -1,3 +1,8 @@
+export interface MessageType {
+    role: 'system' | 'user' | 'assistant';
+    content: string;
+}
+
 export interface ConversationType {
     conversationId: string;
     content: string;
@@ -66,10 +71,10 @@ export type AbModelsType = {
     distB: number;
 };
 
-export enum ModelsModes {
-    SINGLE = 'Single',
-    AB = 'A/B',
-}
+export const ModelsModes = {
+    SINGLE: 'Single',
+    AB: 'A/B',
+} as const;
 
 export interface DisplaySettings {
     welcomeContent: string;
@@ -89,4 +94,22 @@ export interface ExperimentType {
     isActive: boolean;
     title: string;
     description: string;
+    numberOfParticipants: number;
+}
+
+export interface NewUserInfoType {
+    nickname: string;
+    age: number | string;
+    gender: string;
+    biologicalSex: string;
+    maritalStatus: string;
+    religiousAffiliation: string;
+    ethnicity: string;
+    politicalAffiliation: number;
+    childrenNumber: number;
+}
+
+export interface ExperimentContentType {
+    content: DisplaySettings;
+    isActive: boolean;
 }
