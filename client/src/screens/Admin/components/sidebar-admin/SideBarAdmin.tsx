@@ -13,7 +13,7 @@ import { StyledListItem } from './SideBarAdmin.s';
 
 const sectionsConfig = [
     { id: AdminSections.EXPERIMENTS, label: 'Experiments', Icon: BookOutlinedIcon },
-    { id: AdminSections.MODELS, label: 'Models', Icon: AutoAwesomeOutlinedIcon },
+    { id: AdminSections.AGENTS, label: 'Agents', Icon: AutoAwesomeOutlinedIcon },
     { id: AdminSections.DATA, label: 'Data', Icon: InsertChartOutlinedOutlinedIcon },
     { id: AdminSections.SETTINGS, label: 'Settings', Icon: SettingsOutlinedIcon },
 ];

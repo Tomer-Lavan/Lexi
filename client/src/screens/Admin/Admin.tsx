@@ -1,28 +1,28 @@
 import { AdminSections } from '@DAL/constants';
-import { getModels } from '@DAL/server-requests/models';
+import { getAgents } from '@DAL/server-requests/agents';
 import { SnackbarStatus, useSnackbar } from '@contexts/SnackbarProvider';
 import useEffectAsync from '@hooks/useEffectAsync';
-import { ModelType } from '@models/AppModels';
+import { AgentType } from '@models/AppModels';
 import { Grid } from '@mui/material';
 import theme from '@root/Theme';
 import { useState } from 'react';
 import { MainContainer, SectionContainer, SectionInnerContainer } from './Admin.s';
+import { AgentsListContainer } from './components/agents-panel/agents-list/AgentsListContainer';
 import { Experiments } from './components/experiments-panel/experiments/Experiments';
-import { ModelsListContainer } from './components/models-panel/models-list/ModelsListContainer';
 import { SidebarAdmin } from './components/sidebar-admin/SideBarAdmin';
 
 const Admin = () => {
-    const [models, setModels] = useState<ModelType[]>([]);
+    const [agents, setAgents] = useState<AgentType[]>([]);
     const [section, setSection] = useState(AdminSections.EXPERIMENTS);
     const { openSnackbar } = useSnackbar();
 
     useEffectAsync(async () => {
         try {
-            const res = await getModels();
-            setModels(res);
+            const res = await getAgents();
+            setAgents(res);
         } catch (error) {
-            openSnackbar('Failed to load models', SnackbarStatus.ERROR);
-            setModels([]);
+            openSnackbar('Failed to load agents', SnackbarStatus.ERROR);
+            setAgents([]);
         }
     }, []);
 
@@ -35,9 +35,9 @@ const Admin = () => {
                 <SectionContainer>
                     <SectionInnerContainer container>
                         {section === AdminSections.EXPERIMENTS ? (
-                            <Experiments models={models} />
+                            <Experiments agents={agents} />
                         ) : (
-                            <ModelsListContainer models={models} setModels={setModels} />
+                            <AgentsListContainer agents={agents} setAgents={setAgents} />
                         )}
                     </SectionInnerContainer>
                 </SectionContainer>

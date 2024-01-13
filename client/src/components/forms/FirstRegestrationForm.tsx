@@ -42,13 +42,13 @@ export const FirstRegisterForm: React.FC<FirstRegisterFormProps> = ({
 }) => {
     const handleContinue = async () => {
         try {
-            const nickname = getValues('nickname');
-            await validateUserName(nickname, experimentId);
+            const username = getValues('username');
+            await validateUserName(username, experimentId);
             setPage(2);
         } catch (error) {
-            setError('nickname', {
+            setError('username', {
                 type: 'manual',
-                message: 'Nickname already exists',
+                message: 'User name already exists',
             });
         }
     };
@@ -60,13 +60,13 @@ export const FirstRegisterForm: React.FC<FirstRegisterFormProps> = ({
                     <NoteText>Fields marked with a '*' are mandatory.</NoteText>
                     <TextField
                         size="small"
-                        error={Boolean(errors.nickname)}
-                        helperText={getFormErrorMessage(errors.nickname)}
+                        error={Boolean(errors.username)}
+                        helperText={getFormErrorMessage(errors.username)}
                         required
                         fullWidth
-                        {...register('nickname', { required: 'Please fill necessary field' })}
-                        label="Nickname"
-                        id="nickname"
+                        {...register('username', { required: 'Please fill necessary field' })}
+                        label="User Name"
+                        id="username"
                     />
                 </Grid>
                 <Grid item xs={6}>

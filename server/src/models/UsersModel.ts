@@ -11,7 +11,7 @@ export const userSchema = new Schema<IUser>(
                 return !this.isAdmin;
             },
         },
-        nickname: { type: String, required: true, unique: true },
+        username: { type: String, required: true, unique: true },
         age: { type: Number },
         gender: { type: String },
         biologicalSex: { type: String },
@@ -25,7 +25,7 @@ export const userSchema = new Schema<IUser>(
         isAdmin: { type: Boolean, default: () => false },
         password: { type: String },
         numberOfConversations: { type: Number, default: () => 0 },
-        model: {
+        agent: {
             type: agentsSchema,
             required() {
                 return !this.isAdmin;

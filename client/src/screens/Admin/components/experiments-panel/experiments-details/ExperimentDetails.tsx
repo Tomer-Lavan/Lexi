@@ -1,4 +1,4 @@
-import { ExperimentType, ModelsModes } from '@models/AppModels';
+import { AgentsModes, ExperimentType } from '@models/AppModels';
 import { Box, Grid, Link } from '@mui/material';
 import React from 'react';
 import { AdressContainer, GridContainerStyled, GridItemStyled, TypographyStyled } from './ExperimentsDetails.s';
@@ -12,25 +12,25 @@ export const ExperimentDetails: React.FC<ExperimentDetailsProps> = ({ row }) => 
         <GridContainerStyled container spacing={2} justifyContent="center" alignItems="center">
             <Grid item>
                 <TypographyStyled variant="subtitle1" color="textSecondary">
-                    Mode: <strong>{row.modelsMode}</strong>
+                    Mode: <strong>{row.agentsMode}</strong>
                 </TypographyStyled>
             </Grid>
-            {row.modelsMode === ModelsModes.SINGLE ? (
+            {row.agentsMode === AgentsModes.SINGLE ? (
                 <Grid item>
                     <TypographyStyled variant="subtitle1" color="textSecondary">
-                        Active Model: <strong>{row.activeModel.title}</strong>
+                        Active Agent: <strong>{row.activeAgent.title}</strong>
                     </TypographyStyled>
                 </Grid>
             ) : (
                 <GridItemStyled item>
                     <Grid item>
                         <TypographyStyled variant="subtitle1" color="textSecondary">
-                            Model A: <strong>{`${row.abModels.modelA.title} (${row.abModels.distA}%)`}</strong>
+                            Agent A: <strong>{`${row.abAgents.agentA.title} (${row.abAgents.distA}%)`}</strong>
                         </TypographyStyled>
                     </Grid>
                     <Grid>
                         <TypographyStyled variant="subtitle1" color="textSecondary">
-                            Model B: <strong>{`${row.abModels.modelB.title} (${row.abModels.distB}%)`}</strong>
+                            Agent B: <strong>{`${row.abAgents.agentB.title} (${row.abAgents.distB}%)`}</strong>
                         </TypographyStyled>
                     </Grid>
                 </GridItemStyled>

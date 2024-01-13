@@ -1,8 +1,8 @@
-import { defaultSettings, defaultSliderSettings, initialSlidersEnabled, modelsOptions } from '@DAL/constants';
-import { saveModel, updateModel } from '@DAL/server-requests/models';
+import { agentsOptions, defaultSettings, defaultSliderSettings, initialSlidersEnabled } from '@DAL/constants';
+import { saveAgent, updateAgent } from '@DAL/server-requests/agents';
 import { ChipsInput } from '@components/common/ChipsInput';
 import { SnackbarStatus, useSnackbar } from '@contexts/SnackbarProvider';
-import { ModelType } from '@models/AppModels';
+import { AgentType } from '@models/AppModels';
 import {
     Box,
     Checkbox,
@@ -16,54 +16,54 @@ import {
     Typography,
 } from '@mui/material';
 import React, { useMemo, useState } from 'react';
-import { MainContainer, SaveButton } from './ModelForm.s';
+import { MainContainer, SaveButton } from './AgentForm.s';
 
-interface ModelFormProps {
-    editModel: any;
-    models: ModelType[];
-    setModels: (any) => void;
+interface AgentFormProps {
+    editAgent: any;
+    agents: AgentType[];
+    setAgents: (any) => void;
     closeDialog: () => void;
     isEditMode: boolean;
 }
 
-const ModelForm: React.FC<ModelFormProps> = ({
-    editModel,
-    models,
-    setModels,
+const AgentForm: React.FC<AgentFormProps> = ({
+    editAgent,
+    agents,
+    setAgents,
     closeDialog,
     isEditMode = false,
 }) => {
     const [isSaveLoading, setIsSaveLoading] = useState(false);
     const [validationMessage, setValidationMessage] = useState('');
-    const formTitle = useMemo(() => (!isEditMode ? 'New Model' : 'Edit Model'), []);
+    const formTitle = useMemo(() => (!isEditMode ? 'New Agent' : 'Edit Agent'), []);
     const { openSnackbar } = useSnackbar();
     const [slidersEnabled, setSlidersEnabled] = useState<any>(
         isEditMode
             ? {
-                  temperatureEnabled: editModel.temperature !== null,
-                  maxTokensEnabled: editModel.maxTokens !== null,
-                  topPEnabled: editModel.topP !== null,
-                  frequencyPenaltyEnabled: editModel.frequencyPenalty !== null,
-                  presencePenaltyEnabled: editModel.presencePenalty !== null,
+                  temperatureEnabled: editAgent.temperature !== null,
+                  maxTokensEnabled: editAgent.maxTokens !== null,
+                  topPEnabled: editAgent.topP !== null,
+                  frequencyPenaltyEnabled: editAgent.frequencyPenalty !== null,
+                  presencePenaltyEnabled: editAgent.presencePenalty !== null,
               }
             : initialSlidersEnabled,
     );
 
-    const [model, setModel] = useState<any>(editModel ? editModel : defaultSettings);
-    console.log(model);
-    const updateModelInList = (updatedModel: ModelType) => {
-        const updatedSettings = models.map((model: ModelType) =>
-            model._id === updatedModel._id ? updatedModel : model,
+    const [agent, setAgent] = useState<any>(editAgent ? editAgent : defaultSettings);
+    console.log(agent);
+    const updateAgentInList = (updatedAgent: AgentType) => {
+        const updatedSettings = agents.map((agent: AgentType) =>
+            agent._id === updatedAgent._id ? updatedAgent : agent,
         );
-        setModels(updatedSettings);
+        setAgents(updatedSettings);
     };
 
-    const validateModel = (): boolean => {
+    const validateAgent = (): boolean => {
         let message = '';
-        if (!model.title) message = 'Title is required.';
-        else if (!model.chatModel) message = 'Model selection is required.';
-        else if (!model.firstChatSentence) message = 'First Chat Sentence is required.';
-        else if (!model.systemStarterPrompt) message = 'System Starter Prompt is required.';
+        if (!agent.title) message = 'Title is required.';
+        else if (!agent.model) message = 'Agent selection is required.';
+        else if (!agent.firstChatSentence) message = 'First Chat Sentence is required.';
+        else if (!agent.systemStarterPrompt) message = 'System Starter Prompt is required.';
 
         setValidationMessage(message);
         return !message;
@@ -71,32 +71,32 @@ const ModelForm: React.FC<ModelFormProps> = ({
 
     const handleChange = (event) => {
         const { name, value } = event.target;
-        setModel({ ...model, [name]: value });
+        setAgent({ ...agent, [name]: value });
     };
 
     const handleSave = async () => {
-        if (!validateModel()) return;
+        if (!validateAgent()) return;
 
         setIsSaveLoading(true);
         try {
             if (!isEditMode) {
-                const savedModel = await saveModel(model);
-                setModels([...models, savedModel]);
+                const savedAgent = await saveAgent(agent);
+                setAgents([...agents, savedAgent]);
             } else {
-                await updateModel(model);
-                updateModelInList(model);
+                await updateAgent(agent);
+                updateAgentInList(agent);
             }
-            openSnackbar('Model Saved !', SnackbarStatus.SUCCESS);
+            openSnackbar('Agent Saved !', SnackbarStatus.SUCCESS);
             setIsSaveLoading(false);
             closeDialog();
         } catch (error) {
-            openSnackbar('Model Saving Failed', SnackbarStatus.ERROR);
+            openSnackbar('Agent Saving Failed', SnackbarStatus.ERROR);
             setIsSaveLoading(false);
         }
     };
 
     const handleSliderChange = (newValue: number | number[], field: string) => {
-        setModel({ ...model, [field]: newValue });
+        setAgent({ ...agent, [field]: newValue });
     };
 
     const renderSlider = (
@@ -122,7 +122,7 @@ const ModelForm: React.FC<ModelFormProps> = ({
                     name={`${field}Enabled`}
                 />
                 <Slider
-                    value={enabled && model[field]}
+                    value={enabled && agent[field]}
                     onChange={(e, newValue) => handleSliderChange(newValue, field)}
                     min={min}
                     max={max}
@@ -145,7 +145,7 @@ const ModelForm: React.FC<ModelFormProps> = ({
                 required
                 label="Title"
                 name="title"
-                value={model.title}
+                value={agent.title}
                 onChange={handleChange}
                 size="small"
                 margin="normal"
@@ -157,23 +157,23 @@ const ModelForm: React.FC<ModelFormProps> = ({
                 fullWidth
                 label="Summary"
                 name="summary"
-                value={model.summary}
+                value={agent.summary}
                 onChange={handleChange}
                 size="small"
                 margin="normal"
             />
             <FormControl fullWidth margin="normal" size="small" required>
-                <InputLabel id="model-select-label">Model</InputLabel>
+                <InputLabel id="agent-select-label">Model</InputLabel>
                 <Select
-                    labelId="model-select-label"
-                    value={model.chatModel}
+                    labelId="agent-select-label"
+                    value={agent.model}
                     onChange={handleChange}
                     label="Model"
-                    name="chatModel"
+                    name="model"
                 >
-                    {modelsOptions.map((model) => (
-                        <MenuItem key={model} value={model}>
-                            {model}
+                    {agentsOptions.map((agent) => (
+                        <MenuItem key={agent} value={agent}>
+                            {agent}
                         </MenuItem>
                     ))}
                 </Select>
@@ -186,7 +186,7 @@ const ModelForm: React.FC<ModelFormProps> = ({
                 rows={4}
                 label="First Chat Sentence"
                 name="firstChatSentence"
-                value={model.firstChatSentence}
+                value={agent.firstChatSentence}
                 onChange={handleChange}
                 size="small"
                 margin="normal"
@@ -199,7 +199,7 @@ const ModelForm: React.FC<ModelFormProps> = ({
                 rows={8}
                 label="System Starter Prompt"
                 name="systemStarterPrompt"
-                value={model.systemStarterPrompt}
+                value={agent.systemStarterPrompt}
                 onChange={handleChange}
                 size="small"
                 margin="normal"
@@ -208,7 +208,7 @@ const ModelForm: React.FC<ModelFormProps> = ({
                 fullWidth
                 label="Before User Sentence Prompt"
                 name="beforeUserSentencePrompt"
-                value={model.beforeUserSentencePrompt}
+                value={agent.beforeUserSentencePrompt}
                 onChange={handleChange}
                 size="small"
                 margin="normal"
@@ -217,7 +217,7 @@ const ModelForm: React.FC<ModelFormProps> = ({
                 fullWidth
                 label="After User Sentence Prompt"
                 name="afterUserSentencePrompt"
-                value={model.afterUserSentencePrompt}
+                value={agent.afterUserSentencePrompt}
                 onChange={handleChange}
                 size="small"
                 margin="normal"
@@ -242,17 +242,17 @@ const ModelForm: React.FC<ModelFormProps> = ({
                 slidersEnabled.presencePenaltyEnabled,
             )}
             <ChipsInput
-                list={model.stopSequences}
-                setList={(stops) => setModel({ ...model, stopSequences: stops })}
+                list={agent.stopSequences}
+                setList={(stops) => setAgent({ ...agent, stopSequences: stops })}
                 id={'stop'}
                 label={'Stop Sequences'}
             />
             <SaveButton variant="contained" color="primary" onClick={handleSave} style={{ marginBottom: 0 }}>
-                {isSaveLoading ? <CircularProgress size={28} sx={{ color: 'white' }} /> : 'Save Model'}
+                {isSaveLoading ? <CircularProgress size={28} sx={{ color: 'white' }} /> : 'Save Agent'}
             </SaveButton>
             {validationMessage && <Typography color="error">{validationMessage}</Typography>}
         </MainContainer>
     );
 };
 
-export default ModelForm;
+export default AgentForm;

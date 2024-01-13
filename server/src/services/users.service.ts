@@ -13,7 +13,7 @@ class UsersService {
     createAdminUser = async (username: string, password: string): Promise<IUser> => {
         const hashedPassword = await bcrypt.hash(password, 10);
         const user = await UsersModel.create({
-            nickname: username,
+            username,
             password: hashedPassword,
             isAdmin: true,
         });
@@ -23,7 +23,7 @@ class UsersService {
 
     createUser = async (user: IUser, experimentId: string): Promise<{ user: IUser; token: string }> => {
         const {
-            nickname,
+            username,
             age,
             gender,
             biologicalSex,
@@ -33,10 +33,10 @@ class UsersService {
             politicalAffiliation,
             childrenNumber,
         } = user;
-        const model = await experimentsService.getActiveModel(experimentId);
+        const agent = await experimentsService.getActiveAgent(experimentId);
         const res = await UsersModel.create({
             experimentId,
-            nickname,
+            username,
             age,
             gender,
             biologicalSex,
@@ -45,7 +45,7 @@ class UsersService {
             ethnicity,
             politicalAffiliation,
             childrenNumber,
-            model,
+            agent,
         });
 
         const savedUser = res.toObject() as IUser;
@@ -56,14 +56,14 @@ class UsersService {
     };
 
     login = async (
-        nickname: string,
+        username: string,
         experimentId?: string,
         userPassword?: string,
     ): Promise<{ user: IUser; token?: string }> => {
-        const user: IUser = await this.getUserByName(nickname, experimentId);
+        const user: IUser = await this.getUserByName(username, experimentId);
 
         if (!user) {
-            const error = new Error('Invalid Nickname');
+            const error = new Error('Invalid User Name');
             error['code'] = 401;
             throw error;
         }
@@ -113,8 +113,8 @@ class UsersService {
     getUserByName = async (userName: string, experimentId: string): Promise<IUser> => {
         const user: IUser = await UsersModel.findOne({
             $or: [
-                { nickname: userName, isAdmin: true },
-                { nickname: userName, experimentId },
+                { username: userName, isAdmin: true },
+                { username: userName, experimentId },
             ],
         }).lean();
         return user;
@@ -128,8 +128,8 @@ class UsersService {
     getExperimentUsers = async (experimentId: string): Promise<any[]> => {
         const users = await UsersModel.aggregate([
             { $match: { experimentId } },
-            { $group: { _id: '$model', data: { $push: '$$ROOT' } } },
-            { $project: { _id: 0, model: '$_id', data: 1 } },
+            { $group: { _id: '$agent', data: { $push: '$$ROOT' } } },
+            { $project: { _id: 0, agent: '$_id', data: 1 } },
         ]);
 
         return users;

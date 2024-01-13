@@ -4,10 +4,10 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
 import { mongoDbProvider } from './mongoDBProvider';
+import { agentsRouter } from './routers/agentsRouter.router';
 import { conversationsRouter } from './routers/conversationsRouter.router';
 import { dataAggregationRouter } from './routers/dataAggregationRouter.router';
 import { experimentsRouter } from './routers/experimentsRouter.router';
-import { modelsRouter } from './routers/modelsRouter.router';
 import { usersRouter } from './routers/usersRouter.router';
 import { usersService } from './services/users.service';
 
@@ -48,7 +48,7 @@ const setupServer = () => {
     app.use('/conversations', conversationsRouter());
     app.use('/experiments', experimentsRouter());
     app.use('/users', usersRouter());
-    app.use('/models', modelsRouter());
+    app.use('/agents', agentsRouter());
     app.use('/dataAggregation', dataAggregationRouter());
 
     app.listen(PORT, () => {

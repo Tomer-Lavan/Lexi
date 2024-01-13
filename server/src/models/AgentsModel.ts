@@ -10,7 +10,7 @@ export const agentsSchema = new Schema<IAgent>(
         beforeUserSentencePrompt: { type: String, required: false },
         afterUserSentencePrompt: { type: String, required: false },
         firstChatSentence: { type: String, required: true },
-        chatModel: { type: String, required: true },
+        model: { type: String, required: true },
         temperature: { type: Number },
         maxTokens: { type: Number },
         topP: { type: Number },
@@ -21,4 +21,4 @@ export const agentsSchema = new Schema<IAgent>(
     { versionKey: false },
 );
 
-export const AgentsModel = mongoDbProvider.getModel('settings', agentsSchema);
+export const AgentsModel = mongoDbProvider.getModel('agents', agentsSchema);

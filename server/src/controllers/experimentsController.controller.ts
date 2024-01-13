@@ -26,9 +26,9 @@ class ExperimentsController {
         res.status(200).send(savedExperiment);
     });
 
-    updateActiveModel = requestHandler(async (req: Request, res: Response) => {
-        const { experimentId, model, modelsConfig, abModels } = req.body;
-        await experimentsService.updateActiveModel(experimentId, model, modelsConfig, abModels);
+    updateActiveAgent = requestHandler(async (req: Request, res: Response) => {
+        const { experimentId, agent, agentsConfig, abAgents } = req.body;
+        await experimentsService.updateActiveAgent(experimentId, agent, agentsConfig, abAgents);
         res.status(200).send();
     });
 

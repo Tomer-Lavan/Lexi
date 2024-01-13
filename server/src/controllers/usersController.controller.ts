@@ -29,8 +29,8 @@ class UsersController {
 
     login = requestHandler(
         async (req: Request, res: Response) => {
-            const { nickname, userPassword, experimentId } = req.body;
-            const { token, user } = await usersService.login(nickname, experimentId, userPassword);
+            const { username, userPassword, experimentId } = req.body;
+            const { token, user } = await usersService.login(username, experimentId, userPassword);
 
             res.cookie('token', token, cookieConfig);
             res.status(200).send({ token, user });
@@ -63,9 +63,9 @@ class UsersController {
 
     validateUserName = requestHandler(
         async (req, res) => {
-            const nickname = req.query.nickname as string;
+            const username = req.query.username as string;
             const experimentId = req.query.experimentId as string;
-            const user = await usersService.getUserByName(nickname, experimentId);
+            const user = await usersService.getUserByName(username, experimentId);
             if (user) {
                 const error = new Error('User Already Exist');
                 error['code'] = 409;

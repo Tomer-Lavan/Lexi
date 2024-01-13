@@ -21,7 +21,7 @@ export interface MetadataConversationType {
     lastMessageDate: Date;
     lastMessageTimestamp: number;
     conversationNumber: number;
-    model: ModelType;
+    agent: AgentType;
     userId: string;
     imsPre?: object;
     imsPost?: object;
@@ -30,7 +30,7 @@ export interface MetadataConversationType {
 export interface UserType {
     _id: string;
     experimentId: string;
-    nickname: string;
+    username: string;
     age: number;
     gender: 'male' | 'female' | 'other';
     biologicalSex: string;
@@ -44,10 +44,10 @@ export interface UserType {
     isAdmin: boolean;
     password?: string;
     numberOfConversations: number;
-    model: ModelType;
+    agent: AgentType;
 }
 
-export interface ModelType {
+export interface AgentType {
     _id: string;
     title: string;
     summary: string;
@@ -55,7 +55,7 @@ export interface ModelType {
     beforeUserSentencePrompt: string;
     afterUserSentencePrompt: string;
     firstChatSentence: string;
-    chatModel: string;
+    model: string;
     temperature: number;
     maxTokens: number;
     topP: number;
@@ -64,14 +64,14 @@ export interface ModelType {
     stopSequences: { value: string; id: string }[];
 }
 
-export type AbModelsType = {
-    modelA: ModelType;
+export type AbAgentsType = {
+    agentA: AgentType;
     distA: number;
-    modelB: ModelType;
+    agentB: AgentType;
     distB: number;
 };
 
-export const ModelsModes = {
+export const AgentsModes = {
     SINGLE: 'Single',
     AB: 'A/B',
 } as const;
@@ -83,9 +83,9 @@ export interface DisplaySettings {
 
 export interface ExperimentType {
     _id: string;
-    modelsMode: string;
-    activeModel: ModelType;
-    abModels: AbModelsType;
+    agentsMode: string;
+    activeAgent: AgentType;
+    abAgents: AbAgentsType;
     createdAt: Date;
     timestamp: number;
     welcomeText: string;
@@ -98,7 +98,7 @@ export interface ExperimentType {
 }
 
 export interface NewUserInfoType {
-    nickname: string;
+    username: string;
     age: number | string;
     gender: string;
     biologicalSex: string;

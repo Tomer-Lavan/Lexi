@@ -21,13 +21,13 @@ export const registerUser = async (userInfo: NewUserInfoType, experimentId: stri
 };
 
 export const login = async (
-    nickname: string,
+    username: string,
     userPassword: string,
     experimentId: string,
 ): Promise<{ token: string; user: UserType }> => {
     try {
         const response = await axiosInstance.post(`/${ApiPaths.USERS_PATH}/login`, {
-            nickname,
+            username,
             userPassword,
             experimentId,
         });
@@ -46,10 +46,10 @@ export const logout = async (): Promise<void> => {
     }
 };
 
-export const validateUserName = async (nickname: string, experimentId: string): Promise<boolean> => {
+export const validateUserName = async (username: string, experimentId: string): Promise<boolean> => {
     try {
         const response = await axiosInstance.get(
-            `/${ApiPaths.USERS_PATH}/validate?nickname=${nickname}&experimentId=${experimentId}`,
+            `/${ApiPaths.USERS_PATH}/validate?username=${username}&experimentId=${experimentId}`,
         );
         return response.data;
     } catch (error) {

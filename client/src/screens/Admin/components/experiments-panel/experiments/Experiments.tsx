@@ -1,7 +1,7 @@
 import { getExperiments, updateExperimentsStatus } from '@DAL/server-requests/experiments';
 import { SnackbarStatus, useSnackbar } from '@contexts/SnackbarProvider';
 import useEffectAsync from '@hooks/useEffectAsync';
-import { ExperimentType, ModelType } from '@models/AppModels';
+import { AgentType, ExperimentType } from '@models/AppModels';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 import { Box, Dialog, Typography } from '@mui/material';
@@ -10,7 +10,7 @@ import ExperimentForm from '../ExperimentForm';
 import ExperimentsList from '../experiments-list/ExperimentsList';
 import { AddButton, IconButtonStyled, MainContainerStyled } from './Experiments.s';
 
-export const Experiments = ({ models }) => {
+export const Experiments = ({ agents }) => {
     const { openSnackbar } = useSnackbar();
     const [experiments, setExperiments] = useState<ExperimentType[]>([]);
     const [isEditMode, setIsEditMode] = useState(false);
@@ -19,7 +19,7 @@ export const Experiments = ({ models }) => {
     const [tempExperiments, setTempExperiments] = useState<ExperimentType[]>([]);
     const [modifiedExperiments, setModifiedExperiments] = useState<Record<string, ExperimentType>>({});
     const [openExperimentFormDialog, setOpenExperimentFormDialog] = useState(false);
-    const [editExperiment, setEditExperiment] = useState<ModelType | undefined>(null);
+    const [editExperiment, setEditExperiment] = useState<AgentType | undefined>(null);
 
     useEffectAsync(async () => {
         setIsLoadingExperiments(true);
@@ -87,7 +87,7 @@ export const Experiments = ({ models }) => {
             </Typography>
             <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
                 <Typography variant="body2" gutterBottom fontWeight={500} marginBottom={2}>
-                    Manage your experiments, attcach to them a model, launch them, share with participants and
+                    Manage your experiments, attcach to them a agent, launch them, share with participants and
                     more.
                 </Typography>
                 <Box display={'flex'} justifyContent={'end'}>
@@ -119,7 +119,7 @@ export const Experiments = ({ models }) => {
                     editExperiment={editExperiment}
                     tempExperiments={tempExperiments}
                     setTempExperiments={setTempExperiments}
-                    models={models}
+                    agents={agents}
                     experiments={experiments}
                     setExperiments={setExperiments}
                     closeDialog={closeDialog}

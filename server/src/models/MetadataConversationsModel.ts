@@ -15,7 +15,7 @@ export const metadataConversationSchema = new Schema<IMetadataConversation>(
         imsPost: { type: Object },
         conversationNumber: { type: Number },
         userId: { type: String, required: true },
-        model: { type: agentsSchema, required: true },
+        agent: { type: agentsSchema, required: true },
     },
     { versionKey: false },
 );

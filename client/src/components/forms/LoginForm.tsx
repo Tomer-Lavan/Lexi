@@ -27,7 +27,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ isAdminPage, experimentId 
 
     const onSubmit = async (data) => {
         try {
-            const { token, user } = await login(data.nickname, data.password, experimentId);
+            const { token, user } = await login(data.username, data.password, experimentId);
 
             if (user.isAdmin && !token) {
                 setIsUserAdmin(true);
@@ -38,14 +38,14 @@ export const LoginForm: React.FC<LoginFormProps> = ({ isAdminPage, experimentId 
         } catch (error) {
             console.error(error);
             if (error.response && error.response.status === 401) {
-                setError('nickname', {
+                setError('username', {
                     type: 'manual',
-                    message: `Nickname ${
+                    message: `User name ${
                         isUserAdmin || isAdminPage ? 'or Password are' : 'is'
                     } Invalid, Try again or Sign Up`,
                 });
             } else {
-                setError('nickname', { type: 'manual', message: 'Something went wrong, please try again later' });
+                setError('username', { type: 'manual', message: 'Something went wrong, please try again later' });
             }
         }
     };
@@ -55,16 +55,16 @@ export const LoginForm: React.FC<LoginFormProps> = ({ isAdminPage, experimentId 
             <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate padding={2}>
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
-                        {!isAdminPage && <NoteText>Please use the same nickname you signed up with.</NoteText>}
+                        {!isAdminPage && <NoteText>Please use the same username you signed up with.</NoteText>}
                         <TextField
-                            error={Boolean(errors.nickname)}
-                            helperText={getFormErrorMessage(errors.nickname)}
+                            error={Boolean(errors.username)}
+                            helperText={getFormErrorMessage(errors.username)}
                             required
                             fullWidth
                             size="small"
-                            {...register('nickname', { required: 'Please fill out nickname' })}
-                            label="Nickname"
-                            id="nickname"
+                            {...register('username', { required: 'Please fill out username' })}
+                            label="User Name"
+                            id="username"
                         />
                     </Grid>
                     <Grid item xs={12}>

@@ -46,7 +46,7 @@
     // "paths": {
     //     "@db/*": ["db/*"],
     //     "@business-logic/*": ["business-logic/*"],
-    //     "@models/*": ["models/*"],
+    //     "@agents/*": ["agents/*"],
     //     "@routers/*": ["routers/*"],
     //     "@middleware/*": ["middleware/*"],
     //     "@strategies/*": ["strategies/*"],

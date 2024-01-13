@@ -1,4 +1,4 @@
-import { ModelType } from '@models/AppModels';
+import { AgentType } from '@models/AppModels';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -18,43 +18,43 @@ import {
 import Typography from '@mui/material/Typography';
 import React, { useState } from 'react';
 import { AddButton, MainContainerStyled } from '../../experiments-panel/experiments/Experiments.s';
-import ModelForm from '../model-form/ModelForm';
-import { ModelDetails } from './ModelDetails';
-import { ModelHeader } from './ModelHeader';
+import AgentForm from '../agent-form/AgentForm';
+import { AgentDetails } from './AgentDetails';
+import { AgentHeader } from './AgentHeader';
 
-export interface ModelsListContainerProps {
-    models: ModelType[];
-    setModels: (any) => void;
+export interface AgentsListContainerProps {
+    agents: AgentType[];
+    setAgents: (any) => void;
 }
 
-export const ModelsListContainer: React.FC<ModelsListContainerProps> = ({ models, setModels }) => {
+export const AgentsListContainer: React.FC<AgentsListContainerProps> = ({ agents, setAgents }) => {
     const [isEditMode, setIsEditMode] = useState(false);
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    const [openModelFormDialog, setOpenModelFormDialog] = useState(false);
-    const [selectedModel, setSelectedModel] = useState<ModelType | undefined>(undefined);
-    const [editModel, setEditModel] = useState<ModelType | undefined>(null);
+    const [openAgentFormDialog, setOpenAgentFormDialog] = useState(false);
+    const [selectedAgent, setSelectedAgent] = useState<AgentType | undefined>(undefined);
+    const [editAgent, setEditAgent] = useState<AgentType | undefined>(null);
 
     const handleClose = () => {
         setAnchorEl(null);
-        setSelectedModel(undefined);
+        setSelectedAgent(undefined);
     };
 
     const closeDialog = () => {
-        setOpenModelFormDialog(false);
-        if (editModel) {
-            setEditModel(null);
+        setOpenAgentFormDialog(false);
+        if (editAgent) {
+            setEditAgent(null);
             setIsEditMode(false);
         }
     };
 
     const handleMenuAction = (action: string) => {
         if (action === 'edit') {
-            setEditModel(selectedModel);
+            setEditAgent(selectedAgent);
             setIsEditMode(true);
-            setOpenModelFormDialog(true);
+            setOpenAgentFormDialog(true);
         } else if (action === 'duplicate') {
-            setEditModel(selectedModel);
-            setOpenModelFormDialog(true);
+            setEditAgent(selectedAgent);
+            setOpenAgentFormDialog(true);
         }
         handleClose();
     };
@@ -62,32 +62,32 @@ export const ModelsListContainer: React.FC<ModelsListContainerProps> = ({ models
     return (
         <MainContainerStyled>
             <Typography variant="h6" gutterBottom style={{ borderBottom: '1px solid gray', marginBottom: '24px' }}>
-                Models
+                Agents
             </Typography>
             <Typography variant="h5" gutterBottom fontWeight={500}>
-                Manage Your Models
+                Manage Your Agents
             </Typography>
             <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
                 <Typography variant="body2" gutterBottom fontWeight={500} marginBottom={2}>
-                    Manage your models, create a unique agent by prompt engineering, revisite your prompts and
+                    Manage your agents, create a unique agent by prompt engineering, revisite your prompts and
                     more.
                 </Typography>
                 <Box display={'flex'} justifyContent={'end'}>
-                    <AddButton onClick={() => setOpenModelFormDialog(true)} size="small">
+                    <AddButton onClick={() => setOpenAgentFormDialog(true)} size="small">
                         <AddIcon style={{ color: 'floralwhite' }} />
                         <Typography variant="body2" fontWeight={500} color={'floralwhite'}>
-                            Add Model
+                            Add Agent
                         </Typography>
                     </AddButton>
                 </Box>
             </Box>
             <List>
-                {models.length ? (
-                    models.map((model, index) => (
-                        <Paper elevation={3} key={model._id?.toString() || index} sx={{ margin: '10px' }}>
-                            <ModelHeader
-                                model={model}
-                                setSelectedModel={setSelectedModel}
+                {agents.length ? (
+                    agents.map((agent, index) => (
+                        <Paper elevation={3} key={agent._id?.toString() || index} sx={{ margin: '10px' }}>
+                            <AgentHeader
+                                agent={agent}
+                                setSelectedAgent={setSelectedAgent}
                                 setAnchorEl={setAnchorEl}
                             />
                             <Divider />
@@ -96,14 +96,14 @@ export const ModelsListContainer: React.FC<ModelsListContainerProps> = ({ models
                                     <Typography variant="subtitle2">Detailed Settings</Typography>
                                 </AccordionSummary>
                                 <AccordionDetails>
-                                    <ModelDetails model={model} />
+                                    <AgentDetails agent={agent} />
                                 </AccordionDetails>
                             </Accordion>
                         </Paper>
                     ))
                 ) : (
                     <Typography variant="body1" textAlign={'center'} width={'100%'} margin={2}>
-                        <b>No models found</b>
+                        <b>No agents found</b>
                     </Typography>
                 )}
                 <Menu
@@ -117,7 +117,7 @@ export const ModelsListContainer: React.FC<ModelsListContainerProps> = ({ models
                     <MenuItem onClick={() => handleMenuAction('duplicate')}>Duplicate</MenuItem>
                 </Menu>
             </List>
-            <Dialog open={openModelFormDialog} maxWidth={'lg'}>
+            <Dialog open={openAgentFormDialog} maxWidth={'lg'}>
                 <IconButton
                     aria-label="close"
                     onClick={closeDialog}
@@ -130,10 +130,10 @@ export const ModelsListContainer: React.FC<ModelsListContainerProps> = ({ models
                 >
                     <CloseIcon />
                 </IconButton>
-                <ModelForm
-                    editModel={editModel}
-                    setModels={setModels}
-                    models={models}
+                <AgentForm
+                    editAgent={editAgent}
+                    setAgents={setAgents}
+                    agents={agents}
                     closeDialog={closeDialog}
                     isEditMode={isEditMode}
                 />

@@ -8,7 +8,7 @@ export const experimentsRouter = () => {
     router.get('/:id/content', experimentsController.getExperimentContent);
     router.post('/create', experimentsController.createExperiment);
     router.put('/', experimentsController.updateExperiment);
-    router.put('/model', experimentsController.updateActiveModel);
+    router.put('/agent', experimentsController.updateActiveAgent);
     router.put('/status', experimentsController.updateExperimentsStatus);
     router.put('/content', experimentsController.updateExperimentDisplaySetting);
 

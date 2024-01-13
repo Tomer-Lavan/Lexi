@@ -1,37 +1,37 @@
 import { Divider, Grid, List, ListItem, ListItemText, Typography } from '@mui/material';
 
-export const ModelDetails = ({ model }) => (
+export const AgentDetails = ({ agent }) => (
     <Grid container spacing={2} style={{ padding: '20px', paddingTop: '4px' }}>
         <Grid item xs={12} md={6} style={{ borderRight: '2px solid #eee' }}>
             <Typography variant="h6" gutterBottom>
-                Chat Model Details
+                Chat Agent Details
             </Typography>
             <Divider style={{ marginBottom: '10px' }} />
             <List>
                 <ListItem>
-                    <ListItemText primary="First Chat Sentence" secondary={model.firstChatSentence} />
+                    <ListItemText primary="First Chat Sentence" secondary={agent.firstChatSentence} />
                 </ListItem>
                 <ListItem>
-                    <ListItemText primary="Chat Model" secondary={model.chatModel} />
+                    <ListItemText primary="Chat Model" secondary={agent.model} />
                 </ListItem>
-                {model.systemStarterPrompt && (
+                {agent.systemStarterPrompt && (
                     <ListItem>
-                        <ListItemText primary="System Starter Prompt" secondary={model.systemStarterPrompt} />
+                        <ListItemText primary="System Starter Prompt" secondary={agent.systemStarterPrompt} />
                     </ListItem>
                 )}
-                {model.beforeUserSentencePrompt && (
+                {agent.beforeUserSentencePrompt && (
                     <ListItem>
                         <ListItemText
                             primary="Before User Sentence Prompt"
-                            secondary={model.beforeUserSentencePrompt}
+                            secondary={agent.beforeUserSentencePrompt}
                         />
                     </ListItem>
                 )}
-                {model.afterUserSentencePrompt && (
+                {agent.afterUserSentencePrompt && (
                     <ListItem>
                         <ListItemText
                             primary="After User Sentence Prompt"
-                            secondary={model.afterUserSentencePrompt}
+                            secondary={agent.afterUserSentencePrompt}
                         />
                     </ListItem>
                 )}
@@ -46,35 +46,35 @@ export const ModelDetails = ({ model }) => (
                 <ListItem>
                     <ListItemText
                         primary="Temperature"
-                        secondary={model.temperature !== null ? model.temperature : 'Not Active'}
+                        secondary={agent.temperature !== null ? agent.temperature : 'Not Active'}
                     />
                 </ListItem>
 
                 <ListItem>
                     <ListItemText
                         primary="Max Tokens"
-                        secondary={model.maxTokens !== null ? model.maxTokens : 'Not Active'}
+                        secondary={agent.maxTokens !== null ? agent.maxTokens : 'Not Active'}
                     />
                 </ListItem>
                 <ListItem>
-                    <ListItemText primary="Top P" secondary={model.topP !== null ? model.topP : 'Not Active'} />
+                    <ListItemText primary="Top P" secondary={agent.topP !== null ? agent.topP : 'Not Active'} />
                 </ListItem>
                 <ListItem>
                     <ListItemText
                         primary="Frequency Penalty"
-                        secondary={model.frequencyPenalty !== null ? model.frequencyPenalty : 'Not Active'}
+                        secondary={agent.frequencyPenalty !== null ? agent.frequencyPenalty : 'Not Active'}
                     />
                 </ListItem>
                 <ListItem>
                     <ListItemText
                         primary="Presence Penalty"
-                        secondary={model.presencePenalty !== null ? model.presencePenalty : 'Not Active'}
+                        secondary={agent.presencePenalty !== null ? agent.presencePenalty : 'Not Active'}
                     />
                 </ListItem>
                 <ListItem>
                     <ListItemText
                         primary="Stop Sequences"
-                        secondary={model.stopSequences.length ? model.stopSequences.join(', ') : 'Not Active'}
+                        secondary={agent.stopSequences.length ? agent.stopSequences.join(', ') : 'Not Active'}
                     />
                 </ListItem>
             </List>
