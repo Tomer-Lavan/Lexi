@@ -10,7 +10,7 @@ import { AgentsModel } from '../models/AgentsModel';
 //     beforeUserSentencePrompt: string;
 //     afterUserSentencePrompt: string;
 //     firstChatSentence: string;
-//     chatModel: string;
+//     chatAgent: string;
 //     temperature: number;
 //     maxTokens: number;
 //     topP: number;
@@ -19,8 +19,8 @@ import { AgentsModel } from '../models/AgentsModel';
 //     stopSequences: string[];
 // }
 
-class ModelsService {
-    saveModel = async (settings: IAgent): Promise<IAgent> => {
+class AgentsService {
+    saveAgent = async (settings: IAgent): Promise<IAgent> => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { _id, ...settingsWithNoId } = settings;
         const response = await AgentsModel.create(settingsWithNoId);
@@ -28,15 +28,15 @@ class ModelsService {
         return agent;
     };
 
-    getAllModels = async (): Promise<IAgent[]> => {
-        const models: IAgent[] = await AgentsModel.find({});
-        return models;
+    getAllAgents = async (): Promise<IAgent[]> => {
+        const agents: IAgent[] = await AgentsModel.find({});
+        return agents;
     };
 
-    updateModels = async (model: IAgent): Promise<UpdateWriteOpResult> => {
-        const response: UpdateWriteOpResult = await AgentsModel.updateOne({ _id: model._id }, { $set: model });
+    updateAgents = async (agent: IAgent): Promise<UpdateWriteOpResult> => {
+        const response: UpdateWriteOpResult = await AgentsModel.updateOne({ _id: agent._id }, { $set: agent });
         return response;
     };
 }
 
-export const modelsService = new ModelsService();
+export const agentsService = new AgentsService();

@@ -1,14 +1,6 @@
-import { Grid, MenuItem, TextField, Typography } from '@mui/material';
+import { FormControlLabel, Grid, MenuItem, Radio, RadioGroup, TextField } from '@mui/material';
 import { getFormErrorMessage } from '@utils/commonFunctions';
-import {
-    Control,
-    FieldErrors,
-    FieldValues,
-    UseFormGetValues,
-    UseFormRegister,
-    UseFormSetValue,
-} from 'react-hook-form';
-import RadioGroupRange from '../../common/RadioGroupRange';
+import { FieldErrors, FieldValues, UseFormGetValues, UseFormRegister, UseFormSetValue } from 'react-hook-form';
 import { FormContainer, NoteText, StyledContainer } from '../CommonFormStyles.s';
 import { ButtonBox, FormButton, SliderTitle } from './FinalRegestrationForm.s';
 
@@ -24,25 +16,6 @@ const maritalStatusOptions = [
     { label: 'Divorced', value: 'divorced' },
     { label: 'Widowed', value: 'widowed' },
 ];
-const religiousAffiliationOptions = [
-    { label: 'Jewish', value: 'jewish' },
-    { label: 'Islam', value: 'islam' },
-    { label: 'Christianity', value: 'christianity' },
-    { label: 'Hinduism', value: 'hinduism' },
-    { label: 'Buddhism', value: 'buddhism' },
-    { label: 'Atheist', value: 'atheist' },
-    { label: 'Other', value: 'other' },
-];
-const ethnicityOptions = [
-    { label: 'Israeli', value: 'israeli' },
-    { label: 'Arab', value: 'arab' },
-    { label: 'Palestinian', value: 'palestinian' },
-    { label: 'Caucasian', value: 'caucasian' },
-    { label: 'Hispanic', value: 'hispanic' },
-    { label: 'African', value: 'african' },
-    { label: 'Asian', value: 'asian' },
-    { label: 'Other', value: 'other' },
-];
 
 const requiredMessage = 'Please fill necessary field';
 
@@ -52,7 +25,6 @@ interface FinalRegisterFormProps {
     handleSubmit: (any) => void;
     setPage: (page: number) => void;
     setValue: UseFormSetValue<FieldValues>;
-    control: Control<FieldValues>;
     getValues: UseFormGetValues<FieldValues>;
 }
 
@@ -62,7 +34,6 @@ export const FinalRegisterForm: React.FC<FinalRegisterFormProps> = ({
     setValue,
     getValues,
     handleSubmit,
-    control,
     errors,
 }) => (
     <StyledContainer>
@@ -136,66 +107,27 @@ export const FinalRegisterForm: React.FC<FinalRegisterFormProps> = ({
                 />
             </Grid>
             <Grid item xs={12}>
-                <TextField
-                    select
-                    size="small"
-                    error={Boolean(errors.religiousAffiliation)}
-                    helperText={getFormErrorMessage(errors.religiousAffiliation)}
-                    required
-                    fullWidth
-                    {...register('religiousAffiliation', { required: requiredMessage })}
-                    onChange={(e) => {
-                        setValue('religiousAffiliation', e.target.value, { shouldValidate: true });
-                    }}
-                    label="Religious Affiliation"
-                    id="religiousAffiliation"
-                    defaultValue={getValues('religiousAffiliation') || ''}
+                <SliderTitle>Are you a native english speaker?</SliderTitle>
+                <RadioGroup
+                    row
+                    aria-labelledby="native-english-speaker-label"
+                    {...register('isElishSpeaker', { required: requiredMessage })}
+                    defaultValue={true}
+                    style={{ justifyContent: 'center', gap: '16px', paddingLeft: '26px' }}
                 >
-                    {religiousAffiliationOptions.map((option) => (
-                        <MenuItem key={option.value} value={option.value}>
-                            {option.label}
-                        </MenuItem>
-                    ))}
-                </TextField>
-            </Grid>
-            <Grid item xs={12}>
-                <TextField
-                    select
-                    size="small"
-                    error={Boolean(errors.ethnicity)}
-                    helperText={getFormErrorMessage(errors.ethnicity)}
-                    required
-                    fullWidth
-                    {...register('ethnicity', { required: requiredMessage })}
-                    onChange={(e) => {
-                        setValue('ethnicity', e.target.value, { shouldValidate: true });
-                    }}
-                    label="Ethnicity"
-                    id="ethnicity"
-                    defaultValue={getValues('ethnicity') || ''}
-                >
-                    {ethnicityOptions.map((option) => (
-                        <MenuItem key={option.value} value={option.value}>
-                            {option.label}
-                        </MenuItem>
-                    ))}
-                </TextField>
-            </Grid>
-            <Grid item xs={12}>
-                <SliderTitle>Political Affiliation *</SliderTitle>
-                <RadioGroupRange
-                    left={'Left Wing'}
-                    right={'Right Wing'}
-                    range={7}
-                    field={'politicalAffiliation'}
-                    gap="0px"
-                    control={control}
-                />
-                {errors['politicalAffiliation'] && (
-                    <Typography color="error" variant="caption">
-                        {getFormErrorMessage(errors['politicalAffiliation'])}
-                    </Typography>
-                )}
+                    <FormControlLabel
+                        value={true}
+                        control={<Radio />}
+                        label="Yes"
+                        {...register('nativeEnglishSpeaker', { required: requiredMessage })}
+                    />
+                    <FormControlLabel
+                        value={false}
+                        control={<Radio />}
+                        label="No"
+                        {...register('nativeEnglishSpeaker', { required: requiredMessage })}
+                    />
+                </RadioGroup>
             </Grid>
             <Grid item xs={12} display={'flex'} justifyContent={'center'}>
                 <ButtonBox>

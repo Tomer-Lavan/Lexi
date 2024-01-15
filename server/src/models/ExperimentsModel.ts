@@ -5,16 +5,16 @@ import { agentsSchema } from './AgentsModel';
 
 const AbAgentsSchema = new Schema<ABAgents>({
     distA: { type: Number, required: true },
-    modelA: { type: agentsSchema, required: true },
+    agentA: { type: agentsSchema, required: true },
     distB: { type: Number, required: true },
-    modelB: { type: agentsSchema, required: true },
+    agentB: { type: agentsSchema, required: true },
 });
 
 export const experimentsSchema = new Schema<IExperiment>(
     {
-        modelsMode: { type: String, required: true },
-        activeModel: { type: agentsSchema },
-        abModels: { type: AbAgentsSchema },
+        agentsMode: { type: String, required: true },
+        activeAgent: { type: agentsSchema },
+        abAgents: { type: AbAgentsSchema },
         createdAt: { type: Date, default: Date.now },
         timestamp: { type: Number, default: () => Date.now() },
         displaySettings: { type: Object },

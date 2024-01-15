@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import { OpenAI } from 'openai';
+import { IAgent } from 'src/types';
 import { ConversationsModel } from '../models/ConversationsModel';
 import { MetadataConversationsModel } from '../models/MetadataConversationsModel';
 import { experimentsService } from './experiments.service';
@@ -23,8 +24,8 @@ class ConversationsService {
             this.getConversation(conversationId),
             this.getConversationMetadata(conversationId),
         ]);
-        const messages: any[] = this.getConversationMessages(metadataConversation.model, conversation, message);
-        const chatRequest = this.getChatRequest(metadataConversation.model, messages);
+        const messages: any[] = this.getConversationMessages(metadataConversation.agent, conversation, message);
+        const chatRequest = this.getChatRequest(metadataConversation.agent, messages);
         await this.createMessageDoc(message, conversationId, conversation.length + 1);
 
         let assistantMessage = '';
@@ -59,22 +60,22 @@ class ConversationsService {
     };
 
     createConversation = async (userId: string, userConversationsNumber: number, experimentId: string) => {
-        let model;
+        let agent;
         const user = await usersService.getUserById(userId);
         if (user.isAdmin) {
-            model = await experimentsService.getActiveModel(experimentId);
+            agent = await experimentsService.getActiveAgent(experimentId);
         }
 
         const res = await MetadataConversationsModel.create({
             conversationNumber: userConversationsNumber + 1,
             experimentId,
             userId,
-            model: user.isAdmin ? model : user.model,
+            agent: user.isAdmin ? agent : user.agent,
         });
 
         const firstMessage: Message = {
             role: 'assistant',
-            content: user.isAdmin ? model.firstChatSentence : user.model.firstChatSentence,
+            content: user.isAdmin ? agent.firstChatSentence : user.agent.firstChatSentence,
         };
         await this.createMessageDoc(firstMessage, res._id.toString(), 1);
         usersService.addConversation(userId);
@@ -108,7 +109,7 @@ class ConversationsService {
 
     getUserConversations = async (userId: string): Promise<any> => {
         const conversations = [];
-        const metadataConversations = await MetadataConversationsModel.find({ userId }, { model: 0 }).lean();
+        const metadataConversations = await MetadataConversationsModel.find({ userId }, { agent: 0 }).lean();
 
         for (const metadataConversation of metadataConversations) {
             const conversation = await ConversationsModel.find({
@@ -163,18 +164,18 @@ class ConversationsService {
         return res;
     };
 
-    private getChatRequest = (model, messages) => {
+    private getChatRequest = (agent: IAgent, messages: Message[]) => {
         const chatCompletionsReq = {
             messages,
-            model: model.chatModel,
+            model: agent.model,
         };
 
-        if (model.maxTokens) chatCompletionsReq['max_tokens'] = model.maxTokens;
-        if (model.frequencyPenalty) chatCompletionsReq['frequency_penalty'] = model.frequencyPenalty;
-        if (model.topP) chatCompletionsReq['top_p'] = model.topP;
-        if (model.temperature) chatCompletionsReq['temperature'] = model.temperature;
-        if (model.presencePenalty) chatCompletionsReq['presence_penalty'] = model.presencePenalty;
-        if (model.stopSequences) chatCompletionsReq['stop'] = model.stopSequences;
+        if (agent.maxTokens) chatCompletionsReq['max_tokens'] = agent.maxTokens;
+        if (agent.frequencyPenalty) chatCompletionsReq['frequency_penalty'] = agent.frequencyPenalty;
+        if (agent.topP) chatCompletionsReq['top_p'] = agent.topP;
+        if (agent.temperature) chatCompletionsReq['temperature'] = agent.temperature;
+        if (agent.presencePenalty) chatCompletionsReq['presence_penalty'] = agent.presencePenalty;
+        if (agent.stopSequences) chatCompletionsReq['stop'] = agent.stopSequences;
 
         return chatCompletionsReq;
     };

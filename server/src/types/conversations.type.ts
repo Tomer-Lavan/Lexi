@@ -19,7 +19,7 @@ export interface IMetadataConversation {
     lastMessageDate: Date;
     lastMessageTimestamp: number;
     conversationNumber: number;
-    model: IAgent;
+    agent: IAgent;
     userId: string;
     imsPre?: object;
     imsPost?: object;

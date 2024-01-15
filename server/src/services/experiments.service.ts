@@ -1,6 +1,6 @@
 import mongoose, { UpdateWriteOpResult } from 'mongoose';
 import { ExperimentsModel } from '../models/ExperimentsModel';
-import { ABAgents, DisplaySettings, IAgent, IExperiment, ModelConfig, ModelsMode } from '../types';
+import { ABAgents, AgentConfig, AgentsMode, DisplaySettings, IAgent, IExperiment } from '../types';
 
 type BulkWriteResult = ReturnType<typeof ExperimentsModel.bulkWrite>;
 
@@ -37,17 +37,17 @@ class ExperimentsService {
         return updatedExperiment;
     };
 
-    updateActiveModel = async (
+    updateActiveAgent = async (
         experimentId: string,
-        model: IAgent,
-        modelsConfig: ModelConfig,
-        abModels: ABAgents,
+        agent: IAgent,
+        agentsConfig: AgentConfig,
+        abAgents: ABAgents,
     ): Promise<UpdateWriteOpResult> => {
-        const updateFields = { modelsConfig };
-        if (modelsConfig === ModelConfig.SINGLE) {
-            updateFields['activeModel'] = model;
+        const updateFields = { agentsConfig };
+        if (agentsConfig === AgentConfig.SINGLE) {
+            updateFields['activeAgent'] = agent;
         } else {
-            updateFields['abModels'] = abModels;
+            updateFields['abAgents'] = abAgents;
         }
         const response = await ExperimentsModel.updateOne(
             { _id: new mongoose.Types.ObjectId(experimentId) },
@@ -81,17 +81,17 @@ class ExperimentsService {
         return response;
     };
 
-    async getActiveModel(experimentId: string): Promise<IAgent> {
+    async getActiveAgent(experimentId: string): Promise<IAgent> {
         const experiment = await this.getExperiment(experimentId);
-        if (experiment.modelsMode === ModelsMode.SINGLE) {
-            return experiment.activeModel;
+        if (experiment.agentsMode === AgentsMode.SINGLE) {
+            return experiment.activeAgent;
         }
 
         const rand = Math.random() * 100;
-        if (experiment.abModels.distA >= rand) {
-            return experiment.abModels.modelA;
+        if (experiment.abAgents.distA >= rand) {
+            return experiment.abAgents.agentA;
         }
-        return experiment.abModels.modelB;
+        return experiment.abAgents.agentB;
     }
 }
 

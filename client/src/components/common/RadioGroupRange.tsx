@@ -1,9 +1,19 @@
-import { FormControlLabel, Grid, Radio, RadioGroup, Typography } from '@mui/material';
+import { FormControlLabel, Grid, Radio, RadioGroup, Typography, useMediaQuery } from '@mui/material';
 import { Box } from '@mui/system';
+import theme from '@root/Theme';
 import { Controller } from 'react-hook-form';
 
 const RadioGroupRange = ({ left, right, range, field, gap = '16px', control }) => {
     const valuesArray = Array.from({ length: range }, (_, i) => i + 1);
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const mobileRadioBtnStyle = {
+        padding: '3px',
+        '& .MuiSvgIcon-root': {
+            padding: 0,
+            margin: 0,
+            fontSize: '1rem',
+        },
+    };
 
     return (
         <Box key={left} style={{ display: 'flex' }}>
@@ -41,20 +51,7 @@ const RadioGroupRange = ({ left, right, range, field, gap = '16px', control }) =
                                     key={val}
                                     value={String(val)}
                                     sx={{ margin: 0 }}
-                                    control={
-                                        <Radio
-                                            size="small"
-                                            sx={{
-                                                padding: '3px',
-                                                '& .MuiSvgIcon-root': {
-                                                    // Adjust the radio icon size
-                                                    padding: 0,
-                                                    margin: 0,
-                                                    fontSize: '1rem', // Smaller size (adjust as needed)
-                                                },
-                                            }}
-                                        />
-                                    }
+                                    control={<Radio size="small" sx={isMobile && mobileRadioBtnStyle} />}
                                     label=""
                                 />
                             ))}

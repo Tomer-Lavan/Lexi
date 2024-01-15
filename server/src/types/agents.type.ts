@@ -8,7 +8,7 @@ export interface IAgent {
     beforeUserSentencePrompt: string;
     afterUserSentencePrompt: string;
     firstChatSentence: string;
-    chatModel: string;
+    model: string;
     temperature: number;
     maxTokens: number;
     topP: number;

@@ -2,9 +2,9 @@ import mongoose from 'mongoose';
 import { IAgent } from '../types/agents.type';
 
 export interface ABAgents {
-    modelA: IAgent;
+    agentA: IAgent;
     distA: number;
-    modelB: IAgent;
+    agentB: IAgent;
     distB: number;
 }
 
@@ -15,9 +15,9 @@ export interface DisplaySettings {
 
 export interface IExperiment {
     _id: mongoose.Types.ObjectId;
-    modelsMode: string;
-    activeModel: IAgent;
-    abModels: ABAgents;
+    agentsMode: string;
+    activeAgent: IAgent;
+    abAgents: ABAgents;
     createdAt: Date;
     timestamp: number;
     displaySettings: DisplaySettings;

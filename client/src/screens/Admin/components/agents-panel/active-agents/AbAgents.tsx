@@ -1,16 +1,16 @@
-import { AbModelsType, ModelType } from '@models/AppModels';
+import { AbAgentsType, AgentType } from '@models/AppModels';
 import { Box, FormControl, MenuItem, Select, Typography } from '@mui/material';
 import React from 'react';
 
-interface AbModelsProps {
-    models: ModelType[];
-    abModels: AbModelsType;
+interface AbAgentsProps {
+    agents: AgentType[];
+    abAgents: AbAgentsType;
     handleChangeAB?: (any) => void;
     isRow?: boolean;
-    setAbModels?;
+    setAbAgents?;
 }
 
-export const AbModels: React.FC<AbModelsProps> = ({ models, abModels, handleChangeAB, isRow = true }) => (
+export const AbAgents: React.FC<AbAgentsProps> = ({ agents, abAgents, handleChangeAB, isRow = true }) => (
     <Box
         style={{
             display: 'flex',
@@ -24,24 +24,24 @@ export const AbModels: React.FC<AbModelsProps> = ({ models, abModels, handleChan
             size="small"
             sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 1 }}
         >
-            <Typography>Model A:</Typography>
+            <Typography>Agent A:</Typography>
             <Select
-                value={abModels ? abModels.modelA.title : ''}
+                value={abAgents ? abAgents.agentA.title : ''}
                 onChange={handleChangeAB}
-                name="modelA"
+                name="agentA"
                 size="small"
                 style={{ minWidth: '100px' }}
             >
-                {models.map((model) => (
-                    <MenuItem key={model.title} value={model.title}>
-                        {model.title}
+                {agents.map((agent) => (
+                    <MenuItem key={agent.title} value={agent.title}>
+                        {agent.title}
                     </MenuItem>
                 ))}
             </Select>
             <input
                 type="number"
                 name="distA"
-                value={abModels ? abModels.distA : 50}
+                value={abAgents ? abAgents.distA : 50}
                 onChange={handleChangeAB}
                 style={{ width: '40px' }}
             />
@@ -51,24 +51,24 @@ export const AbModels: React.FC<AbModelsProps> = ({ models, abModels, handleChan
             size="small"
             sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 1 }}
         >
-            <Typography>Model B:</Typography>
+            <Typography>Agent B:</Typography>
             <Select
-                value={abModels ? abModels.modelB.title : ''}
+                value={abAgents ? abAgents.agentB.title : ''}
                 onChange={handleChangeAB}
-                name="modelB"
+                name="agentB"
                 size="small"
                 style={{ minWidth: '100px' }}
             >
-                {models.map((model) => (
-                    <MenuItem key={model.title} value={model.title}>
-                        {model.title}
+                {agents.map((agent) => (
+                    <MenuItem key={agent.title} value={agent.title}>
+                        {agent.title}
                     </MenuItem>
                 ))}
             </Select>
             <input
                 type="number"
                 name="distB"
-                value={abModels ? abModels.distB : 50}
+                value={abAgents ? abAgents.distB : 50}
                 onChange={handleChangeAB}
                 style={{ width: '40px' }}
             />

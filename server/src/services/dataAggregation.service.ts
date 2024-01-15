@@ -4,11 +4,11 @@ import { experimentsService } from './experiments.service';
 import { usersService } from './users.service';
 
 const mainSheetCol = [
-    { header: 'Models Mode', key: 'modelsMode' },
+    { header: 'Agents Mode', key: 'agentsMode' },
     { header: 'Total Number of Participants', key: 'totalParticipants' },
 ];
 
-const modelsSheetCol = [
+const agentsSheetCol = [
     { header: 'Number of Participants', key: 'numParticipants' },
     { header: 'Condition Title', key: 'conditionTitle' },
     { header: 'Summary', key: 'summary' },
@@ -16,7 +16,7 @@ const modelsSheetCol = [
     { header: 'Before User Sentence Prompt', key: 'beforeUserSentencePrompt' },
     { header: 'After User Sentence Prompt', key: 'afterUserSentencePrompt' },
     { header: 'First Chat Sentence', key: 'firstChatSentence' },
-    { header: 'Chat Model', key: 'chatModel' },
+    { header: 'Model', key: 'model' },
     { header: 'Temperature', key: 'temperature' },
     { header: 'Max Tokens', key: 'maxTokens' },
     { header: 'Top P', key: 'topP' },
@@ -26,22 +26,20 @@ const modelsSheetCol = [
 ];
 
 const usersSheetCol = [
-    { header: 'Model Link', key: 'modelLink' },
+    { header: 'Agent Link', key: 'agentLink' },
     { header: 'User ID', key: 'userId' },
     { header: 'Number of Conversations', key: 'numberOfConversations' },
     { header: 'Age', key: 'age' },
     { header: 'Gender', key: 'gender' },
     { header: 'Biological Sex', key: 'biologicalSex' },
     { header: 'Marital Status', key: 'maritalStatus' },
-    { header: 'Religious Affiliation', key: 'religiousAffiliation' },
-    { header: 'Ethnicity', key: 'ethnicity' },
-    { header: 'Political Affiliation', key: 'politicalAffiliation' },
     { header: 'Number of Children', key: 'childrenNumber' },
+    { header: 'Native English Speaker', key: 'nativeEnglishSpeaker' },
     { header: 'Created At', key: 'createdAt' },
 ];
 
 const conversationsSheetCol = [
-    { header: 'Model Link', key: 'modelLink' },
+    { header: 'Agent Link', key: 'agentLink' },
     { header: 'User Link', key: 'userLink' },
     { header: 'Conversation ID', key: 'conversationId' },
     { header: 'Conversation Number', key: 'conversationNumber' },
@@ -53,7 +51,7 @@ const conversationsSheetCol = [
 ];
 
 const messagesSheetCol = [
-    { header: 'Model Link', key: 'modelLink' },
+    { header: 'Agent Link', key: 'agentLink' },
     { header: 'User Link', key: 'userLink' },
     { header: 'Conversation Link', key: 'conversationLink' },
     { header: 'User Conversation Nuber', key: 'conversationNumber' },
@@ -70,7 +68,7 @@ class DataAggregationService {
             experimentsService.getExperiment(experimentId),
         ]);
 
-        const models = [];
+        const agents = [];
         let totalUsers = 0;
         for (const users of experimentUsers) {
             totalUsers += users.data.length;
@@ -78,25 +76,25 @@ class DataAggregationService {
             for (const user of users.data) {
                 const conversations = await conversationsService.getUserConversations(user._id);
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                const { model, ...userWithoutModel } = user;
+                const { agent, ...userWithoutAgent } = user;
                 data.push({
                     numberOfConversations: user.numberOfConversations,
-                    user: userWithoutModel,
+                    user: userWithoutAgent,
                     conversations,
                 });
             }
 
-            models.push({
+            agents.push({
                 numberOfParticipants: users.data.length,
-                condition: users.model,
+                condition: users.agent,
                 data,
             });
         }
 
         return {
-            modelsMode: experiment.modelsMode,
+            agentsMode: experiment.agentsMode,
             numberOfParticipants: totalUsers,
-            models,
+            agents,
         };
     };
 
@@ -105,49 +103,49 @@ class DataAggregationService {
         const workbook = new ExcelJS.Workbook();
 
         const mainSheet = workbook.addWorksheet('Main');
-        const modelsSheet = workbook.addWorksheet('Models');
+        const agentsSheet = workbook.addWorksheet('Agents');
         const usersSheet = workbook.addWorksheet('Users');
         const conversationsSheet = workbook.addWorksheet('Conversations');
         const messagesSheet = workbook.addWorksheet('Messages');
 
         mainSheet.columns = mainSheetCol;
-        modelsSheet.columns = modelsSheetCol;
+        agentsSheet.columns = agentsSheetCol;
         usersSheet.columns = usersSheetCol;
         conversationsSheet.columns = conversationsSheetCol;
         messagesSheet.columns = messagesSheetCol;
 
         mainSheet.addRow({
-            modelsMode: experimentData.modelsMode,
+            agentsMode: experimentData.agentsMode,
             totalParticipants: experimentData.numberOfParticipants,
         });
 
         let userRowIndex = 1;
         let conversationRowIndex = 1;
-        let modelRowIndex = 1;
+        let agentRowIndex = 1;
 
-        experimentData.models.forEach((model) => {
-            modelsSheet.addRow({
-                numParticipants: model.numberOfParticipants,
-                conditionTitle: model.condition.title,
-                summary: model.condition.summary,
-                systemStarterPrompt: model.condition.systemStarterPrompt,
-                beforeUserSentencePrompt: model.condition.beforeUserSentencePrompt,
-                afterUserSentencePrompt: model.condition.afterUserSentencePrompt,
-                firstChatSentence: model.condition.firstChatSentence,
-                chatModel: model.condition.chatModel,
-                temperature: model.condition.temperature,
-                maxTokens: model.condition.maxTokens,
-                topP: model.condition.topP,
-                frequencyPenalty: model.condition.frequencyPenalty,
-                presencePenalty: model.condition.presencePenalty,
-                stopSequences: model.condition.stopSequences,
+        experimentData.agents.forEach((agent) => {
+            agentsSheet.addRow({
+                numParticipants: agent.numberOfParticipants,
+                conditionTitle: agent.condition.title,
+                summary: agent.condition.summary,
+                systemStarterPrompt: agent.condition.systemStarterPrompt,
+                beforeUserSentencePrompt: agent.condition.beforeUserSentencePrompt,
+                afterUserSentencePrompt: agent.condition.afterUserSentencePrompt,
+                firstChatSentence: agent.condition.firstChatSentence,
+                model: agent.condition.model,
+                temperature: agent.condition.temperature,
+                maxTokens: agent.condition.maxTokens,
+                topP: agent.condition.topP,
+                frequencyPenalty: agent.condition.frequencyPenalty,
+                presencePenalty: agent.condition.presencePenalty,
+                stopSequences: agent.condition.stopSequences,
             });
 
-            model.data.forEach((user) => {
+            agent.data.forEach((user) => {
                 usersSheet.addRow({
-                    modelLink: {
-                        text: `Model ${modelRowIndex}`,
-                        hyperlink: `#\'Models\'!A${modelRowIndex + 1}`,
+                    agentLink: {
+                        text: `Agent ${agentRowIndex}`,
+                        hyperlink: `#\'Agents\'!A${agentRowIndex + 1}`,
                     },
                     userId: user.user._id,
                     numberOfConversations: user.numberOfConversations,
@@ -155,18 +153,16 @@ class DataAggregationService {
                     gender: user.user.gender,
                     biologicalSex: user.user.biologicalSex,
                     maritalStatus: user.user.maritalStatus,
-                    religiousAffiliation: user.user.religiousAffiliation,
-                    ethnicity: user.user.ethnicity,
-                    politicalAffiliation: user.user.politicalAffiliation,
                     childrenNumber: user.user.childrenNumber,
+                    nativeEnglishSpeaker: user.user.nativeEnglishSpeaker,
                     createdAt: user.user.createdAt,
                 });
 
                 user.conversations.forEach((conversation) => {
                     conversationsSheet.addRow({
-                        modelLink: {
-                            text: `Model ${modelRowIndex}`,
-                            hyperlink: `#\'Models\'!A${modelRowIndex + 1}`,
+                        agentLink: {
+                            text: `Agent ${agentRowIndex}`,
+                            hyperlink: `#\'Agents\'!A${agentRowIndex + 1}`,
                         },
                         userLink: {
                             text: `User ${userRowIndex}`,
@@ -183,9 +179,9 @@ class DataAggregationService {
 
                     conversation.conversation.forEach((message) => {
                         messagesSheet.addRow({
-                            modelLink: {
-                                text: `Model ${modelRowIndex}`,
-                                hyperlink: `#\'Models\'!A${modelRowIndex + 1}`,
+                            agentLink: {
+                                text: `Agent ${agentRowIndex}`,
+                                hyperlink: `#\'Agents\'!A${agentRowIndex + 1}`,
                             },
                             userLink: {
                                 text: `User ${userRowIndex}`,
@@ -208,7 +204,7 @@ class DataAggregationService {
 
                 userRowIndex++;
             });
-            modelRowIndex++;
+            agentRowIndex++;
         });
 
         return workbook;

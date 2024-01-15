@@ -1,4 +1,4 @@
-import { AbModelsType, ModelType } from '@models/AppModels';
+import { AbAgentsType, AgentType } from '@models/AppModels';
 
 export const defaultSliderSettings = {
     temperature: 1,
@@ -8,9 +8,9 @@ export const defaultSliderSettings = {
     presencePenalty: 0,
 } as const;
 
-export const modelsOptions = ['gpt-3.5-turbo', 'gpt-4-1106-preview'] as const;
+export const agentsOptions = ['gpt-3.5-turbo', 'gpt-4-1106-preview'] as const;
 
-export const defaultSettings: ModelType = {
+export const defaultSettings: AgentType = {
     _id: '',
     title: '',
     summary: '',
@@ -18,7 +18,7 @@ export const defaultSettings: ModelType = {
     beforeUserSentencePrompt: '',
     afterUserSentencePrompt: '',
     firstChatSentence: '',
-    chatModel: modelsOptions[0],
+    model: agentsOptions[0],
     temperature: null,
     maxTokens: null,
     topP: null,
@@ -27,19 +27,19 @@ export const defaultSettings: ModelType = {
     stopSequences: [],
 };
 
-export const defaultAbModels: AbModelsType = {
-    modelA: defaultSettings,
+export const defaultAbAgents: AbAgentsType = {
+    agentA: defaultSettings,
     distA: 50,
-    modelB: defaultSettings,
+    agentB: defaultSettings,
     distB: 50,
 } as const;
 
 export const defaultExperiment = {
     title: '',
     description: '',
-    modelsMode: 'Single',
-    activeModel: defaultSettings,
-    abModels: defaultAbModels,
+    agentsMode: 'Single',
+    activeAgent: defaultSettings,
+    abAgents: defaultAbAgents,
     isActive: true,
     displaySettings: {
         welcomeHeader: 'Welcome',
@@ -60,12 +60,12 @@ export const ApiPaths = {
     CONVERSATIONS_PATH: 'conversations',
     USERS_PATH: 'users',
     DATA_AGGREGATION_PATH: 'dataAggregation',
-    MODELS_PATH: 'models',
+    AGENTS_PATH: 'agents',
     EXPERIMENTS_PATH: 'experiments',
 } as const;
 
 export const AdminSections = {
-    MODELS: 'models',
+    AGENTS: 'agents',
     EXPERIMENTS: 'experiments',
     DATA: 'data',
     SETTINGS: 'settings',

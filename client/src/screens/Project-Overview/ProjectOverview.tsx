@@ -34,7 +34,7 @@ const ProjectOverview: React.FC = () => {
                 >
                     Lexi is an innovative platform designed in collaboration with Cambridge University. It serves
                     as a state-of-the-art environment for conducting extensive research and experiments in the
-                    field of user interaction with bots and Language Learning & Modeling Systems (LLMS).
+                    field of user interaction with bots and Language Learning & Agenting Systems (LLMS).
                 </StyledTypography>
                 <StyledPaper>
                     <Button variant="contained" sx={{ marginRight: 2 }} onClick={handleGitHubRedirect}>

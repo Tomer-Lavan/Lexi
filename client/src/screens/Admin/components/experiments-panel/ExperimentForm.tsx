@@ -1,18 +1,18 @@
 import { defaultExperiment } from '@DAL/constants';
 import { saveExperiment, updateExperiment } from '@DAL/server-requests/experiments';
-import { ActiveModelsForm } from '@components/forms/ActiveModelsForm';
+import { ActiveAgentsForm } from '@components/forms/ActiveAgentsForm';
 import { SnackbarStatus, useSnackbar } from '@contexts/SnackbarProvider';
 import { ExperimentType } from '@models/AppModels';
 import { Box, Checkbox, CircularProgress, FormControlLabel, TextField, Typography } from '@mui/material';
 import { useMemo, useState } from 'react';
-import { MainContainer, SaveButton } from '../models-panel/model-form/ModelForm.s';
+import { MainContainer, SaveButton } from '../agents-panel/agent-form/AgentForm.s';
 
 const ExperimentForm = ({
     editExperiment,
     experiments,
     tempExperiments,
     setTempExperiments,
-    models,
+    agents,
     setExperiments,
     closeDialog,
     isEditMode = false,
@@ -32,14 +32,14 @@ const ExperimentForm = ({
         setExperiments(updatedSettings);
     };
 
-    const validateModel = (): boolean => {
+    const validateAgent = (): boolean => {
         let message = '';
         if (!experiment.title) message = 'Title is required.';
-        else if (!experiment.modelsMode) message = 'Model selection is required.';
-        else if (experiment.modelsMode === 'Single' && !experiment.activeModel)
-            message = 'Active Model selection is required.';
-        else if (experiment.modelsMode === 'A/B' && (!experiment.abModels.modelA || !experiment.abModels.modelB))
-            message = 'Models selection is required.';
+        else if (!experiment.agentsMode) message = 'Agent selection is required.';
+        else if (experiment.agentsMode === 'Single' && !experiment.activeAgent)
+            message = 'Active Agent selection is required.';
+        else if (experiment.agentsMode === 'A/B' && (!experiment.abAgents.agentA || !experiment.abAgents.agentB))
+            message = 'Agents selection is required.';
 
         setValidationMessage(message);
         return !message;
@@ -51,14 +51,14 @@ const ExperimentForm = ({
     };
 
     const handleSave = async () => {
-        if (!validateModel()) return;
+        if (!validateAgent()) return;
 
         setIsSaveLoading(true);
         try {
-            if (experiment.modelsMode === 'Single') {
-                experiment.abModels = null;
+            if (experiment.agentsMode === 'Single') {
+                experiment.abAgents = null;
             } else {
-                experiment.activeModel = null;
+                experiment.activeAgent = null;
             }
             const parsedExperiment = { ...experiment, isActive };
             if (!isEditMode) {
@@ -105,8 +105,8 @@ const ExperimentForm = ({
                 size="small"
                 margin="normal"
             />
-            <ActiveModelsForm
-                models={models}
+            <ActiveAgentsForm
+                agents={agents}
                 experiment={experiment}
                 setExperiment={setExperiment}
                 isRow={false}
