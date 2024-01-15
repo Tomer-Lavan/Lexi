@@ -22,17 +22,7 @@ class UsersService {
     };
 
     createUser = async (user: IUser, experimentId: string): Promise<{ user: IUser; token: string }> => {
-        const {
-            username,
-            age,
-            gender,
-            biologicalSex,
-            maritalStatus,
-            religiousAffiliation,
-            ethnicity,
-            politicalAffiliation,
-            childrenNumber,
-        } = user;
+        const { username, age, gender, biologicalSex, maritalStatus, childrenNumber, nativeEnglishSpeaker } = user;
         const agent = await experimentsService.getActiveAgent(experimentId);
         const res = await UsersModel.create({
             experimentId,
@@ -41,10 +31,8 @@ class UsersService {
             gender,
             biologicalSex,
             maritalStatus,
-            religiousAffiliation,
-            ethnicity,
-            politicalAffiliation,
             childrenNumber,
+            nativeEnglishSpeaker,
             agent,
         });
 

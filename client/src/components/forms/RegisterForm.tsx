@@ -26,7 +26,6 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ experimentId, setSho
         setError,
         getValues,
         setValue,
-        control,
         formState: { errors },
     } = useForm();
 
@@ -75,7 +74,6 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ experimentId, setSho
                         errors={errors}
                         getValues={getValues}
                         handleSubmit={handleSubmit(onSubmit)}
-                        control={control}
                         setPage={goToPage}
                     />
                 )}

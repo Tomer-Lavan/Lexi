@@ -33,10 +33,8 @@ const usersSheetCol = [
     { header: 'Gender', key: 'gender' },
     { header: 'Biological Sex', key: 'biologicalSex' },
     { header: 'Marital Status', key: 'maritalStatus' },
-    { header: 'Religious Affiliation', key: 'religiousAffiliation' },
-    { header: 'Ethnicity', key: 'ethnicity' },
-    { header: 'Political Affiliation', key: 'politicalAffiliation' },
     { header: 'Number of Children', key: 'childrenNumber' },
+    { header: 'Native English Speaker', key: 'nativeEnglishSpeaker' },
     { header: 'Created At', key: 'createdAt' },
 ];
 
@@ -155,10 +153,8 @@ class DataAggregationService {
                     gender: user.user.gender,
                     biologicalSex: user.user.biologicalSex,
                     maritalStatus: user.user.maritalStatus,
-                    religiousAffiliation: user.user.religiousAffiliation,
-                    ethnicity: user.user.ethnicity,
-                    politicalAffiliation: user.user.politicalAffiliation,
                     childrenNumber: user.user.childrenNumber,
+                    nativeEnglishSpeaker: user.user.nativeEnglishSpeaker,
                     createdAt: user.user.createdAt,
                 });
 

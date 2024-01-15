@@ -13,6 +13,7 @@ export const getActiveUser = async (): Promise<UserType> => {
 
 export const registerUser = async (userInfo: NewUserInfoType, experimentId: string): Promise<UserType> => {
     try {
+        userInfo.nativeEnglishSpeaker = userInfo.nativeEnglishSpeaker === 'true';
         const response = await axiosInstance.post(`/${ApiPaths.USERS_PATH}/create`, { userInfo, experimentId });
         return response.data;
     } catch (error) {

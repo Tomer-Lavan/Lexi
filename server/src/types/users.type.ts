@@ -9,10 +9,8 @@ export interface IUser {
     gender: 'male' | 'female' | 'other';
     biologicalSex: string;
     maritalStatus: string;
-    religiousAffiliation: string;
-    ethnicity: string;
-    politicalAffiliation: string;
     childrenNumber: number;
+    nativeEnglishSpeaker: boolean;
     createdAt: Date;
     timestamp: number;
     isAdmin: boolean;

@@ -80,7 +80,7 @@ export const ActiveAgentsForm: React.FC<ActiveAgentsFormProps> = ({
                 >
                     {agentsModes.map((mode) => (
                         <MenuItem key={mode} value={mode}>
-                            {mode === AgentsModes.SINGLE ? 'Single Agent' : AgentsModes.AB}
+                            {mode === AgentsModes.SINGLE ? 'Single Condition' : AgentsModes.AB}
                         </MenuItem>
                     ))}
                 </Select>
