@@ -1,8 +1,15 @@
-import { FormControlLabel, Grid, MenuItem, Radio, RadioGroup, TextField } from '@mui/material';
-import { getFormErrorMessage } from '@utils/commonFunctions';
-import { FieldErrors, FieldValues, UseFormGetValues, UseFormRegister, UseFormSetValue } from 'react-hook-form';
+import { Grid } from '@mui/material';
+import {
+    Control,
+    FieldErrors,
+    FieldValues,
+    UseFormGetValues,
+    UseFormRegister,
+    UseFormSetValue,
+} from 'react-hook-form';
 import { FormContainer, NoteText, StyledContainer } from '../CommonFormStyles.s';
-import { ButtonBox, FormButton, SliderTitle } from './FinalRegestrationForm.s';
+import Question, { QuestionType, QuestionTypeProps } from '../questions/Question';
+import { ButtonBox, FormButton } from './FinalRegestrationForm.s';
 
 const biologicalSexOptions = [
     { label: 'Male', value: 'male' },
@@ -17,7 +24,60 @@ const maritalStatusOptions = [
     { label: 'Widowed', value: 'widowed' },
 ];
 
-const requiredMessage = 'Please fill necessary field';
+interface Question {
+    type: QuestionType;
+    props: QuestionTypeProps;
+}
+
+const questions: Question[] = [
+    {
+        type: 'selection-text-input',
+        props: {
+            fieldKey: 'biologicalSex',
+            selectionOptions: biologicalSexOptions,
+            label: 'Biological Sex',
+        },
+    },
+    {
+        type: 'selection-text-input',
+        props: {
+            fieldKey: 'maritalStatus',
+            selectionOptions: maritalStatusOptions,
+            label: 'Marital Status',
+        },
+    },
+    { type: 'number-input', props: { fieldKey: 'childrenNumber', label: 'Children Number', min: 0, max: 200 } },
+    {
+        type: 'binary-radio-selector',
+        props: {
+            fieldKey: 'nativeEnglishSpeaker',
+            label: 'Are you a native English speaker?',
+        },
+    },
+    {
+        type: 'scale-radio',
+        props: {
+            label: 'Political Affiliation',
+            left: 'Left Wing',
+            right: 'Right Wing',
+            range: 7,
+            field: 'politicalAffiliation',
+            gap: '0px',
+        },
+    },
+    {
+        type: 'radio-selection',
+        props: {
+            label: 'Best NBA Player:',
+            fieldKey: 'nba',
+            selectionOptions: [
+                { label: 'Lebron', value: 'L' },
+                { label: 'Jim', value: 'j' },
+                { label: 'Tom', value: 't' },
+            ],
+        },
+    },
+];
 
 interface FinalRegisterFormProps {
     register: UseFormRegister<FieldValues>;
@@ -26,6 +86,7 @@ interface FinalRegisterFormProps {
     setPage: (page: number) => void;
     setValue: UseFormSetValue<FieldValues>;
     getValues: UseFormGetValues<FieldValues>;
+    control: Control<FieldValues>;
 }
 
 export const FinalRegisterForm: React.FC<FinalRegisterFormProps> = ({
@@ -34,101 +95,26 @@ export const FinalRegisterForm: React.FC<FinalRegisterFormProps> = ({
     setValue,
     getValues,
     handleSubmit,
+    control,
     errors,
 }) => (
     <StyledContainer>
         <FormContainer container spacing={2}>
-            <Grid item xs={12}>
-                <NoteText>Fields marked with a '*' are mandatory.</NoteText>
-                <TextField
-                    select
-                    size="small"
-                    error={Boolean(errors.biologicalSex)}
-                    helperText={getFormErrorMessage(errors.biologicalSex)}
-                    required
-                    fullWidth
-                    {...register('biologicalSex', { required: requiredMessage })}
-                    onChange={(e) => {
-                        setValue('biologicalSex', e.target.value, { shouldValidate: true });
-                    }}
-                    defaultValue={getValues('biologicalSex') || ''}
-                    label="Biological Sex"
-                    id="biologicalSex"
-                >
-                    {biologicalSexOptions.map((option) => (
-                        <MenuItem key={option.value} value={option.value}>
-                            {option.label}
-                        </MenuItem>
-                    ))}
-                </TextField>
-            </Grid>
-            <Grid item xs={7}>
-                <TextField
-                    select
-                    size="small"
-                    error={Boolean(errors.maritalStatus)}
-                    helperText={getFormErrorMessage(errors.maritalStatus)}
-                    required
-                    fullWidth
-                    {...register('maritalStatus', { required: requiredMessage })}
-                    onChange={(e) => {
-                        setValue('maritalStatus', e.target.value, { shouldValidate: true });
-                    }}
-                    label="Marital Status"
-                    id="maritalStatus"
-                    defaultValue={getValues('maritalStatus') || ''}
-                >
-                    {maritalStatusOptions.map((option) => (
-                        <MenuItem key={option.value} value={option.value}>
-                            {option.label}
-                        </MenuItem>
-                    ))}
-                </TextField>
-            </Grid>
-            <Grid item xs={5}>
-                <TextField
-                    type="number"
-                    size="small"
-                    error={Boolean(errors.childrenNumber)}
-                    helperText={getFormErrorMessage(errors.childrenNumber)}
-                    required
-                    fullWidth
-                    {...register('childrenNumber', {
-                        required: requiredMessage,
-                        min: { value: 0, message: 'Children number is invalid' },
-                    })}
-                    onChange={(e) => {
-                        setValue('childrenNumber', e.target.value, { shouldValidate: true });
-                    }}
-                    label="Children Number"
-                    id="childrenNumber"
-                    defaultValue={getValues('childrenNumber') || 0}
-                    InputProps={{ inputProps: { min: 0, max: 99 } }}
-                />
-            </Grid>
-            <Grid item xs={12}>
-                <SliderTitle>Are you a native english speaker?</SliderTitle>
-                <RadioGroup
-                    row
-                    aria-labelledby="native-english-speaker-label"
-                    {...register('isElishSpeaker', { required: requiredMessage })}
-                    defaultValue={true}
-                    style={{ justifyContent: 'center', gap: '16px', paddingLeft: '26px' }}
-                >
-                    <FormControlLabel
-                        value={true}
-                        control={<Radio />}
-                        label="Yes"
-                        {...register('nativeEnglishSpeaker', { required: requiredMessage })}
+            <NoteText>Fields marked with a '*' are mandatory.</NoteText>
+
+            {questions.map((question, index) => (
+                <Grid item xs={12} key={index}>
+                    <Question
+                        type={question.type}
+                        props={question.props}
+                        errors={errors}
+                        register={register}
+                        getValues={getValues}
+                        setValue={setValue}
+                        control={control}
                     />
-                    <FormControlLabel
-                        value={false}
-                        control={<Radio />}
-                        label="No"
-                        {...register('nativeEnglishSpeaker', { required: requiredMessage })}
-                    />
-                </RadioGroup>
-            </Grid>
+                </Grid>
+            ))}
             <Grid item xs={12} display={'flex'} justifyContent={'center'}>
                 <ButtonBox>
                     <FormButton type="submit" variant="contained" color="primary" onClick={handleSubmit}>

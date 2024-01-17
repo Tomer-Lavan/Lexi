@@ -9,6 +9,7 @@ import { useState } from 'react';
 import ExperimentForm from '../ExperimentForm';
 import ExperimentsList from '../experiments-list/ExperimentsList';
 import { AddButton, IconButtonStyled, MainContainerStyled } from './Experiments.s';
+import { CreateForm } from '@components/forms/CreateForm';
 
 export const Experiments = ({ agents }) => {
     const { openSnackbar } = useSnackbar();
@@ -111,11 +112,11 @@ export const Experiments = ({ agents }) => {
                 setIsEditMode={setIsEditMode}
                 isLoadingExperiments={isLoadingExperiments}
             />
-            <Dialog open={openExperimentFormDialog} fullWidth>
+            <Dialog open={openExperimentFormDialog} fullWidth maxWidth="md">
                 <IconButtonStyled aria-label="close" onClick={closeDialog}>
                     <CloseIcon />
                 </IconButtonStyled>
-                <ExperimentForm
+                {/* <ExperimentForm
                     editExperiment={editExperiment}
                     tempExperiments={tempExperiments}
                     setTempExperiments={setTempExperiments}
@@ -124,7 +125,8 @@ export const Experiments = ({ agents }) => {
                     setExperiments={setExperiments}
                     closeDialog={closeDialog}
                     isEditMode={isEditMode}
-                />
+                /> */}
+                <CreateForm />
             </Dialog>
         </MainContainerStyled>
     );
