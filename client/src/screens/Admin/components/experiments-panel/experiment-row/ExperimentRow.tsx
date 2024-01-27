@@ -123,7 +123,7 @@ export const ExperimentRow = (props: { row: ExperimentType; onStatusChange; hand
                 </TableCell>
             </TableRowStyled>
             <TableRow>
-                <ExpInfo colSpan={6}>
+                <ExpInfo colSpan={8}>
                     <Collapse in={open} timeout="auto" unmountOnExit>
                         <ExperimentDetails row={row} />
                     </Collapse>

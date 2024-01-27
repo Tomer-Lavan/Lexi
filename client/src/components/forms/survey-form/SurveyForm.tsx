@@ -85,7 +85,7 @@ const SurveyComponent: React.FC<SurveyComponentProps> = ({ conversationId, isPre
             <SurveyTitle variant="h6" gutterBottom>
                 On a scale of 1 to 7, please rate how you feel now.
             </SurveyTitle>
-            <Grid container spacing={isMobile ? 1.5 : 1}>
+            <Grid container spacing={isMobile ? 1.5 : 1} sx={{ marginLeft: 0 }}>
                 {feelingRatings.map((pair, index) => (
                     <React.Fragment key={pair.feeling}>
                         <Grid item xs={3}>
