@@ -1,0 +1,128 @@
+{
+  "root": true,
+  "extends": [
+    "plugin:@typescript-eslint/recommended",
+    "plugin:react/recommended",
+    "prettier"
+  ],
+  "plugins": ["prettier", "react", "jsx-a11y", "import"],
+  "parser": "@typescript-eslint/parser",
+  "ignorePatterns": ["world-map.ts"],
+  "parserOptions": {
+    "ecmaVersion": 2018,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      }
+    },
+    "react": {
+      "version": "detect"
+    }
+  },
+  "rules": {
+    "prettier/prettier": [
+      1,
+      {
+        "printWidth": 115,
+        "tabWidth": 4,
+        "singleQuote": true,
+        "endOfLine": "auto"
+      }
+    ],
+    "prefer-const": 1,
+    "import/newline-after-import": 1,
+    "spaced-comment": 1,
+    "prefer-template": 1,
+    "prefer-destructuring": 1,
+    "@typescript-eslint/no-inferrable-types": 1,
+    "@typescript-eslint/no-empty-function": 1,
+    "react/self-closing-comp": 1,
+    "no-case-declarations": 1,
+    "object-shorthand": 1,
+    "import/no-useless-path-segments": 1,
+    "no-lonely-if": 1,
+    "@typescript-eslint/no-unused-expressions": 1,
+    "@typescript-eslint/ban-types": 1,
+    "no-return-await": 1,
+    "no-var": 0,
+    "quotes": 0,
+    "@typescript-eslint/no-unused-vars": 1,
+    "no-unused-vars": 0,
+    "@typescript-eslint/class-name-casing": 0,
+    "lines-between-class_members": 0,
+    "@typescript-eslint/ban-ts-ignore": 0,
+    "no-buffer-constructor": 0,
+    "no-undef": 0,
+    "@typescript-eslint/no-explicit-any": 0,
+    "react/jsx-filename-extension": 0,
+    "react/jsx-no-bind": 0,
+    "react/react-in-jsx-scope": "off",
+    "no-use-before-define": "off",
+    "@typescript-eslint/no-use-before-define": [
+      "error",
+      {
+        "variables": false
+      }
+    ],
+    "no-useless-constructor": 0,
+    "no-restricted-globals": 0,
+    "@typescript-eslint/explicit-function-return-type": 0,
+    "no-plusplus": 0,
+    "dot-notation": 0,
+    "one-var": 0,
+    "import/no-extraneous-dependencies": 0,
+    "import/no-named-as-default": 0,
+    "react/prop-types": 0,
+    "react/destructuring-assignment": 0,
+    "import/no-named-default": 0,
+    "jsx-a11y/mouse-events-have-key-events": 0,
+    "@typescript-eslint/prefer-namespace-keyword": 0,
+    "jsx-a11y/click-events-have-key-events": 0,
+    "jsx-a11y/no-static-element-interactions": 0,
+    "no-useless-computed-key": 0,
+    "jsx-a11y/label-has-for": 0,
+    "jsx-a11y/label-has-associated-control": 0,
+    "react/jsx-boolean-value": 0,
+    "no-extra-boolean-cast": 1,
+    "no-unneeded-ternary": 1,
+    "no-lone-blocks": 1,
+    "no-unreachable": 1,
+    "@typescript-eslint/no-empty-interface": 1,
+    "@typescript-eslint/no-namespace": 0,
+    "no-param-reassign": 0,
+    "eqeqeq": 1,
+    "no-shadow": 0,
+    "import/first": 0,
+    "no-else-return": 0,
+    "@typescript-eslint/no-var-requires": 0,
+    "arrow-body-style": [1, "as-needed"],
+    "import/no-unresolved": 0,
+    "import/no-duplicates": 0,
+    "no-useless-return": 0,
+    "no-nested-ternary": 0,
+    "react/sort-comp": 0,
+    "@typescript-eslint/explicit-module-boundary-types": 0,
+    "react/jsx-curly-brace-presence": 0,
+    "react-hooks/rules-of-hooks": 0,
+    "react/no-access-state-in-setstate": 1,
+    "react/no-unescaped-entities": 0,
+    "import/no-webpack-loader-syntax": 1,
+    "import/no-mutable-exports": 1,
+    "class-methods-use-this": 0,
+    "sort-imports": 0,
+    "import/order": 0,
+    "@typescript-eslint/naming-convention": [
+      "error",
+      {
+        "selector": "interface",
+        "format": ["PascalCase"]
+      }
+    ]
+  }
+}

@@ -1,0 +1,12 @@
+/node_modules/
+/build
+logs
+.env
+coverage
+/target/
+*.log
+/dist
+/.project
+.settings/
+/client/node_modules
+/client/build

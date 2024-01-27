@@ -1,0 +1,92 @@
+{
+  "extends": [
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "plugins": [
+    "prettier"
+  ],
+  "ignorePatterns": [".env"],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 2018,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      }
+    }
+  },
+  "rules": {
+    "prettier/prettier": [
+      1,
+      {
+        "printWidth": 115,
+        "tabWidth": 4,
+        "singleQuote": true,
+        "endOfLine": "auto"
+      }
+    ],
+    "prefer-const": 1,
+    "spaced-comment": 1,
+    "prefer-template": 1,
+    "prefer-destructuring": 1,
+    "@typescript-eslint/no-inferrable-types": 1,
+    "@typescript-eslint/no-empty-function": 1,
+    "no-case-declarations": 1,
+    "object-shorthand": 1,
+    "no-lonely-if": 1,
+    "@typescript-eslint/ban-types": 1,
+    "no-return-await": 1,
+    "no-var": 0,
+    "quotes": 0,
+    "@typescript-eslint/class-name-casing": 0,
+    "lines-between-class_members": 0,
+    "@typescript-eslint/ban-ts-ignore": 0,
+    "no-buffer-constructor": 0,
+    "no-undef": 0,
+    "@typescript-eslint/no-explicit-any": 0,
+    "no-useless-constructor": 0,
+    "no-restricted-globals": 0,
+    "@typescript-eslint/no-use-before-define": 0,
+    "no-plusplus": 0,
+    "dot-notation": 0,
+    "one-var": 0,
+    "import/no-extraneous-dependencies": 0,
+    "import/no-named-as-default": 0,
+    "import/no-named-default": 0,
+    "jsx-a11y/mouse-events-have-key-events": 0,
+    "@typescript-eslint/prefer-namespace-keyword": 0,
+    "jsx-a11y/click-events-have-key-events": 0,
+    "jsx-a11y/no-static-element-interactions": 0,
+    "no-useless-computed-key": 0, // doesnt like @media screen calcs
+    "jsx-a11y/label-has-for": 0,
+    "jsx-a11y/label-has-associated-control": 0,
+    "no-extra-boolean-cast": 1,
+    "no-unneeded-ternary": 1,
+    "no-lone-blocks": 1,
+    "no-unreachable": 1,
+    "@typescript-eslint/no-empty-interface": 1,
+
+    // rules we might want to change in the future
+    "@typescript-eslint/no-namespace": 0,
+    "no-param-reassign": 1,
+    "eqeqeq": 1, // == -> ===
+    "no-shadow": 0,
+    "import/first": 0,
+    "no-else-return": 0,
+    "@typescript-eslint/no-var-requires": 0,
+    // "arrow-body-style": [1, "as-needed"],
+    "import/no-unresolved": 0, // ts paths are not recognized for some reason
+    "import/no-duplicates": 0,
+    "no-useless-return": 0,
+    "no-nested-ternary": 0,
+    "class-methods-use-this": 0,
+    "sort-imports": 0,
+    "import/order": 0
+  }
+}
