@@ -61,8 +61,7 @@ const questions: Question[] = [
             left: 'Left Wing',
             right: 'Right Wing',
             range: 7,
-            field: 'politicalAffiliation',
-            gap: '0px',
+            fieldKey: 'politicalAffiliation',
         },
     },
     {

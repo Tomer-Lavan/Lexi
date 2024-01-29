@@ -5,23 +5,23 @@ import { getFormErrorMessage } from '@utils/commonFunctions';
 import { Control, Controller, FieldErrors, FieldValues } from 'react-hook-form';
 
 interface ScaleRadioProps {
+    fieldKey: string;
     label?: string;
     left: string;
     right: string;
     range: number;
-    field: string;
-    gap: string;
-    control: Control<FieldValues>;
+    gap?: string;
+    control?: Control<FieldValues>;
     errors: FieldErrors;
 }
 
 const ScaleRadio: React.FC<ScaleRadioProps> = ({
+    fieldKey,
     label,
     left,
     right,
     range,
-    field,
-    gap = '16px',
+    gap = '0px',
     control,
     errors,
 }) => {
@@ -37,7 +37,7 @@ const ScaleRadio: React.FC<ScaleRadioProps> = ({
     };
 
     return (
-        <Box>
+        <Box style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
             <Typography style={{ color: 'grey', marginBottom: '8px', borderBottom: '1px solid grey' }}>
                 {label}
             </Typography>
@@ -59,7 +59,7 @@ const ScaleRadio: React.FC<ScaleRadioProps> = ({
                     }}
                 >
                     <Controller
-                        name={field}
+                        name={fieldKey || 'field'}
                         control={control}
                         rules={{ required: 'This field is required' }}
                         render={({ field: { onChange, value } }) => (
@@ -67,8 +67,8 @@ const ScaleRadio: React.FC<ScaleRadioProps> = ({
                                 row
                                 value={value}
                                 onChange={onChange}
-                                aria-label={field}
-                                name={field}
+                                aria-label={fieldKey}
+                                name={fieldKey}
                                 sx={{ gap }}
                             >
                                 {valuesArray.map((val) => (
@@ -90,9 +90,9 @@ const ScaleRadio: React.FC<ScaleRadioProps> = ({
                     </Typography>
                 </Grid>
             </Box>
-            {errors[field] && (
+            {errors[fieldKey] && (
                 <Typography color="error" variant="caption">
-                    {getFormErrorMessage(errors[field])}
+                    {getFormErrorMessage(errors[fieldKey])}
                 </Typography>
             )}
         </Box>

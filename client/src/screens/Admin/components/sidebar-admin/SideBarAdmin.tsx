@@ -10,10 +10,12 @@ import { Divider, List, ListItem, Typography } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { MainContainer, StyledListItemIcon } from './SideBar.s';
 import { StyledListItem } from './SideBarAdmin.s';
+import TextSnippetIcon from '@mui/icons-material/TextSnippet';
 
 const sectionsConfig = [
     { id: AdminSections.EXPERIMENTS, label: 'Experiments', Icon: BookOutlinedIcon },
     { id: AdminSections.AGENTS, label: 'Agents', Icon: AutoAwesomeOutlinedIcon },
+    { id: AdminSections.FORMS, label: 'Forms', Icon: TextSnippetIcon },
     { id: AdminSections.DATA, label: 'Data', Icon: InsertChartOutlinedOutlinedIcon },
     { id: AdminSections.SETTINGS, label: 'Settings', Icon: SettingsOutlinedIcon },
 ];

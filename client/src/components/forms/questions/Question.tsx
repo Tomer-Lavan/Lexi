@@ -31,18 +31,17 @@ const validQuestionTypes = [
 
 export type QuestionType = (typeof validQuestionTypes)[number];
 
-interface BinaryRadioSelectorProps {
+export interface BinaryRadioSelectorProps {
     fieldKey: string;
     label: string;
 }
 
 interface ScaleRadioProps {
+    fieldKey: string;
     label?: string;
     left: string;
     right: string;
     range: number;
-    field: string;
-    gap: string;
 }
 
 interface SelectionTextInputProps {
@@ -56,6 +55,7 @@ interface NumberInputProps {
     label: string;
     min: number;
     max: number;
+    defaultValue?: number;
 }
 
 interface RadioSelectionProps {
@@ -85,13 +85,14 @@ interface QuestionProps {
     register?: UseFormRegister<FieldValues>;
     errors: FieldErrors;
     setValue?: UseFormSetValue<FieldValues>;
-    getValues: UseFormGetValues<FieldValues>;
-    control: Control<FieldValues>;
+    getValues?: UseFormGetValues<FieldValues>;
+    control?: Control<FieldValues>;
 }
 
 const Question: React.FC<QuestionProps> = ({ type, props, errors, register, getValues, setValue, control }) => {
     const registerOrUndefined = register ? register : () => undefined;
     const setValueOrUndefined = setValue ? setValue : () => undefined;
+    const getValuesOrUndefined = getValues ? getValues : () => undefined;
     try {
         switch (type) {
             case 'binary-radio-selector':
@@ -114,7 +115,7 @@ const Question: React.FC<QuestionProps> = ({ type, props, errors, register, getV
                         {...(props as SelectionTextInputProps)}
                         errors={errors}
                         register={registerOrUndefined}
-                        getValues={getValues}
+                        getValues={getValuesOrUndefined}
                         setValue={setValueOrUndefined}
                     />
                 );
@@ -124,7 +125,7 @@ const Question: React.FC<QuestionProps> = ({ type, props, errors, register, getV
                         {...(props as NumberInputProps)}
                         errors={errors}
                         register={registerOrUndefined}
-                        getValues={getValues}
+                        getValues={getValuesOrUndefined}
                         setValue={setValueOrUndefined}
                     />
                 );

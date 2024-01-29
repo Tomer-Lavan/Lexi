@@ -62,11 +62,13 @@ export const ApiPaths = {
     DATA_AGGREGATION_PATH: 'dataAggregation',
     AGENTS_PATH: 'agents',
     EXPERIMENTS_PATH: 'experiments',
+    FORMS_PATH: 'forms',
 } as const;
 
 export const AdminSections = {
     AGENTS: 'agents',
     EXPERIMENTS: 'experiments',
+    FORMS: 'forms',
     DATA: 'data',
     SETTINGS: 'settings',
 } as const;

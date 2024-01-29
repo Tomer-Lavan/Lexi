@@ -14,6 +14,7 @@ interface SelectionTextInputProps {
     label: string;
     min: number;
     max: number;
+    defaultValue?: number;
 }
 
 export const NumberInput: React.FC<SelectionTextInputProps> = ({
@@ -25,6 +26,7 @@ export const NumberInput: React.FC<SelectionTextInputProps> = ({
     label,
     min,
     max,
+    defaultValue = 0,
 }) => (
     <TextField
         type="number"
@@ -43,7 +45,7 @@ export const NumberInput: React.FC<SelectionTextInputProps> = ({
         }}
         label={label}
         id={fieldKey}
-        defaultValue={getValues(fieldKey) || 0}
+        defaultValue={getValues(fieldKey) || defaultValue}
         InputProps={{ inputProps: { min, max } }}
     />
 );

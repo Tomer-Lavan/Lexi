@@ -1,59 +1,87 @@
-import React from 'react';
-import { Box, Button, MenuItem, TextField, Typography } from '@mui/material';
-import { useForm, useFieldArray } from 'react-hook-form';
-import Question, { QuestionType, QuestionTypeProps } from './questions/Question';
-import { SelectionOptions } from './SelectionOptions';
+import { Box, MenuItem, TextField } from '@mui/material';
 import { getFormErrorMessage } from '@utils/commonFunctions';
+import React, { useCallback, useEffect } from 'react';
+import { useFormContext } from 'react-hook-form';
+import { SelectionOptions } from './SelectionOptions';
 
 const defaultQuestionProps = {
     'binary-radio-selector': { fieldKey: '', label: 'Example For a binary question:' },
-    'scale-radio': { label: '', left: '', right: '', range: 5, field: '', gap: '' },
-    'selection-text-input': { fieldKey: '', label: '', selectionOptions: [{ label: '', value: '' }] },
-    'number-input': { fieldKey: '', label: '', min: 0, max: 100 },
-    'radio-selection': { label: '', fieldKey: '', selectionOptions: [{ label: '', value: '' }] },
+    'scale-radio': {
+        fieldKey: '',
+        label: 'Choose on the scale:',
+        left: 'Left Option',
+        right: 'Right Option',
+        range: 5,
+    },
+    'selection-text-input': {
+        fieldKey: '',
+        label: 'Select an option',
+        selectionOptions: [{ label: 'Option 1', value: 'option1' }],
+    },
+    'number-input': { fieldKey: '', label: 'Insert a number', min: 0, max: 100, defaultValue: null },
+    'radio-selection': {
+        fieldKey: '',
+        label: 'Select one of the following options:',
+        selectionOptions: [{ label: 'Option 1', value: 'option1' }],
+    },
 };
 
-export const QuestionEditForm = ({
-    watchedForm,
-    selectedQuestionIndex,
-    watch,
-    register,
-    setValue,
-    getValues,
-    errors,
-    control,
-    fields,
-}) => {
-    // Watch the question type selection
-    // const selectedType = watch(`questions.${selectedQuestionIndex}.type`);
+interface QuestionEditFormProps {
+    selectedQuestionIndex: number;
+}
 
-    // Render inputs based on selected question type
+const QuestionEditForm: React.FC<QuestionEditFormProps> = ({ selectedQuestionIndex }) => {
+    const {
+        register,
+        setValue,
+        formState: { errors },
+        watch,
+    } = useFormContext();
+
+    const watchedForm = watch();
+
+    useEffect(() => {
+        console.log(errors);
+        const fieldError = errors?.questions?.[selectedQuestionIndex]?.props?.['fieldKey'];
+        console.log(fieldError);
+    }, [errors]);
+
+    const handleTypeChange = useCallback(
+        (e) => {
+            const newType = e.target.value;
+            setValue(`questions.${selectedQuestionIndex}.type`, newType, {
+                shouldValidate: true,
+            });
+            setValue(`questions.${selectedQuestionIndex}.props`, defaultQuestionProps[newType], {
+                shouldValidate: true,
+            });
+        },
+        [selectedQuestionIndex, setValue],
+    );
+
     const renderInputField = (register, selectedQuestionIndex, key, value) => {
         if (key === 'selectionOptions') {
-            // Handle rendering for selectionOptions, which is an array
-            return (
-                <SelectionOptions
-                    selectedQuestionIndex={selectedQuestionIndex}
-                    value={value}
-                    control={control}
-                    register={register}
-                />
-            );
+            return <SelectionOptions selectedQuestionIndex={selectedQuestionIndex} />;
         } else {
-            // Handle rendering for string and number inputs
+            const fieldError = errors?.questions?.[selectedQuestionIndex]?.props?.[key];
+
             return (
                 <TextField
-                    label={key}
+                    label={key === 'fieldKey' ? 'key' : key}
                     type={typeof value === 'number' ? 'number' : 'text'}
-                    {...register(`questions.${selectedQuestionIndex}.props.${key}`)}
+                    error={Boolean(fieldError)}
+                    helperText={getFormErrorMessage(fieldError)}
+                    {...register(`questions.${selectedQuestionIndex}.props.${key}`, {
+                        required: key === 'fieldKey' ? 'Field Key is required' : false,
+                    })}
                     onChange={(e) => {
-                        console.log('boom', `questions.${selectedQuestionIndex}.props.${key}`, e.target.value);
                         setValue(`questions.${selectedQuestionIndex}.props.${key}`, e.target.value, {
                             shouldValidate: true,
                         });
-                        console.log('owww', fields);
                     }}
+                    required={key === 'fieldKey'}
                     defaultValue={value}
+                    size="small"
                     value={watchedForm.questions[selectedQuestionIndex].props[key]}
                 />
             );
@@ -72,8 +100,7 @@ export const QuestionEditForm = ({
     };
 
     return (
-        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-            <p>{JSON.stringify(watchedForm.questions[selectedQuestionIndex])}</p>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             <TextField
                 select
                 size="small"
@@ -82,16 +109,9 @@ export const QuestionEditForm = ({
                 required
                 fullWidth
                 {...register(`questions.${selectedQuestionIndex}.type`, { required: 'required' })}
-                onChange={(e) => {
-                    setValue(`questions.${selectedQuestionIndex}.type`, e.target.value, {
-                        shouldValidate: true,
-                    });
-                    setValue(`questions.${selectedQuestionIndex}.props`, defaultQuestionProps[e.target.value], {
-                        shouldValidate: true,
-                    });
-                }}
+                onChange={handleTypeChange}
                 value={watchedForm.questions[selectedQuestionIndex].type}
-                label={`questions.${selectedQuestionIndex}.type`}
+                label={`Question Type`}
                 id={`questions.${selectedQuestionIndex}.type`}
             >
                 {Object.keys(defaultQuestionProps).map((option) => (
@@ -108,3 +128,7 @@ export const QuestionEditForm = ({
         </Box>
     );
 };
+
+QuestionEditForm.displayName = 'QuestionEditForm';
+
+export default QuestionEditForm;
