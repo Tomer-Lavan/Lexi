@@ -12,10 +12,12 @@ import {
 import theme from '@root/Theme';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import useActiveUser from '../../hooks/useActiveUser';
 import SurveyComponent from '../forms/survey-form/SurveyForm';
 
 const FinishConversationDialog = ({ open, setIsOpen, questionnaireLink, conversationId }) => {
     const [page, setPage] = useState(1);
+    const { activeUser } = useActiveUser();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const experimentId = useExperimentId();
     const navigate = useNavigate();
@@ -53,18 +55,19 @@ const FinishConversationDialog = ({ open, setIsOpen, questionnaireLink, conversa
                 />
             ) : (
                 <>
-                    <DialogTitle>Questionnaire</DialogTitle>
+                    <DialogTitle>Thank you for completing the conversation</DialogTitle>
                     <DialogContent>
                         <DialogContentText color={'black'}>
-                            Please fill the following questionnaire:
+                            Your username is <b>{activeUser.username}</b>, continue with it in the rest of the
+                            study.
                         </DialogContentText>
-                        <a href={questionnaireLink} target="_blank" rel="noopener noreferrer">
+                        {/* <a href={questionnaireLink} target="_blank" rel="noopener noreferrer">
                             {questionnaireLink}
-                        </a>
+                        </a> */}
                     </DialogContent>
-                    <DialogActions>
+                    {/* <DialogActions>
                         <Button onClick={handleDone}>Done</Button>
-                    </DialogActions>
+                    </DialogActions> */}
                 </>
             )}
         </Dialog>
