@@ -1,4 +1,3 @@
-import { Pages } from '@app/App';
 import { useExperimentId } from '@hooks/useExperimentId';
 import {
     Button,
@@ -11,24 +10,44 @@ import {
 } from '@mui/material';
 import theme from '@root/Theme';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { finishConversation } from '../../DAL/server-requests/conversations';
 import useActiveUser from '../../hooks/useActiveUser';
 import SurveyComponent from '../forms/survey-form/SurveyForm';
 
-const FinishConversationDialog = ({ open, setIsOpen, questionnaireLink, conversationId }) => {
+interface FinishConversationDialogProps {
+    open: boolean;
+    setIsOpen: (isOpen: boolean) => void;
+    questionnaireLink: string;
+    conversationId: string;
+}
+
+const FinishConversationDialog: React.FC<FinishConversationDialogProps> = ({
+    open,
+    conversationId,
+    setIsOpen,
+}) => {
     const [page, setPage] = useState(1);
     const { activeUser } = useActiveUser();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const experimentId = useExperimentId();
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
     const handleYes = () => setPage(2);
 
     const handleNo = () => setIsOpen(false);
 
-    const handleDone = () => {
-        navigate(`${Pages.EXPERIMENT.replace(':experimentId', experimentId)}`);
-        setIsOpen(false);
+    // const handleDone = () => {
+    //     navigate(`${Pages.EXPERIMENT.replace(':experimentId', experimentId)}`);
+    //     setIsOpen(false);
+    // };
+
+    const handleDoneSurvey = async () => {
+        setPage(3);
+        try {
+            await finishConversation(conversationId, experimentId, activeUser.isAdmin);
+        } catch (error) {
+            console.error('Failed to finish conversation');
+        }
     };
 
     return (
@@ -51,7 +70,7 @@ const FinishConversationDialog = ({ open, setIsOpen, questionnaireLink, conversa
                 <SurveyComponent
                     conversationId={conversationId}
                     isPreConversation={false}
-                    handleDone={() => setPage(3)}
+                    handleDone={() => handleDoneSurvey()}
                 />
             ) : (
                 <>
