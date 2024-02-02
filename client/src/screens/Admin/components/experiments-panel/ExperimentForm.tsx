@@ -87,7 +87,7 @@ const ExperimentForm = ({
     };
 
     return (
-        <MainContainer maxWidth="md" style={{ paddingBottom: '32px' }}>
+        <MainContainer style={{ paddingBottom: '32px' }}>
             <Typography variant="h4" gutterBottom margin="normal">
                 {formTitle}
             </Typography>
