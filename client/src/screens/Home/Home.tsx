@@ -104,6 +104,10 @@ const Home: React.FC = () => {
                 )}`,
             );
         } catch (err) {
+            if (err?.response?.status === 403) {
+                openSnackbar('Converations Limit Exceeded', SnackbarStatus.ERROR);
+                return;
+            }
             openSnackbar('Failed to start a new conversation', SnackbarStatus.ERROR);
         }
     };

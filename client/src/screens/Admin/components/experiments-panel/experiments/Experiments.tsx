@@ -111,7 +111,7 @@ export const Experiments = ({ agents }) => {
                 setIsEditMode={setIsEditMode}
                 isLoadingExperiments={isLoadingExperiments}
             />
-            <Dialog open={openExperimentFormDialog} fullWidth>
+            <Dialog open={openExperimentFormDialog} maxWidth="lg">
                 <IconButtonStyled aria-label="close" onClick={closeDialog}>
                     <CloseIcon />
                 </IconButtonStyled>

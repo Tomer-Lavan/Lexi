@@ -22,6 +22,11 @@ export const experimentsSchema = new Schema<IExperiment>(
         title: { type: String },
         description: { type: String },
         numberOfParticipants: { type: Number, default: () => 0 },
+        maxMessages: { type: Number },
+        maxConversations: { type: Number },
+        maxParticipants: { type: Number },
+        totalSessions: { type: Number, default: () => 0 },
+        openSessions: { type: Number, default: () => 0 },
     },
     { versionKey: false },
 );

@@ -17,7 +17,7 @@ const ExperimentForm = ({
     closeDialog,
     isEditMode = false,
 }) => {
-    const [experiment, setExperiment] = useState<any>(editExperiment || defaultExperiment);
+    const [experiment, setExperiment] = useState<ExperimentType>(editExperiment || defaultExperiment);
     const [isActive, setIsActive] = useState(experiment.isActive);
     const [isSaveLoading, setIsSaveLoading] = useState(false);
     const [validationMessage, setValidationMessage] = useState('');
@@ -50,6 +50,14 @@ const ExperimentForm = ({
         setExperiment({ ...experiment, [name]: value });
     };
 
+    const parseExperiment = (): ExperimentType => ({
+        ...experiment,
+        maxMessages: !experiment.maxMessages ? null : Number(experiment.maxMessages),
+        maxConversations: !experiment.maxConversations ? null : Number(experiment.maxConversations),
+        maxParticipants: !experiment.maxParticipants ? null : Number(experiment.maxParticipants),
+        isActive,
+    });
+
     const handleSave = async () => {
         if (!validateAgent()) return;
 
@@ -60,7 +68,7 @@ const ExperimentForm = ({
             } else {
                 experiment.activeAgent = null;
             }
-            const parsedExperiment = { ...experiment, isActive };
+            const parsedExperiment = parseExperiment();
             if (!isEditMode) {
                 const savedExperiment = await saveExperiment(parsedExperiment);
                 setTempExperiments([...tempExperiments, savedExperiment]);
@@ -79,7 +87,7 @@ const ExperimentForm = ({
     };
 
     return (
-        <MainContainer style={{ paddingBottom: '32px' }}>
+        <MainContainer maxWidth="md" style={{ paddingBottom: '32px' }}>
             <Typography variant="h4" gutterBottom margin="normal">
                 {formTitle}
             </Typography>
@@ -104,6 +112,59 @@ const ExperimentForm = ({
                 onChange={handleChange}
                 size="small"
                 margin="normal"
+            />
+            <Typography
+                style={{
+                    color: 'grey',
+                    marginBottom: '4px',
+                    marginTop: '8px',
+                    borderBottom: '1px solid grey',
+                }}
+            >
+                Experiment Boundries:
+            </Typography>
+            <Typography style={{ fontSize: '0.75rem', color: 'rgba(0, 0, 0, 0.6)', padding: '8px' }}>
+                * Leave blank for no limit
+            </Typography>
+            <TextField
+                fullWidth
+                label="Max Participants"
+                name="maxParticipants"
+                value={experiment.maxParticipants === undefined ? '' : experiment.maxParticipants}
+                onChange={handleChange}
+                size="small"
+                margin="dense"
+                type="number"
+                InputLabelProps={{
+                    shrink: true,
+                }}
+            />
+            <TextField
+                fullWidth
+                label="Max Conversations"
+                name="maxConversations"
+                value={experiment.maxConversations === undefined ? '' : experiment.maxConversations}
+                onChange={handleChange}
+                size="small"
+                margin="dense"
+                type="number"
+                InputLabelProps={{
+                    shrink: true,
+                }}
+            />
+            <TextField
+                fullWidth
+                label="Max Messages"
+                name="maxMessages"
+                value={experiment.maxMessages === undefined ? '' : experiment.maxMessages}
+                onChange={handleChange}
+                size="small"
+                margin="dense"
+                type="number"
+                InputLabelProps={{
+                    shrink: true,
+                }}
+                style={{ marginBottom: '12px' }}
             />
             <ActiveAgentsForm
                 agents={agents}

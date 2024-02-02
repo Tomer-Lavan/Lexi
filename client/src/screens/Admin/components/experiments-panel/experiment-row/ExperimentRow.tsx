@@ -90,6 +90,16 @@ export const ExperimentRow = (props: { row: ExperimentType; onStatusChange; hand
                         <Typography color={theme.palette.secondary.main}>{row.numberOfParticipants}</Typography>
                     </Box>
                 </TableCell>
+                <TableCell component="th" scope="row">
+                    <Box display={'flex'} justifyContent={'left'} paddingLeft={4}>
+                        <Typography color={theme.palette.secondary.main}>{row.totalSessions}</Typography>
+                    </Box>
+                </TableCell>
+                <TableCell component="th" scope="row">
+                    <Box display={'flex'} justifyContent={'left'} paddingLeft={4}>
+                        <Typography color={theme.palette.secondary.main}>{row.openSessions}</Typography>
+                    </Box>
+                </TableCell>
                 <TableCell>{timeAgo(row.timestamp)}</TableCell>
                 <TableCell>
                     <ActiveExpSelect
@@ -123,7 +133,7 @@ export const ExperimentRow = (props: { row: ExperimentType; onStatusChange; hand
                 </TableCell>
             </TableRowStyled>
             <TableRow>
-                <ExpInfo colSpan={8}>
+                <ExpInfo colSpan={10}>
                     <Collapse in={open} timeout="auto" unmountOnExit>
                         <ExperimentDetails row={row} />
                     </Collapse>

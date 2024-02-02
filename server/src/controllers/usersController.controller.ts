@@ -23,6 +23,10 @@ class UsersController {
                 res.status(409).json({ message: 'User Already Exists' });
                 return;
             }
+            if (error.code === 403) {
+                res.status(403).json({ message: 'Experiment Is Not Acive' });
+                return;
+            }
             res.status(500).json({ message: 'Error creating user' });
         },
     );

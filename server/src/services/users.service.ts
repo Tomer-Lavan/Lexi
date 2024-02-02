@@ -23,7 +23,17 @@ class UsersService {
 
     createUser = async (user: IUser, experimentId: string): Promise<{ user: IUser; token: string }> => {
         const { username, age, gender, biologicalSex, maritalStatus, childrenNumber, nativeEnglishSpeaker } = user;
-        const agent = await experimentsService.getActiveAgent(experimentId);
+        const [agent, experiment] = await Promise.all([
+            experimentsService.getActiveAgent(experimentId),
+            experimentsService.getExperiment(experimentId),
+        ]);
+
+        if (experiment.maxParticipants && experiment.numberOfParticipants + 1 > experiment.maxParticipants) {
+            const error = new Error('Experiment Participants Limit Exceeded');
+            error['code'] = 403;
+            throw error;
+        }
+
         const res = await UsersModel.create({
             experimentId,
             username,
@@ -38,7 +48,7 @@ class UsersService {
 
         const savedUser = res.toObject() as IUser;
 
-        experimentsService.addParticipant(experimentId);
+        await experimentsService.addParticipant(experimentId);
         const token = jwt.sign({ id: savedUser._id }, process.env.JWT_SECRET_KEY);
         return { user: savedUser, token };
     };

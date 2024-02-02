@@ -48,14 +48,16 @@ const conversationsSheetCol = [
     { header: 'Last Message Date', key: 'lastMessageDate' },
     { header: 'Ims Pre', key: 'imsPre' },
     { header: 'Ims Post', key: 'imsPost' },
+    { header: 'Finished', key: 'isFinished' },
 ];
 
 const messagesSheetCol = [
     { header: 'Agent Link', key: 'agentLink' },
     { header: 'User Link', key: 'userLink' },
-    { header: 'Conversation Link', key: 'conversationLink' },
-    { header: 'User Conversation Nuber', key: 'conversationNumber' },
     { header: 'Message ID', key: 'messageId' },
+    { header: 'Conversation Link', key: 'conversationLink' },
+    { header: 'User Conversation Number', key: 'conversationNumber' },
+    { header: 'Message Number', key: 'messageNumber' },
     { header: 'Content', key: 'content' },
     { header: 'Role', key: 'role' },
     { header: 'Created At', key: 'createdAt' },
@@ -175,6 +177,7 @@ class DataAggregationService {
                         lastMessageDate: conversation.metadata.lastMessageDate,
                         imsPre: conversation.metadata.imsPost ? Object.values(conversation.metadata.imsPre) : [],
                         imsPost: conversation.metadata.imsPost ? Object.values(conversation.metadata.imsPost) : [],
+                        isFinished: conversation.metadata.isFinished,
                     });
 
                     conversation.conversation.forEach((message) => {
@@ -196,6 +199,7 @@ class DataAggregationService {
                             content: message.content,
                             role: message.role,
                             createdAt: message.createdAt,
+                            messageNumber: message.messageNumber,
                         });
                     });
 

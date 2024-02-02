@@ -37,6 +37,26 @@ class ExperimentsService {
         return updatedExperiment;
     };
 
+    addSession = async (experimentId: string): Promise<IExperiment> => {
+        const updatedExperiment = await ExperimentsModel.findOneAndUpdate(
+            { _id: experimentId },
+            { $inc: { totalSessions: 1, openSessions: 1 } },
+            { new: true },
+        );
+
+        return updatedExperiment;
+    };
+
+    closeSession = async (experimentId: string): Promise<IExperiment> => {
+        const updatedExperiment = await ExperimentsModel.findOneAndUpdate(
+            { _id: experimentId },
+            { $inc: { openSessions: -1 } },
+            { new: true },
+        );
+
+        return updatedExperiment;
+    };
+
     updateActiveAgent = async (
         experimentId: string,
         agent: IAgent,
@@ -92,6 +112,16 @@ class ExperimentsService {
             return experiment.abAgents.agentA;
         }
         return experiment.abAgents.agentB;
+    }
+
+    async getExperimentBoundries(
+        experimentId: string,
+    ): Promise<{ maxMessages: number; maxConversations: number; maxParticipants: number }> {
+        const result = await ExperimentsModel.findOne(
+            { _id: new mongoose.Types.ObjectId(experimentId) },
+            { maxMessages: 1, maxConversations: 1, maxParticipants: 1 },
+        );
+        return result;
     }
 }
 

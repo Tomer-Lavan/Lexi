@@ -41,6 +41,8 @@ export const defaultExperiment = {
     activeAgent: defaultSettings,
     abAgents: defaultAbAgents,
     isActive: true,
+    maxMessages: undefined,
+    maxConversations: undefined,
     displaySettings: {
         welcomeHeader: 'Welcome',
         welcomeContent:

@@ -93,6 +93,11 @@ export interface ExperimentType {
     title: string;
     description: string;
     numberOfParticipants: number;
+    maxMessages: number | undefined;
+    maxConversations: number | undefined;
+    maxParticipants: number | undefined;
+    totalSessions: number;
+    openSessions: number;
 }
 
 export interface NewUserInfoType {

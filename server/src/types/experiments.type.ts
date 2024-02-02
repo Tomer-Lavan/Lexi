@@ -25,4 +25,9 @@ export interface IExperiment {
     title: string;
     description: string;
     numberOfParticipants: number;
+    maxMessages: number;
+    maxConversations: number;
+    maxParticipants: number;
+    totalSessions: number;
+    openSessions: number;
 }
