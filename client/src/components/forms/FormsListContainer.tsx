@@ -4,19 +4,18 @@ import React from 'react';
 import { AddButton } from '../../screens/Admin/components/experiments-panel/experiments/Experiments.s';
 import FormsList from './FormsList'; // Assuming FormsList is in the same directory
 
-// Define the type for a single form
 interface Form {
     _id: string;
     name: string;
 }
 
-// Define the props for the FormsListContainer component
 interface FormsListContainerProps {
     forms: Form[];
-    onAddClick: () => void; // Function to handle the Add button click
+    onAddClick: () => void;
+    setSelectedFormId: (formId: string) => void;
 }
 
-const FormsListContainer: React.FC<FormsListContainerProps> = ({ forms, onAddClick }) => (
+const FormsListContainer: React.FC<FormsListContainerProps> = ({ forms, onAddClick, setSelectedFormId }) => (
     <Box display="flex" flexDirection="column" alignItems="center">
         <Box>
             <Box
@@ -46,7 +45,11 @@ const FormsListContainer: React.FC<FormsListContainerProps> = ({ forms, onAddCli
                 more
             </Typography>
         </Box>
-        <FormsList forms={forms} />
+        {forms.length ? (
+            <FormsList forms={forms} setSelectedFormId={setSelectedFormId} />
+        ) : (
+            <Typography>No Forms Found</Typography>
+        )}
     </Box>
 );
 

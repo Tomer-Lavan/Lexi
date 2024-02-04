@@ -36,6 +36,7 @@ const questions: Question[] = [
             fieldKey: 'biologicalSex',
             selectionOptions: biologicalSexOptions,
             label: 'Biological Sex',
+            required: false,
         },
     },
     {
@@ -44,14 +45,19 @@ const questions: Question[] = [
             fieldKey: 'maritalStatus',
             selectionOptions: maritalStatusOptions,
             label: 'Marital Status',
+            required: false,
         },
     },
-    { type: 'number-input', props: { fieldKey: 'childrenNumber', label: 'Children Number', min: 0, max: 200 } },
+    {
+        type: 'number-input',
+        props: { fieldKey: 'childrenNumber', label: 'Children Number', min: 0, max: 200, required: false },
+    },
     {
         type: 'binary-radio-selector',
         props: {
             fieldKey: 'nativeEnglishSpeaker',
             label: 'Are you a native English speaker?',
+            required: true,
         },
     },
     {
@@ -62,6 +68,7 @@ const questions: Question[] = [
             right: 'Right Wing',
             range: 7,
             fieldKey: 'politicalAffiliation',
+            required: false,
         },
     },
     {
@@ -74,6 +81,7 @@ const questions: Question[] = [
                 { label: 'Jim', value: 'j' },
                 { label: 'Tom', value: 't' },
             ],
+            required: false,
         },
     },
 ];

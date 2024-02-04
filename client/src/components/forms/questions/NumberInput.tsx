@@ -15,6 +15,7 @@ interface SelectionTextInputProps {
     min: number;
     max: number;
     defaultValue?: number;
+    required: boolean;
 }
 
 export const NumberInput: React.FC<SelectionTextInputProps> = ({
@@ -27,16 +28,17 @@ export const NumberInput: React.FC<SelectionTextInputProps> = ({
     min,
     max,
     defaultValue = 0,
+    required,
 }) => (
     <TextField
         type="number"
         size="small"
         error={Boolean(errors[fieldKey])}
         helperText={getFormErrorMessage(errors[fieldKey])}
-        required
+        required={required}
         fullWidth
         {...register(fieldKey, {
-            required: requiredMessage,
+            ...(required && { required: requiredMessage }),
             min: { value: min, message: `${label} must be above ${min}` },
             max: { value: max, message: `${label} must be below ${max}` },
         })}

@@ -9,9 +9,15 @@ interface FormType {
     questions: Array<{ type: QuestionType; props: QuestionTypeProps }>;
 }
 
-export const saveForm = async (form: FormType): Promise<void> => {
+interface Form {
+    _id: string;
+    name: string;
+}
+
+export const saveForm = async (form: FormType): Promise<Form> => {
     try {
-        await axiosInstance.post(`/${ApiPaths.FORMS_PATH}`, { form });
+        const response: Form = await axiosInstance.post(`/${ApiPaths.FORMS_PATH}`, { form });
+        return response;
     } catch (error) {
         throw error;
     }
@@ -26,9 +32,18 @@ export const updateForm = async (form: FormType): Promise<void> => {
     }
 };
 
-export const getForms = async (): Promise<FormType[]> => {
+export const getForms = async (): Promise<Form[]> => {
     try {
         const response = await axiosInstance.get(`/${ApiPaths.FORMS_PATH}`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const getForm = async (formId: string): Promise<FormType> => {
+    try {
+        const response = await axiosInstance.get(`/${ApiPaths.FORMS_PATH}/${formId}`);
         return response.data;
     } catch (error) {
         throw error;

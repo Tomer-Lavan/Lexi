@@ -5,6 +5,7 @@ export const formsRouter = () => {
     const router = Router();
     router.post('/', formsController.saveForm);
     router.get('/', formsController.getForms);
+    router.get('/:id', formsController.getForm);
     router.put('/', formsController.updateForm);
 
     return router;

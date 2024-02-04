@@ -10,9 +10,10 @@ interface Form {
 // Define the props for the FormsList component
 interface FormsListProps {
     forms: Form[];
+    setSelectedFormId: (formId: string) => void;
 }
 
-const FormsList: React.FC<FormsListProps> = ({ forms }) => (
+const FormsList: React.FC<FormsListProps> = ({ forms, setSelectedFormId }) => (
     // <Paper elevation={3} style={{ maxWidth: 300, margin: 'auto' }}>
     <List style={{ width: '100%' }}>
         {forms?.map((form, index) => (
@@ -21,7 +22,7 @@ const FormsList: React.FC<FormsListProps> = ({ forms }) => (
                     style={{ fontSize: '0.875rem', marginRight: 10, marginLeft: 8 }}
                     primary={form.name}
                 />
-                <Button variant="contained" onClick={() => {}} size="small">
+                <Button variant="contained" onClick={() => setSelectedFormId(form._id)} size="small">
                     Edit
                 </Button>
             </ListItem>

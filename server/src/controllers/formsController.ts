@@ -8,10 +8,18 @@ class FormsController {
         res.status(200).send(forms);
     });
 
+    getForm = requestHandler(async (req: Request, res: Response) => {
+        const formId = req.params.id;
+        const forms = await formsService.getForm(formId);
+        res.status(200).send(forms);
+    });
+
     saveForm = requestHandler(async (req: Request, res: Response) => {
         const { form } = req.body;
         const savedForm = await formsService.saveForm(form);
-        res.status(200).send(savedForm);
+        const { _id, name } = savedForm;
+
+        res.status(200).send({ _id, name });
     });
 
     updateForm = requestHandler(async (req: Request, res: Response) => {

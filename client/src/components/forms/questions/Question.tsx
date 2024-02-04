@@ -34,6 +34,7 @@ export type QuestionType = (typeof validQuestionTypes)[number];
 export interface BinaryRadioSelectorProps {
     fieldKey: string;
     label: string;
+    required: boolean;
 }
 
 interface ScaleRadioProps {
@@ -42,12 +43,14 @@ interface ScaleRadioProps {
     left: string;
     right: string;
     range: number;
+    required: boolean;
 }
 
 interface SelectionTextInputProps {
     selectionOptions: SelectionOption[];
     fieldKey: string;
     label: string;
+    required: boolean;
 }
 
 interface NumberInputProps {
@@ -56,6 +59,7 @@ interface NumberInputProps {
     min: number;
     max: number;
     defaultValue?: number;
+    required: boolean;
 }
 
 interface RadioSelectionProps {
@@ -63,6 +67,7 @@ interface RadioSelectionProps {
     fieldKey: string;
     selectionOptions: SelectionOption[];
     errors: FieldErrors;
+    required: boolean;
 }
 
 export type QuestionTypeProps =

@@ -10,6 +10,7 @@ interface ScaleRadioProps {
     left: string;
     right: string;
     range: number;
+    required: boolean;
     gap?: string;
     control?: Control<FieldValues>;
     errors: FieldErrors;
@@ -21,6 +22,7 @@ const ScaleRadio: React.FC<ScaleRadioProps> = ({
     left,
     right,
     range,
+    required,
     gap = '0px',
     control,
     errors,
@@ -39,7 +41,7 @@ const ScaleRadio: React.FC<ScaleRadioProps> = ({
     return (
         <Box style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
             <Typography style={{ color: 'grey', marginBottom: '8px', borderBottom: '1px solid grey' }}>
-                {label}
+                {label} {required ? '*' : ''}
             </Typography>
             <Box key={left} style={{ display: 'flex' }}>
                 <Grid item xs={2} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -61,7 +63,7 @@ const ScaleRadio: React.FC<ScaleRadioProps> = ({
                     <Controller
                         name={fieldKey || 'field'}
                         control={control}
-                        rules={{ required: 'This field is required' }}
+                        rules={required ? { required: 'This field is required' } : {}}
                         render={({ field: { onChange, value } }) => (
                             <RadioGroup
                                 row

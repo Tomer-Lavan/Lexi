@@ -4,8 +4,9 @@ import { Box, Button, Grid, TextField, Typography } from '@mui/material';
 import theme from '@root/Theme';
 import { useCallback, useState } from 'react';
 import { FormProvider, useFieldArray, useForm } from 'react-hook-form';
-import { saveForm } from '../../DAL/server-requests/forms';
+import { getForm, saveForm } from '../../DAL/server-requests/forms';
 import { SnackbarStatus, useSnackbar } from '../../contexts/SnackbarProvider';
+import useEffectAsync from '../../hooks/useEffectAsync';
 import QuestionEditForm from './QuestionEditForm';
 import Question, { BinaryRadioSelectorProps, QuestionType, QuestionTypeProps } from './questions/Question';
 
@@ -17,30 +18,61 @@ interface FormType {
 }
 
 const defaultQuestionProps = {
-    'binary-radio-selector': { fieldKey: '', label: 'Example For a binary question:' },
+    'binary-radio-selector': { fieldKey: '', label: 'Example For a binary question:', required: true },
     'scale-radio': {
         fieldKey: '',
         label: 'Choose on the scale:',
         left: 'Left Option',
         right: 'Right Option',
         range: 5,
+        required: true,
     },
     'selection-text-input': {
         fieldKey: '',
         label: 'Select an option',
+        required: true,
         selectionOptions: [{ label: 'Option 1', value: 'option1' }],
     },
-    'number-input': { fieldKey: '', label: 'Insert a number', min: 0, max: 100, defaultValue: null },
+    'number-input': {
+        fieldKey: '',
+        label: 'Insert a number',
+        min: 0,
+        max: 100,
+        defaultValue: null,
+        required: true,
+    },
     'radio-selection': {
         fieldKey: '',
         label: 'Select one of the following options:',
+        required: true,
         selectionOptions: [{ label: 'Option 1', value: 'option1' }],
     },
 };
-export const CreateForm = () => {
+export const CreateForm = ({ editFormId, setForms }) => {
     const { openSnackbar } = useSnackbar();
+    const [form, setForm] = useState<FormType>({
+        name: 'Untitled',
+        title: '',
+        instructions: '',
+        questions: [{ type: 'selection-text-input', props: defaultQuestionProps['selection-text-input'] }],
+    });
     const [selectedQuestionIndex, setSelectedQuestionIndex] = useState<number>(0);
     const [questionLength, setQuestionLength] = useState<number>(1);
+
+    useEffectAsync(async () => {
+        try {
+            if (editFormId) {
+                debugger;
+                const formRes = await getForm(editFormId);
+                if (formRes) {
+                    methods.reset(formRes);
+                    setForm(formRes);
+                }
+            }
+        } catch (error) {
+            openSnackbar('Failed to load form', SnackbarStatus.ERROR);
+        }
+    }, [editFormId]);
 
     const methods = useForm<{
         name: string;
@@ -48,12 +80,7 @@ export const CreateForm = () => {
         instructions: string;
         questions: any[];
     }>({
-        defaultValues: {
-            name: 'Untitled',
-            title: '',
-            instructions: '',
-            questions: [{ type: 'selection-text-input', props: defaultQuestionProps['selection-text-input'] }],
-        },
+        defaultValues: form,
     });
 
     const {
@@ -93,7 +120,8 @@ export const CreateForm = () => {
         }
 
         try {
-            await saveForm(data);
+            const formRes = await saveForm(data);
+            setForms((prevForms) => [...prevForms, formRes]);
             openSnackbar('Form Saved !', SnackbarStatus.SUCCESS);
         } catch (error) {
             openSnackbar('Form Saving Failed', SnackbarStatus.ERROR);
@@ -138,7 +166,7 @@ export const CreateForm = () => {
                         display: 'flex',
                         alignItems: 'center',
                         overflowY: 'auto',
-                        height: '100%',
+                        height: '100vh',
                     }}
                 >
                     <Box sx={{ mb: 2, width: '100%' }}>
@@ -174,16 +202,7 @@ export const CreateForm = () => {
                                     width: '100%',
                                 }}
                             >
-                                <Question
-                                    key={index}
-                                    type={field?.type}
-                                    props={field?.props}
-                                    // register={register}
-                                    errors={errors}
-                                    // setValue={setValue}
-                                    // getValues={getValues}
-                                    // control={control}
-                                />
+                                <Question key={index} type={field?.type} props={field?.props} errors={errors} />
                                 <Button
                                     variant="outlined"
                                     onClick={() => onQuestionSelection(index)}
@@ -219,7 +238,7 @@ export const CreateForm = () => {
                 <Grid
                     item
                     md={4}
-                    sx={{ p: 2, overflowY: 'auto', height: '100%', borderLeft: '1px solid #c0c0c0' }}
+                    sx={{ p: 2, overflowY: 'auto', height: '100vh', borderLeft: '1px solid #c0c0c0' }}
                 >
                     <TextField
                         label={'name'}

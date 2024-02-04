@@ -18,6 +18,7 @@ interface SelectionTextInputProps {
     selectionOptions: SelectionOption[];
     fieldKey: string;
     label: string;
+    required: boolean;
 }
 
 export const SelectionTextInput: React.FC<SelectionTextInputProps> = ({
@@ -28,15 +29,16 @@ export const SelectionTextInput: React.FC<SelectionTextInputProps> = ({
     fieldKey,
     label,
     selectionOptions,
+    required,
 }) => (
     <TextField
         select
         size="small"
         error={Boolean(errors[fieldKey])}
         helperText={getFormErrorMessage(errors[fieldKey])}
-        required
+        required={required}
         fullWidth
-        {...register(fieldKey, { required: requiredMessage })}
+        {...register(fieldKey, required ? { required: requiredMessage } : {})}
         onChange={(e) => {
             setValue(fieldKey, e.target.value, { shouldValidate: true });
         }}

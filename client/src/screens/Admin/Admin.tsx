@@ -7,21 +7,30 @@ import { AgentType } from '@models/AppModels';
 import { Grid } from '@mui/material';
 import theme from '@root/Theme';
 import { useState } from 'react';
+import { getForms } from '../../DAL/server-requests/forms';
 import FormsListContainer from '../../components/forms/FormsListContainer';
 import { MainContainer, SectionContainer, SectionInnerContainer } from './Admin.s';
 import { AgentsListContainer } from './components/agents-panel/agents-list/AgentsListContainer';
 import { Experiments } from './components/experiments-panel/experiments/Experiments';
 import { SidebarAdmin } from './components/sidebar-admin/SideBarAdmin';
 
+interface Form {
+    _id: string;
+    name: string;
+}
+
 const Admin = () => {
     const [agents, setAgents] = useState<AgentType[]>([]);
+    const [forms, setForms] = useState<Form[]>([]);
     const [section, setSection] = useState(AdminSections.EXPERIMENTS);
+    const [selectedFormId, setSelectedFormId] = useState(null);
     const { openSnackbar } = useSnackbar();
 
     useEffectAsync(async () => {
         try {
-            const res = await getAgents();
-            setAgents(res);
+            const [agentsRes, formsRes] = await Promise.all([getAgents(), getForms()]);
+            setAgents(agentsRes);
+            setForms(formsRes);
         } catch (error) {
             openSnackbar('Failed to load agents', SnackbarStatus.ERROR);
             setAgents([]);
@@ -61,15 +70,13 @@ const Admin = () => {
                                     }}
                                 >
                                     <FormsListContainer
-                                        forms={[
-                                            { _id: '1', name: 'first form' },
-                                            { _id: '2', name: 'second form' },
-                                        ]}
+                                        forms={forms}
                                         onAddClick={() => console.log('boo')}
+                                        setSelectedFormId={setSelectedFormId}
                                     />
                                 </Grid>
                                 <Grid item md={9}>
-                                    <CreateForm />
+                                    <CreateForm editFormId={selectedFormId} setForms={setForms} />
                                 </Grid>
                             </Grid>
                         )}
