@@ -2,7 +2,7 @@
     <a href="https://www.cam.ac.uk/">
         <img src="https://www.cam.ac.uk/sites/www.cam.ac.uk/files/inner-images/logo.jpg" width="128px" />
     </a>
-    <h1>LEXI: Larege Language Models Experimental Interface</h1>
+    <h1>LEXI: Large Language Models Experimental Interface</h1>
     <p>An innovative platform by <a href="https://cambridge-afar.github.io/">Affective Intelligence and Robotics Laboratory (AFAR)</a> of the University of Cambridge for conducting social interaction experiments with bots and Language Learning & Modeling Systems (LLMS).</p>
 </div>
 
