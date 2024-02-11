@@ -27,6 +27,12 @@ class FormsController {
         const response = await formsService.updateForms(form);
         res.status(200).send(response);
     });
+
+    deleteForm = requestHandler(async (req: Request, res: Response) => {
+        const formId = req.params.id;
+        const response = await formsService.deleteForm(formId);
+        res.status(200).send(response);
+    });
 }
 
 export const formsController = new FormsController();

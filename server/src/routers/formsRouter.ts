@@ -7,6 +7,7 @@ export const formsRouter = () => {
     router.get('/', formsController.getForms);
     router.get('/:id', formsController.getForm);
     router.put('/', formsController.updateForm);
+    router.delete('/:id', formsController.deleteForm);
 
     return router;
 };

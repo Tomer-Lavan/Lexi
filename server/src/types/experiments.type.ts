@@ -13,6 +13,12 @@ export interface DisplaySettings {
     welcomeHeader: string;
 }
 
+export interface ExperimentForms {
+    regestration: string;
+    preConversation: string;
+    postConversation: string;
+}
+
 export interface IExperiment {
     _id: mongoose.Types.ObjectId;
     agentsMode: string;
@@ -25,4 +31,5 @@ export interface IExperiment {
     title: string;
     description: string;
     numberOfParticipants: number;
+    experimentForms: ExperimentForms;
 }

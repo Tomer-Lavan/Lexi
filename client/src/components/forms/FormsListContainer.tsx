@@ -11,11 +11,31 @@ interface Form {
 
 interface FormsListContainerProps {
     forms: Form[];
-    onAddClick: () => void;
+    setForms: (forms) => void;
     setSelectedFormId: (formId: string) => void;
+    selectedFormId: string;
 }
 
-const FormsListContainer: React.FC<FormsListContainerProps> = ({ forms, onAddClick, setSelectedFormId }) => (
+const moreForms: Form[] = [
+    { _id: '1', name: 'Form' },
+    { _id: '2', name: 'Form' },
+    { _id: '3', name: 'Form' },
+    { _id: '4', name: 'Form' },
+    { _id: '5', name: 'Form' },
+    { _id: '6', name: 'Form' },
+    { _id: '7', name: 'Form' },
+    { _id: '8', name: 'Form' },
+    { _id: '9', name: 'Form' },
+    { _id: '10', name: 'Form' },
+    { _id: '11', name: 'Form' },
+];
+
+const FormsListContainer: React.FC<FormsListContainerProps> = ({
+    forms,
+    setForms,
+    setSelectedFormId,
+    selectedFormId,
+}) => (
     <Box display="flex" flexDirection="column" alignItems="center">
         <Box>
             <Box
@@ -29,9 +49,9 @@ const FormsListContainer: React.FC<FormsListContainerProps> = ({ forms, onAddCli
                 </Typography>
                 <Box display={'flex'} justifyContent={'end'}>
                     <AddButton
-                        onClick={() => {}}
+                        onClick={() => setSelectedFormId(null)}
                         size="small"
-                        sx={{ padding: '4px 0px', minWidth: '36px', margin: 0 }}
+                        sx={{ padding: '3px 0px', minWidth: '32px', margin: 0 }}
                     >
                         <AddIcon style={{ color: 'floralwhite' }} />
                         {/* <Typography fontSize={'0.875rem'} color={'floralwhite'}>
@@ -45,11 +65,18 @@ const FormsListContainer: React.FC<FormsListContainerProps> = ({ forms, onAddCli
                 more
             </Typography>
         </Box>
-        {forms.length ? (
-            <FormsList forms={forms} setSelectedFormId={setSelectedFormId} />
-        ) : (
-            <Typography>No Forms Found</Typography>
-        )}
+        <Box height={'62vh'} width={'100%'} style={{ overflowY: 'auto' }}>
+            {forms.length ? (
+                <FormsList
+                    forms={forms}
+                    setForms={setForms}
+                    setSelectedFormId={setSelectedFormId}
+                    selectedFormId={selectedFormId}
+                />
+            ) : (
+                <Typography>No Forms Found</Typography>
+            )}
+        </Box>
     </Box>
 );
 

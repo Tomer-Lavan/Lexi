@@ -69,6 +69,7 @@ const questions: Question[] = [
             range: 7,
             fieldKey: 'politicalAffiliation',
             required: false,
+            numbered: true,
         },
     },
     {
@@ -132,7 +133,7 @@ export const FinalRegisterForm: React.FC<FinalRegisterFormProps> = ({
                         color="primary"
                         onClick={() => setPage(2)}
                         fullWidth
-                        style={{ marginTop: '8px' }}
+                        style={{ marginTop: '8px', marginBottom: '4px' }}
                     >
                         Back
                     </FormButton>

@@ -16,8 +16,8 @@ interface Form {
 
 export const saveForm = async (form: FormType): Promise<Form> => {
     try {
-        const response: Form = await axiosInstance.post(`/${ApiPaths.FORMS_PATH}`, { form });
-        return response;
+        const response = await axiosInstance.post(`/${ApiPaths.FORMS_PATH}`, { form });
+        return response.data;
     } catch (error) {
         throw error;
     }
@@ -44,6 +44,15 @@ export const getForms = async (): Promise<Form[]> => {
 export const getForm = async (formId: string): Promise<FormType> => {
     try {
         const response = await axiosInstance.get(`/${ApiPaths.FORMS_PATH}/${formId}`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const deleteForm = async (formId: string): Promise<FormType> => {
+    try {
+        const response = await axiosInstance.delete(`/${ApiPaths.FORMS_PATH}/${formId}`);
         return response.data;
     } catch (error) {
         throw error;

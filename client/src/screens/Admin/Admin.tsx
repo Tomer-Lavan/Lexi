@@ -71,8 +71,9 @@ const Admin = () => {
                                 >
                                     <FormsListContainer
                                         forms={forms}
-                                        onAddClick={() => console.log('boo')}
+                                        setForms={setForms}
                                         setSelectedFormId={setSelectedFormId}
+                                        selectedFormId={selectedFormId}
                                     />
                                 </Grid>
                                 <Grid item md={9}>

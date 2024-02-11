@@ -4,7 +4,7 @@ import { Box, Button, Grid, TextField, Typography } from '@mui/material';
 import theme from '@root/Theme';
 import { useCallback, useState } from 'react';
 import { FormProvider, useFieldArray, useForm } from 'react-hook-form';
-import { getForm, saveForm } from '../../DAL/server-requests/forms';
+import { getForm, saveForm, updateForm } from '../../DAL/server-requests/forms';
 import { SnackbarStatus, useSnackbar } from '../../contexts/SnackbarProvider';
 import useEffectAsync from '../../hooks/useEffectAsync';
 import QuestionEditForm from './QuestionEditForm';
@@ -26,6 +26,7 @@ const defaultQuestionProps = {
         right: 'Right Option',
         range: 5,
         required: true,
+        numbered: false,
     },
     'selection-text-input': {
         fieldKey: '',
@@ -48,26 +49,31 @@ const defaultQuestionProps = {
         selectionOptions: [{ label: 'Option 1', value: 'option1' }],
     },
 };
+
+const defaultForm: FormType = {
+    name: 'Untitled',
+    title: '',
+    instructions: '',
+    questions: [{ type: 'selection-text-input', props: defaultQuestionProps['selection-text-input'] }],
+};
+
 export const CreateForm = ({ editFormId, setForms }) => {
     const { openSnackbar } = useSnackbar();
-    const [form, setForm] = useState<FormType>({
-        name: 'Untitled',
-        title: '',
-        instructions: '',
-        questions: [{ type: 'selection-text-input', props: defaultQuestionProps['selection-text-input'] }],
-    });
+    const [form, setForm] = useState<FormType>(defaultForm);
     const [selectedQuestionIndex, setSelectedQuestionIndex] = useState<number>(0);
     const [questionLength, setQuestionLength] = useState<number>(1);
 
     useEffectAsync(async () => {
         try {
             if (editFormId) {
-                debugger;
                 const formRes = await getForm(editFormId);
                 if (formRes) {
                     methods.reset(formRes);
                     setForm(formRes);
                 }
+            } else {
+                methods.reset(defaultForm);
+                setForm(defaultForm);
             }
         } catch (error) {
             openSnackbar('Failed to load form', SnackbarStatus.ERROR);
@@ -120,6 +126,11 @@ export const CreateForm = ({ editFormId, setForms }) => {
         }
 
         try {
+            if (editFormId) {
+                await updateForm(data);
+                openSnackbar('Form Updated !', SnackbarStatus.SUCCESS);
+                return;
+            }
             const formRes = await saveForm(data);
             setForms((prevForms) => [...prevForms, formRes]);
             openSnackbar('Form Saved !', SnackbarStatus.SUCCESS);
@@ -257,12 +268,14 @@ export const CreateForm = ({ editFormId, setForms }) => {
                         label={'title'}
                         type={'text'}
                         {...register(`title`)}
+                        required
                         onChange={(e) => {
                             setValue(`title`, e.target.value, {
                                 shouldValidate: true,
                             });
                         }}
-                        defaultValue={''}
+                        defaultValue={getValues('title') || ''}
+                        value={getValues('title') || ''}
                         size="small"
                         sx={{ mb: 1 }}
                     />
@@ -279,7 +292,8 @@ export const CreateForm = ({ editFormId, setForms }) => {
                                 shouldValidate: true,
                             });
                         }}
-                        defaultValue={''}
+                        defaultValue={getValues('instructions') || ''}
+                        value={getValues('instructions') || ''}
                         size="small"
                         sx={{ mb: 2 }}
                     />

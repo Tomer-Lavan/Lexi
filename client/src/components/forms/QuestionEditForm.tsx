@@ -13,6 +13,7 @@ const defaultQuestionProps = {
         right: 'Right Option',
         range: 5,
         required: true,
+        numbered: false,
     },
     'selection-text-input': {
         fieldKey: '',
@@ -72,7 +73,7 @@ const QuestionEditForm: React.FC<QuestionEditFormProps> = ({ selectedQuestionInd
     const renderInputField = (register, selectedQuestionIndex, key, value) => {
         if (key === 'selectionOptions') {
             return <SelectionOptions selectedQuestionIndex={selectedQuestionIndex} />;
-        } else if (key === 'required') {
+        } else if (key === 'required' || key === 'numbered') {
             return (
                 <Box style={{ width: '100%' }}>
                     <FormControlLabel
@@ -88,7 +89,7 @@ const QuestionEditForm: React.FC<QuestionEditFormProps> = ({ selectedQuestionInd
                                 }
                             />
                         }
-                        label="Required"
+                        label={key.charAt(0).toUpperCase() + key.slice(1)}
                     />
                 </Box>
             );

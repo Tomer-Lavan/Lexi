@@ -44,6 +44,7 @@ interface ScaleRadioProps {
     right: string;
     range: number;
     required: boolean;
+    numbered?: boolean;
 }
 
 interface SelectionTextInputProps {
