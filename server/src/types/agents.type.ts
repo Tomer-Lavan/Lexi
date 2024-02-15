@@ -15,4 +15,6 @@ export interface IAgent {
     frequencyPenalty: number;
     presencePenalty: number;
     stopSequences: string[];
+    createdAt: Date;
+    timestamp: number;
 }

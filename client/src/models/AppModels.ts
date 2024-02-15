@@ -60,6 +60,8 @@ export interface AgentType {
     frequencyPenalty: number;
     presencePenalty: number;
     stopSequences: { value: string; id: string }[];
+    createdAt?: Date;
+    timestamp?: number;
 }
 
 export type AbAgentsType = {
