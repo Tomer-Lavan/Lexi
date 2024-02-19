@@ -119,49 +119,6 @@ class ExperimentsService {
         );
         return result;
     }
-
-    async updateAgentIds() {
-        try {
-            const experiments = await ExperimentsModel.find({
-                $or: [
-                    { activeAgent: { $ne: null } },
-                    { 'abAgents.agentA': { $ne: null } },
-                    { 'abAgents.agentB': { $ne: null } },
-                ],
-            });
-
-            console.log(`Fetched ${experiments.length} experiments`);
-
-            for (const experiment of experiments) {
-                const update = {};
-                if (
-                    typeof experiment.activeAgent !== 'string' &&
-                    experiment.activeAgent !== null &&
-                    experiment.activeAgent !== undefined
-                ) {
-                    update['activeAgent'] = experiment.activeAgent._id;
-                }
-                if (
-                    typeof experiment.abAgents?.agentA !== 'string' &&
-                    experiment.abAgents?.agentA !== null &&
-                    experiment.abAgents?.agentA !== undefined
-                ) {
-                    update['abAgents.agentA'] = experiment.abAgents.agentA._id;
-                }
-                if (
-                    typeof experiment.abAgents?.agentB !== 'string' &&
-                    experiment.abAgents?.agentB !== null &&
-                    experiment.abAgents?.agentB !== undefined
-                ) {
-                    update['abAgents.agentB'] = experiment.abAgents.agentB._id;
-                }
-
-                await ExperimentsModel.updateOne({ _id: experiment._id }, { $set: update });
-            }
-        } catch (error) {
-            console.error('Error updating agent IDs:', error);
-        }
-    }
 }
 
 export const experimentsService = new ExperimentsService();

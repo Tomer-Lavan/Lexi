@@ -49,11 +49,6 @@ class ExperimentsController {
         const experiments = await experimentsService.getAllExperimentsByAgentId(agentId as string);
         res.status(200).send(experiments);
     });
-
-    updateAgentIds = requestHandler(async (req: Request, res: Response) => {
-        await experimentsService.updateAgentIds();
-        res.status(200).send();
-    });
 }
 
 export const experimentsController = new ExperimentsController();

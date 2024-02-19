@@ -11,7 +11,6 @@ export const experimentsRouter = () => {
     router.put('/', experimentsController.updateExperiment);
     router.put('/status', experimentsController.updateExperimentsStatus);
     router.put('/content', experimentsController.updateExperimentDisplaySetting);
-    router.post('/updateAgentIds', experimentsController.updateAgentIds);
 
     return router;
 };

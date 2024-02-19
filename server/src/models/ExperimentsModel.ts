@@ -1,18 +1,18 @@
-import mongoose, { Schema } from 'mongoose';
+import { Schema } from 'mongoose';
 import { mongoDbProvider } from '../mongoDBProvider';
 import { ABAgents, IExperiment } from '../types';
 
 const AbAgentsSchema = new Schema<ABAgents>({
     distA: { type: Number, required: true },
-    agentA: { type: mongoose.Schema.Types.Mixed, required: true },
+    agentA: { type: String, required: true },
     distB: { type: Number, required: true },
-    agentB: { type: mongoose.Schema.Types.Mixed, required: true },
+    agentB: { type: String, required: true },
 });
 
 export const experimentsSchema = new Schema<IExperiment>(
     {
         agentsMode: { type: String, required: true },
-        activeAgent: { type: mongoose.Schema.Types.Mixed },
+        activeAgent: { type: String },
         abAgents: { type: AbAgentsSchema },
         createdAt: { type: Date, default: Date.now },
         timestamp: { type: Number, default: () => Date.now() },

@@ -1,10 +1,9 @@
 import mongoose from 'mongoose';
-import { IAgent } from '../types/agents.type';
 
 export interface ABAgents {
-    agentA: IAgent | mongoose.Types.ObjectId | string;
+    agentA: string;
     distA: number;
-    agentB: IAgent | mongoose.Types.ObjectId | string;
+    agentB: string;
     distB: number;
 }
 
@@ -21,7 +20,7 @@ export interface IExperimentLean {
 export interface IExperiment {
     _id: mongoose.Types.ObjectId;
     agentsMode: string;
-    activeAgent: IAgent | mongoose.Types.ObjectId | string;
+    activeAgent: string;
     abAgents: ABAgents;
     createdAt: Date;
     timestamp: number;
