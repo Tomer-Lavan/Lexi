@@ -1,6 +1,7 @@
 import mongoose, { UpdateWriteOpResult } from 'mongoose';
 import { ExperimentsModel } from '../models/ExperimentsModel';
-import { ABAgents, AgentConfig, AgentsMode, DisplaySettings, IAgent, IExperiment } from '../types';
+import { AgentsMode, DisplaySettings, IAgent, IExperiment, IExperimentLean } from '../types';
+import { agentsService } from './agents.service';
 
 type BulkWriteResult = ReturnType<typeof ExperimentsModel.bulkWrite>;
 
@@ -57,26 +58,6 @@ class ExperimentsService {
         return updatedExperiment;
     };
 
-    updateActiveAgent = async (
-        experimentId: string,
-        agent: IAgent,
-        agentsConfig: AgentConfig,
-        abAgents: ABAgents,
-    ): Promise<UpdateWriteOpResult> => {
-        const updateFields = { agentsConfig };
-        if (agentsConfig === AgentConfig.SINGLE) {
-            updateFields['activeAgent'] = agent;
-        } else {
-            updateFields['abAgents'] = abAgents;
-        }
-        const response = await ExperimentsModel.updateOne(
-            { _id: new mongoose.Types.ObjectId(experimentId) },
-            { $set: updateFields },
-        );
-
-        return response;
-    };
-
     updateExperimentDisplaySettings = async (
         experimentId: string,
         displaySettings: DisplaySettings,
@@ -103,15 +84,20 @@ class ExperimentsService {
 
     async getActiveAgent(experimentId: string): Promise<IAgent> {
         const experiment = await this.getExperiment(experimentId);
+        let agentId;
         if (experiment.agentsMode === AgentsMode.SINGLE) {
-            return experiment.activeAgent;
+            agentId = experiment.activeAgent;
+        } else {
+            const rand = Math.random() * 100;
+            if (experiment.abAgents.distA >= rand) {
+                agentId = experiment.abAgents.agentA;
+            } else {
+                agentId = experiment.abAgents.agentB;
+            }
         }
 
-        const rand = Math.random() * 100;
-        if (experiment.abAgents.distA >= rand) {
-            return experiment.abAgents.agentA;
-        }
-        return experiment.abAgents.agentB;
+        const agent = await agentsService.getAgent(agentId);
+        return agent;
     }
 
     async getExperimentBoundries(
@@ -122,6 +108,59 @@ class ExperimentsService {
             { maxMessages: 1, maxConversations: 1, maxParticipants: 1 },
         );
         return result;
+    }
+
+    async getAllExperimentsByAgentId(agentId: string): Promise<IExperimentLean[]> {
+        const result = await ExperimentsModel.find(
+            {
+                $or: [{ activeAgent: agentId }, { 'abAgents.agentA': agentId }, { 'abAgents.agentB': agentId }],
+            },
+            { _id: 1, title: 1 },
+        );
+        return result;
+    }
+
+    async updateAgentIds() {
+        try {
+            const experiments = await ExperimentsModel.find({
+                $or: [
+                    { activeAgent: { $ne: null } },
+                    { 'abAgents.agentA': { $ne: null } },
+                    { 'abAgents.agentB': { $ne: null } },
+                ],
+            });
+
+            console.log(`Fetched ${experiments.length} experiments`);
+
+            for (const experiment of experiments) {
+                const update = {};
+                if (
+                    typeof experiment.activeAgent !== 'string' &&
+                    experiment.activeAgent !== null &&
+                    experiment.activeAgent !== undefined
+                ) {
+                    update['activeAgent'] = experiment.activeAgent._id;
+                }
+                if (
+                    typeof experiment.abAgents?.agentA !== 'string' &&
+                    experiment.abAgents?.agentA !== null &&
+                    experiment.abAgents?.agentA !== undefined
+                ) {
+                    update['abAgents.agentA'] = experiment.abAgents.agentA._id;
+                }
+                if (
+                    typeof experiment.abAgents?.agentB !== 'string' &&
+                    experiment.abAgents?.agentB !== null &&
+                    experiment.abAgents?.agentB !== undefined
+                ) {
+                    update['abAgents.agentB'] = experiment.abAgents.agentB._id;
+                }
+
+                await ExperimentsModel.updateOne({ _id: experiment._id }, { $set: update });
+            }
+        } catch (error) {
+            console.error('Error updating agent IDs:', error);
+        }
     }
 }
 

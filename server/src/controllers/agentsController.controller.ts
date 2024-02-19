@@ -8,6 +8,12 @@ class AgentsController {
         res.status(200).send(agents);
     });
 
+    getAgentLean = requestHandler(async (req: Request, res: Response) => {
+        const agentId = req.params.id as string;
+        const agent = await agentsService.getAgentLean(agentId);
+        res.status(200).send(agent);
+    });
+
     saveAgent = requestHandler(async (req: Request, res: Response) => {
         const { agent } = req.body;
         const savedSetting = await agentsService.saveAgent(agent);

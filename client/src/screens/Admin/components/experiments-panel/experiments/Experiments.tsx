@@ -43,7 +43,7 @@ export const Experiments = ({ agents }) => {
         }
     };
 
-    const handleStatusChange = (id, newStatus) => {
+    const handleStatusChange = (id: string, newStatus: boolean) => {
         setTempExperiments((prev) => prev.map((exp) => (exp._id === id ? { ...exp, isActive: newStatus } : exp)));
         setModifiedExperiments((prev) => {
             const originalStatus = experiments.find((exp) => exp._id === id)?.isActive;

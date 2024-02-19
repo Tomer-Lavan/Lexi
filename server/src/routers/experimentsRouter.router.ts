@@ -4,13 +4,14 @@ import { experimentsController } from '../controllers/experimentsController.cont
 export const experimentsRouter = () => {
     const router = Router();
     router.get('/', experimentsController.getExperiments);
+    router.get('/agent', experimentsController.getAllExperimentsByAgentId);
     router.get('/:id', experimentsController.getExperiment);
     router.get('/:id/content', experimentsController.getExperimentContent);
     router.post('/create', experimentsController.createExperiment);
     router.put('/', experimentsController.updateExperiment);
-    router.put('/agent', experimentsController.updateActiveAgent);
     router.put('/status', experimentsController.updateExperimentsStatus);
     router.put('/content', experimentsController.updateExperimentDisplaySetting);
+    router.post('/updateAgentIds', experimentsController.updateAgentIds);
 
     return router;
 };

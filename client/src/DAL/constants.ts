@@ -28,9 +28,9 @@ export const defaultSettings: AgentType = {
 };
 
 export const defaultAbAgents: AbAgentsType = {
-    agentA: defaultSettings,
+    agentA: null,
     distA: 50,
-    agentB: defaultSettings,
+    agentB: null,
     distB: 50,
 } as const;
 
@@ -38,11 +38,12 @@ export const defaultExperiment = {
     title: '',
     description: '',
     agentsMode: 'Single',
-    activeAgent: defaultSettings,
-    abAgents: defaultAbAgents,
+    activeAgent: null,
+    abAgents: null,
     isActive: true,
     maxMessages: undefined,
     maxConversations: undefined,
+    maxParticipants: undefined,
     displaySettings: {
         welcomeHeader: 'Welcome',
         welcomeContent:

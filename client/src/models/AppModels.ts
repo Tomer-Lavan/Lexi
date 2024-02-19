@@ -64,10 +64,15 @@ export interface AgentType {
     timestamp?: number;
 }
 
+export interface AgentLeanType {
+    _id: string;
+    title: string;
+}
+
 export type AbAgentsType = {
-    agentA: AgentType;
+    agentA: string;
     distA: number;
-    agentB: AgentType;
+    agentB: string;
     distB: number;
 };
 
@@ -84,7 +89,7 @@ export interface DisplaySettings {
 export interface ExperimentType {
     _id: string;
     agentsMode: string;
-    activeAgent: AgentType;
+    activeAgent: string;
     abAgents: AbAgentsType;
     createdAt: Date;
     timestamp: number;
@@ -100,6 +105,11 @@ export interface ExperimentType {
     maxParticipants: number | undefined;
     totalSessions: number;
     openSessions: number;
+}
+
+export interface ExperimentLeanType {
+    _id: string;
+    title: string;
 }
 
 export interface NewUserInfoType {

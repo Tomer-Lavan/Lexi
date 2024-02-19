@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import { UsersModel } from '../models/UsersModel';
-import { IUser } from '../types';
+import { IAgent, IUser } from '../types';
 import { experimentsService } from './experiments.service';
 
 dotenv.config();
@@ -131,6 +131,13 @@ class UsersService {
         ]);
 
         return users;
+    };
+
+    updateUsersAgent = async (agent: IAgent): Promise<void> => {
+        const agentId = new mongoose.Types.ObjectId(agent._id);
+
+        const res = await UsersModel.updateMany({ 'agent._id': agentId }, { $set: { agent } });
+        console.log(res);
     };
 }
 

@@ -84,6 +84,12 @@ class UsersController {
             }
         },
     );
+
+    updateUsersAgent = requestHandler(async (req: Request, res: Response) => {
+        const { agent } = req.body;
+        await usersService.updateUsersAgent(agent);
+        res.status(200).send();
+    });
 }
 
 export const usersController = new UsersController();
