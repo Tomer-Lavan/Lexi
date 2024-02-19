@@ -8,6 +8,7 @@ export const conversationsRouter = () => {
     router.get('/message/stream', convesationsController.streamMessage);
     router.post('/create', convesationsController.createConversation);
     router.put('/ims', convesationsController.updateIms);
+    router.put('/metadata', convesationsController.updateConversationMetadata);
 
     return router;
 };

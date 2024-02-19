@@ -1,9 +1,9 @@
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { IconButton, List, ListItem, ListItemText, Menu, MenuItem } from '@mui/material';
 import React, { useState } from 'react';
-import { deleteForm } from '../../DAL/server-requests/forms';
-import theme from '../../Theme';
-import { SnackbarStatus, useSnackbar } from '../../contexts/SnackbarProvider';
+import { deleteForm } from '../../../../../DAL/server-requests/forms';
+import theme from '../../../../../Theme';
+import { SnackbarStatus, useSnackbar } from '../../../../../contexts/SnackbarProvider';
 
 // Define the type for a single form
 interface Form {
@@ -20,7 +20,6 @@ interface FormsListProps {
 }
 
 const FormsList: React.FC<FormsListProps> = ({ forms, setForms, setSelectedFormId, selectedFormId }) => {
-    // <Paper elevation={3} style={{ maxWidth: 300, margin: 'auto' }}>
     const { openSnackbar } = useSnackbar();
     const [anchorEl, setAnchorEl] = useState(null);
     const [selectedFormMenuId, setSelectedFormMenuId] = useState(null);
@@ -49,7 +48,7 @@ const FormsList: React.FC<FormsListProps> = ({ forms, setForms, setSelectedFormI
 
     return (
         <List style={{ width: '100%' }}>
-            {forms?.map((form, index) => (
+            {forms?.map((form) => (
                 <ListItem
                     button
                     key={form._id}
@@ -63,9 +62,6 @@ const FormsList: React.FC<FormsListProps> = ({ forms, setForms, setSelectedFormI
                         style={{ fontSize: '0.875rem', marginRight: 10, marginLeft: 8 }}
                         primary={form.name}
                     />
-                    {/* <Button variant="contained" onClick={() => setSelectedFormId(form._id)} size="small">
-                        Edit
-                    </Button> */}
                     <IconButton onClick={(e) => handleMenu(e, form._id)}>
                         <MoreVertIcon />
                     </IconButton>
@@ -93,9 +89,6 @@ const FormsList: React.FC<FormsListProps> = ({ forms, setForms, setSelectedFormI
                         >
                             Edit
                         </MenuItem>
-                        {/* <MenuItem onClick={handleClose} style={{}}>
-                            Duplicate
-                        </MenuItem> */}
                         <MenuItem onClick={(e) => handleDelete(e, selectedFormMenuId)} style={{ color: 'red' }}>
                             Delete
                         </MenuItem>
@@ -103,7 +96,6 @@ const FormsList: React.FC<FormsListProps> = ({ forms, setForms, setSelectedFormI
                 </ListItem>
             ))}
         </List>
-        // </Paper>
     );
 };
 

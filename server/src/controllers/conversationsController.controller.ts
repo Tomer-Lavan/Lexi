@@ -76,6 +76,14 @@ class ConvesationsController {
 
         res.status(200).send();
     });
+
+    updateConversationMetadata = requestHandler(async (req: Request, res: Response) => {
+        const { conversationId, data, isPreConversation } = req.body;
+
+        await conversationsService.updateConversationSurveysData(conversationId, data, isPreConversation);
+
+        res.status(200).send();
+    });
 }
 
 export const convesationsController = new ConvesationsController();

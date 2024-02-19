@@ -21,6 +21,6 @@ export interface IMetadataConversation {
     conversationNumber: number;
     agent: IAgent;
     userId: string;
-    imsPre?: object;
-    imsPost?: object;
+    preConversation?: object;
+    postConversation?: object;
 }

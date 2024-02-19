@@ -1,8 +1,8 @@
 import AddIcon from '@mui/icons-material/Add';
 import { Box, Typography } from '@mui/material';
 import React from 'react';
-import { AddButton } from '../../screens/Admin/components/experiments-panel/experiments/Experiments.s';
-import FormsList from './FormsList'; // Assuming FormsList is in the same directory
+import { AddButton } from '../../experiments-panel/experiments/Experiments.s';
+import FormsList from '../forms-list/FormsList'; // Assuming FormsList is in the same directory
 
 interface Form {
     _id: string;
@@ -15,20 +15,6 @@ interface FormsListContainerProps {
     setSelectedFormId: (formId: string) => void;
     selectedFormId: string;
 }
-
-const moreForms: Form[] = [
-    { _id: '1', name: 'Form' },
-    { _id: '2', name: 'Form' },
-    { _id: '3', name: 'Form' },
-    { _id: '4', name: 'Form' },
-    { _id: '5', name: 'Form' },
-    { _id: '6', name: 'Form' },
-    { _id: '7', name: 'Form' },
-    { _id: '8', name: 'Form' },
-    { _id: '9', name: 'Form' },
-    { _id: '10', name: 'Form' },
-    { _id: '11', name: 'Form' },
-];
 
 const FormsListContainer: React.FC<FormsListContainerProps> = ({
     forms,
@@ -54,9 +40,6 @@ const FormsListContainer: React.FC<FormsListContainerProps> = ({
                         sx={{ padding: '3px 0px', minWidth: '32px', margin: 0 }}
                     >
                         <AddIcon style={{ color: 'floralwhite' }} />
-                        {/* <Typography fontSize={'0.875rem'} color={'floralwhite'}>
-                            Add Form
-                        </Typography> */}
                     </AddButton>
                 </Box>
             </Box>

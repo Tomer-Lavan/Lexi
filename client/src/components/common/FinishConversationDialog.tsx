@@ -12,15 +12,23 @@ import {
 import theme from '@root/Theme';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import SurveyComponent from '../forms/survey-form/SurveyForm';
+import { ConversationForm } from '../forms/conversation-form/ConversationForm';
 
-const FinishConversationDialog = ({ open, setIsOpen, questionnaireLink, conversationId }) => {
+const FinishConversationDialog = ({ open, setIsOpen, questionnaireLink, form }) => {
     const [page, setPage] = useState(1);
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const experimentId = useExperimentId();
     const navigate = useNavigate();
 
-    const handleYes = () => setPage(2);
+    const handleYes = () => {
+        if (form) {
+            setPage(2);
+        } else if (questionnaireLink) {
+            setPage(3);
+        } else {
+            handleDone();
+        }
+    };
 
     const handleNo = () => setIsOpen(false);
 
@@ -45,13 +53,13 @@ const FinishConversationDialog = ({ open, setIsOpen, questionnaireLink, conversa
                         </Button>
                     </DialogActions>
                 </>
-            ) : page === 2 ? (
-                <SurveyComponent
-                    conversationId={conversationId}
+            ) : page === 2 && form ? (
+                <ConversationForm
+                    form={form}
                     isPreConversation={false}
-                    handleDone={() => setPage(3)}
+                    handleDone={() => (questionnaireLink ? setPage(3) : handleDone())}
                 />
-            ) : (
+            ) : page === 3 || (!form && questionnaireLink) ? (
                 <>
                     <DialogTitle>Questionnaire</DialogTitle>
                     <DialogContent>
@@ -66,7 +74,7 @@ const FinishConversationDialog = ({ open, setIsOpen, questionnaireLink, conversa
                         <Button onClick={handleDone}>Done</Button>
                     </DialogActions>
                 </>
-            )}
+            ) : null}
         </Dialog>
     );
 };

@@ -5,6 +5,7 @@ import { SnackbarStatus, useSnackbar } from '@contexts/SnackbarProvider';
 import { ExperimentType } from '@models/AppModels';
 import { Box, Checkbox, CircularProgress, FormControlLabel, TextField, Typography } from '@mui/material';
 import { useMemo, useState } from 'react';
+import StyledSelection from '../../../../components/common/StyledSelection';
 import { MainContainer, SaveButton } from '../agents-panel/agent-form/AgentForm.s';
 
 const ExperimentForm = ({
@@ -16,12 +17,14 @@ const ExperimentForm = ({
     setExperiments,
     closeDialog,
     isEditMode = false,
+    forms,
 }) => {
     const [experiment, setExperiment] = useState<any>(editExperiment || defaultExperiment);
     const [isActive, setIsActive] = useState(experiment.isActive);
     const [isSaveLoading, setIsSaveLoading] = useState(false);
     const [validationMessage, setValidationMessage] = useState('');
     const formTitle = useMemo(() => (!isEditMode ? 'New Experiment' : 'Edit Experiment'), []);
+    // const formsOptions = useMemo(() => [{ name: 'No Form' }, ...forms], []);
     const { openSnackbar } = useSnackbar();
 
     const updateExperimentInList = (updatedExp: ExperimentType) => {
@@ -105,12 +108,79 @@ const ExperimentForm = ({
                 size="small"
                 margin="normal"
             />
-            <ActiveAgentsForm
-                agents={agents}
-                experiment={experiment}
-                setExperiment={setExperiment}
-                isRow={false}
-            />
+            <Typography
+                style={{
+                    color: 'grey',
+                    marginBottom: '4px',
+                    marginTop: '8px',
+                    borderBottom: '1px solid grey',
+                }}
+            >
+                Experiment Agents:
+            </Typography>
+            <Box width={'100%'} paddingLeft={'16px'} style={{ marginBottom: '16px' }}>
+                <ActiveAgentsForm
+                    agents={agents}
+                    experiment={experiment}
+                    setExperiment={setExperiment}
+                    isRow={false}
+                />
+            </Box>
+
+            <Typography
+                style={{
+                    color: 'grey',
+                    marginBottom: '4px',
+                    marginTop: '8px',
+                    borderBottom: '1px solid grey',
+                }}
+            >
+                Experiment Forms:
+            </Typography>
+            <Box width={'100%'} paddingLeft={'16px'} style={{ marginBottom: '24px' }}>
+                <StyledSelection
+                    label="Registration"
+                    options={forms}
+                    value={experiment.experimentForms?.registration || null}
+                    onChange={(event) => {
+                        const selectedFormId = event.target.value;
+                        setExperiment({
+                            ...experiment,
+                            experimentForms: { ...experiment.experimentForms, registration: selectedFormId },
+                        });
+                    }}
+                    name="registration"
+                    placeholder={'No Form'}
+                />
+                <StyledSelection
+                    label="Before Conversation"
+                    options={forms}
+                    value={experiment.experimentForms?.preConversation || null}
+                    onChange={(event) => {
+                        const selectedFormId = event.target.value;
+                        setExperiment({
+                            ...experiment,
+                            experimentForms: { ...experiment.experimentForms, preConversation: selectedFormId },
+                        });
+                    }}
+                    name="preConversation"
+                    placeholder={'No Form'}
+                />
+                <StyledSelection
+                    label="After Conversation"
+                    options={forms}
+                    value={experiment.experimentForms?.postConversation || null}
+                    onChange={(event) => {
+                        const selectedFormId = event.target.value;
+                        setExperiment({
+                            ...experiment,
+                            experimentForms: { ...experiment.experimentForms, postConversation: selectedFormId },
+                        });
+                    }}
+                    name="postConversation"
+                    placeholder={'No Form'}
+                />
+            </Box>
             <Box style={{ width: '100%' }}>
                 <FormControlLabel
                     control={

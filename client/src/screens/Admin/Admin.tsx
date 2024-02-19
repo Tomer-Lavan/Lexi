@@ -1,6 +1,5 @@
 import { AdminSections } from '@DAL/constants';
 import { getAgents } from '@DAL/server-requests/agents';
-import { CreateForm } from '@components/forms/CreateForm';
 import { SnackbarStatus, useSnackbar } from '@contexts/SnackbarProvider';
 import useEffectAsync from '@hooks/useEffectAsync';
 import { AgentType } from '@models/AppModels';
@@ -8,10 +7,10 @@ import { Grid } from '@mui/material';
 import theme from '@root/Theme';
 import { useState } from 'react';
 import { getForms } from '../../DAL/server-requests/forms';
-import FormsListContainer from '../../components/forms/FormsListContainer';
 import { MainContainer, SectionContainer, SectionInnerContainer } from './Admin.s';
 import { AgentsListContainer } from './components/agents-panel/agents-list/AgentsListContainer';
 import { Experiments } from './components/experiments-panel/experiments/Experiments';
+import FormsPanel from './components/forms-panel/FormsPanel';
 import { SidebarAdmin } from './components/sidebar-admin/SideBarAdmin';
 
 interface Form {
@@ -23,7 +22,6 @@ const Admin = () => {
     const [agents, setAgents] = useState<AgentType[]>([]);
     const [forms, setForms] = useState<Form[]>([]);
     const [section, setSection] = useState(AdminSections.EXPERIMENTS);
-    const [selectedFormId, setSelectedFormId] = useState(null);
     const { openSnackbar } = useSnackbar();
 
     useEffectAsync(async () => {
@@ -53,33 +51,11 @@ const Admin = () => {
                 >
                     <SectionInnerContainer container>
                         {section === AdminSections.EXPERIMENTS ? (
-                            <Experiments agents={agents} />
+                            <Experiments agents={agents} forms={forms} />
                         ) : section === AdminSections.AGENTS ? (
                             <AgentsListContainer agents={agents} setAgents={setAgents} />
                         ) : (
-                            <Grid container>
-                                <Grid
-                                    item
-                                    md={3}
-                                    style={{
-                                        paddingLeft: '32px',
-                                        paddingTop: '32px',
-                                        paddingRight: '16px',
-                                        borderRight: '1px solid #c0c0c0',
-                                        backgroundColor: '#f5f5f5',
-                                    }}
-                                >
-                                    <FormsListContainer
-                                        forms={forms}
-                                        setForms={setForms}
-                                        setSelectedFormId={setSelectedFormId}
-                                        selectedFormId={selectedFormId}
-                                    />
-                                </Grid>
-                                <Grid item md={9}>
-                                    <CreateForm editFormId={selectedFormId} setForms={setForms} />
-                                </Grid>
-                            </Grid>
+                            <FormsPanel forms={forms} setForms={setForms} />
                         )}
                     </SectionInnerContainer>
                 </SectionContainer>

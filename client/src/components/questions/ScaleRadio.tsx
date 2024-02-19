@@ -1,4 +1,4 @@
-import { Grid, Radio, RadioGroup, Typography, useMediaQuery } from '@mui/material';
+import { Grid, Radio, RadioGroup, Tooltip, Typography, useMediaQuery } from '@mui/material';
 import { Box } from '@mui/system';
 import theme from '@root/Theme';
 import { getFormErrorMessage } from '@utils/commonFunctions';
@@ -47,11 +47,36 @@ const ScaleRadio: React.FC<ScaleRadioProps> = ({
                     {label} {required ? '*' : ''}
                 </Typography>
             )}
-            <Box key={left} style={{ display: 'flex' }}>
-                <Grid item xs={2} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                    <Typography textAlign={'left'} color={'grey'}>
-                        {left}
-                    </Typography>
+            <Box key={left} style={{ display: 'flex', width: '100%', justifyContent: 'space-evenly' }}>
+                <Grid
+                    item
+                    xs={2}
+                    style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        paddingRight: isMobile ? '4px' : '16px',
+                        alignItems: numbered ? 'end' : 'center',
+                        paddingBottom: numbered && !isMobile && '8px',
+                    }}
+                >
+                    <Tooltip title={left}>
+                        <Typography
+                            textAlign={'justify'}
+                            color={'grey'}
+                            sx={
+                                isMobile && {
+                                    width: 200,
+                                    maxWidth: 200,
+                                    whiteSpace: 'nowrap',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    fontSize: '0.875rem',
+                                }
+                            }
+                        >
+                            {left}
+                        </Typography>
+                    </Tooltip>
                 </Grid>
                 <Grid
                     item
@@ -64,27 +89,6 @@ const ScaleRadio: React.FC<ScaleRadioProps> = ({
                         alignItems: 'center',
                     }}
                 >
-                    {/* <RadioGroup
-                            row
-                            aria-label={fieldKey}
-                            name={fieldKey}
-                            sx={{ gap, justifyContent: 'space-between' }}
-                        >
-                            {valuesArray.map((val) => (
-                                <FormControlLabel
-                                    key={val}
-                                    value={String(val)}
-                                    sx={{ margin: 0 }}
-                                    control={
-                                        <Typography textAlign={'center'} style={{ width: '36px' }}>
-                                            {val}
-                                        </Typography>
-                                    }
-                                    label=""
-                                />
-                            ))}
-                        </RadioGroup> */}
-
                     {control ? (
                         <Controller
                             name={fieldKey || 'field'}
@@ -128,10 +132,37 @@ const ScaleRadio: React.FC<ScaleRadioProps> = ({
                         </RadioGroup>
                     )}
                 </Grid>
-                <Grid item xs={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
-                    <Typography textAlign={'right'} color={'grey'}>
-                        {right}
-                    </Typography>
+                <Grid
+                    item
+                    xs={2}
+                    display={'flex'}
+                    justifyContent={'center'}
+                    alignItems={numbered ? 'end' : 'center'}
+                    style={{
+                        paddingLeft: isMobile ? '4px' : '16px',
+                        paddingBottom: numbered && !isMobile && '8px',
+                    }}
+                >
+                    <Tooltip title={right}>
+                        <Typography
+                            textAlign={'justify'}
+                            color={'grey'}
+                            sx={
+                                isMobile
+                                    ? {
+                                          width: 200,
+                                          maxWidth: 200,
+                                          whiteSpace: 'nowrap',
+                                          overflow: 'hidden',
+                                          textOverflow: 'ellipsis',
+                                          fontSize: '0.875rem',
+                                      }
+                                    : {}
+                            }
+                        >
+                            {right}
+                        </Typography>
+                    </Tooltip>
                 </Grid>
             </Box>
             {errors[fieldKey] && (

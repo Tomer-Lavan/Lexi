@@ -1,41 +1,9 @@
 import { Box, Checkbox, FormControlLabel, MenuItem, TextField } from '@mui/material';
 import { getFormErrorMessage } from '@utils/commonFunctions';
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { SelectionOptions } from './SelectionOptions';
-
-const defaultQuestionProps = {
-    'binary-radio-selector': { fieldKey: '', label: 'Example For a binary question:', required: true },
-    'scale-radio': {
-        fieldKey: '',
-        label: 'Choose on the scale:',
-        left: 'Left Option',
-        right: 'Right Option',
-        range: 5,
-        required: true,
-        numbered: false,
-    },
-    'selection-text-input': {
-        fieldKey: '',
-        label: 'Select an option',
-        selectionOptions: [{ label: 'Option 1', value: 'option1' }],
-        required: true,
-    },
-    'number-input': {
-        fieldKey: '',
-        label: 'Insert a number',
-        min: 0,
-        max: 100,
-        defaultValue: null,
-        required: true,
-    },
-    'radio-selection': {
-        fieldKey: '',
-        label: 'Select one of the following options:',
-        selectionOptions: [{ label: 'Option 1', value: 'option1' }],
-        required: true,
-    },
-};
+import { defaultQuestionProps } from '../../../../../DAL/constants';
+import { SelectionOptions } from '../../selection-options/SelectionOptions';
 
 interface QuestionEditFormProps {
     selectedQuestionIndex: number;
@@ -50,12 +18,6 @@ const QuestionEditForm: React.FC<QuestionEditFormProps> = ({ selectedQuestionInd
     } = useFormContext();
 
     const watchedForm = watch();
-
-    useEffect(() => {
-        console.log(errors);
-        const fieldError = errors?.questions?.[selectedQuestionIndex]?.props?.['fieldKey'];
-        console.log(fieldError);
-    }, [errors]);
 
     const handleTypeChange = useCallback(
         (e) => {

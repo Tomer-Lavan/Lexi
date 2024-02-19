@@ -102,6 +102,13 @@ class ConversationsService {
         return res;
     };
 
+    updateConversationSurveysData = async (conversationId: string, data, isPreConversation: boolean) => {
+        const saveField = isPreConversation ? { preConversation: data } : { postConversation: data };
+        const res = await this.updateConversationMetadata(conversationId, saveField);
+
+        return res;
+    };
+
     getConversationMetadata = async (conversationId: string): Promise<any> => {
         const res = await MetadataConversationsModel.findOne({ _id: new mongoose.Types.ObjectId(conversationId) });
         return res;

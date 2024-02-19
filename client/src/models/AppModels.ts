@@ -1,3 +1,5 @@
+import { QuestionType, QuestionTypeProps } from '../components/questions/Question';
+
 export interface MessageType {
     role: 'system' | 'user' | 'assistant';
     content: string;
@@ -108,4 +110,11 @@ export interface NewUserInfoType {
 export interface ExperimentContentType {
     content: DisplaySettings;
     isActive: boolean;
+}
+
+export interface FormType {
+    name: string;
+    title: string;
+    instructions: string;
+    questions: Array<{ type: QuestionType; props: QuestionTypeProps }>;
 }

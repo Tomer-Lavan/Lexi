@@ -22,6 +22,25 @@ class FormsService {
         return form;
     };
 
+    getConversationForms = async (
+        preConversationFormId: string,
+        postConversationFormId: string,
+    ): Promise<{ preConversation: IForm; postConversation: IForm }> => {
+        const forms: IForm[] = await FormsModel.find({
+            _id: { $in: [preConversationFormId, postConversationFormId] },
+        });
+        let preConversation, postConversation;
+        forms.forEach((form) => {
+            if (form._id.toString() === preConversationFormId) preConversation = form;
+            else if (form._id.toString() === postConversationFormId) postConversation = form;
+        });
+
+        return {
+            preConversation,
+            postConversation,
+        };
+    };
+
     updateForms = async (form: IForm): Promise<UpdateWriteOpResult> => {
         const response: UpdateWriteOpResult = await FormsModel.updateOne({ _id: form._id }, { $set: form });
         return response;

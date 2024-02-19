@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-// Import your question components
 import {
     Control,
     FieldErrors,
@@ -15,7 +14,6 @@ import RadioSelection from './RadioSelection';
 import ScaleRadio from './ScaleRadio';
 import { SelectionTextInput } from './SelectionTextInput';
 
-// Define specific prop types for each question type
 interface SelectionOption {
     label: string;
     value: string;
@@ -77,13 +75,6 @@ export type QuestionTypeProps =
     | SelectionTextInputProps
     | NumberInputProps
     | RadioSelectionProps;
-
-interface CommonQuestionProps {
-    register: UseFormRegister<FieldValues>;
-    errors: FieldErrors;
-    setValue: UseFormSetValue<FieldValues>;
-    getValues: UseFormGetValues<FieldValues>;
-}
 
 interface QuestionProps {
     type: QuestionType;

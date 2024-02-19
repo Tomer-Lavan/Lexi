@@ -11,7 +11,7 @@ class DataAggregationController {
 
     getExperimentExcel = requestHandler(async (req, res) => {
         const experimentId = req.query.experimentId as string;
-        const workbook = await dataAggregationService.createExperimentDataExcel(experimentId); // Assuming createExperimentDataExcel returns a workbook
+        const workbook = await dataAggregationService.createExperimentDataExcel(experimentId);
 
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         res.setHeader('Content-Disposition', 'attachment; filename=ExperimentData.xlsx');

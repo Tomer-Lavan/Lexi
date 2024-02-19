@@ -1,4 +1,4 @@
-import { QuestionType, QuestionTypeProps } from '../../components/forms/questions/Question';
+import { QuestionType, QuestionTypeProps } from '../../components/questions/Question';
 import { ApiPaths } from '../constants';
 import axiosInstance from './AxiosInstance';
 

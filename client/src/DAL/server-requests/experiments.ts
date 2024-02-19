@@ -61,3 +61,23 @@ export const updateExperimentDisplaySettings = async (
         throw error;
     }
 };
+
+export const getExperimentRegistrationForm = async (experimentId) => {
+    try {
+        const response = await axiosInstance.get(`/${ApiPaths.EXPERIMENTS_PATH}/${experimentId}/registrationForm`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const getExperimentCoversationForms = async (experimentId) => {
+    try {
+        const response = await axiosInstance.get(
+            `/${ApiPaths.EXPERIMENTS_PATH}/${experimentId}/conversationForms`,
+        );
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};

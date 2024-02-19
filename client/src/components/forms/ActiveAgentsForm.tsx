@@ -67,7 +67,7 @@ export const ActiveAgentsForm: React.FC<ActiveAgentsFormProps> = ({
             disableGutters
         >
             <FormControl
-                margin="normal"
+                margin="dense"
                 size="small"
                 sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 1 }}
             >
@@ -87,7 +87,7 @@ export const ActiveAgentsForm: React.FC<ActiveAgentsFormProps> = ({
             </FormControl>
             {experiment.agentsMode === AgentsModes.SINGLE ? (
                 <FormControl
-                    margin="normal"
+                    margin="dense"
                     size="small"
                     sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 1 }}
                 >

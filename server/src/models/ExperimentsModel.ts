@@ -23,7 +23,7 @@ export const experimentsSchema = new Schema<IExperiment>(
         description: { type: String },
         numberOfParticipants: { type: Number, default: () => 0 },
         experimentForms: {
-            regestration: { type: String },
+            registration: { type: String },
             preConversation: { type: String },
             postConversation: { type: String },
         },

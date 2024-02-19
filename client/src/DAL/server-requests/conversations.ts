@@ -108,3 +108,20 @@ export const updateIMS = async (
         throw error;
     }
 };
+
+export const updateConversationMetadata = async (
+    conversationId: string,
+    data: object,
+    isPreConversation: boolean,
+): Promise<void> => {
+    try {
+        await axiosInstance.put(`/${ApiPaths.CONVERSATIONS_PATH}/metadata`, {
+            conversationId,
+            data,
+            isPreConversation,
+        });
+        return;
+    } catch (error) {
+        throw error;
+    }
+};

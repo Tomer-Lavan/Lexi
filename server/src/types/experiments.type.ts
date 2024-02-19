@@ -14,7 +14,7 @@ export interface DisplaySettings {
 }
 
 export interface ExperimentForms {
-    regestration: string;
+    registration: string;
     preConversation: string;
     postConversation: string;
 }

@@ -10,7 +10,7 @@ import ExperimentForm from '../ExperimentForm';
 import ExperimentsList from '../experiments-list/ExperimentsList';
 import { AddButton, IconButtonStyled, MainContainerStyled } from './Experiments.s';
 
-export const Experiments = ({ agents }) => {
+export const Experiments = ({ agents, forms }) => {
     const { openSnackbar } = useSnackbar();
     const [experiments, setExperiments] = useState<ExperimentType[]>([]);
     const [isEditMode, setIsEditMode] = useState(false);
@@ -124,6 +124,7 @@ export const Experiments = ({ agents }) => {
                     setExperiments={setExperiments}
                     closeDialog={closeDialog}
                     isEditMode={isEditMode}
+                    forms={forms}
                 />
             </Dialog>
         </MainContainerStyled>

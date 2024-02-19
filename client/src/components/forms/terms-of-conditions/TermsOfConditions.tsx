@@ -19,9 +19,10 @@ interface TermsOfConditionsProps {
     setPage: (page: number) => void;
     isAgreed: boolean;
     setIsAgreed: (isAgreed: boolean) => void;
+    onSubmit: () => void;
 }
 
-const TermsOfConditions: React.FC<TermsOfConditionsProps> = ({ setPage, isAgreed, setIsAgreed }) => {
+const TermsOfConditions: React.FC<TermsOfConditionsProps> = ({ setPage, onSubmit, isAgreed, setIsAgreed }) => {
     const handleAgreeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setIsAgreed(event.target.checked);
     };
@@ -68,7 +69,7 @@ const TermsOfConditions: React.FC<TermsOfConditionsProps> = ({ setPage, isAgreed
                     color="primary"
                     disabled={!isAgreed}
                     onClick={() => {
-                        setPage(3);
+                        onSubmit();
                     }}
                 >
                     Continue

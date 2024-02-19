@@ -1,4 +1,4 @@
-import { AbAgentsType, AgentType } from '@models/AppModels';
+import { AbAgentsType, AgentType, FormType } from '@models/AppModels';
 
 export const defaultSliderSettings = {
     temperature: 1,
@@ -46,6 +46,11 @@ export const defaultExperiment = {
         welcomeContent:
             'This is an experiment that is being carried out by Cambridge University.\nHere you will have a therapy session with a chat bot.\nThe conversation is completely anonymous.\nFeel free to share as you like.',
     },
+    experimentForms: {
+        registration: null,
+        preConversation: null,
+        postConversation: null,
+    },
 } as const;
 
 export const initialSlidersEnabled = {
@@ -72,3 +77,43 @@ export const AdminSections = {
     DATA: 'data',
     SETTINGS: 'settings',
 } as const;
+
+export const defaultQuestionProps = {
+    'binary-radio-selector': { fieldKey: '', label: 'Example For a binary question:', required: true },
+    'scale-radio': {
+        fieldKey: '',
+        label: 'Choose on the scale:',
+        left: 'Left Option',
+        right: 'Right Option',
+        range: 5,
+        required: true,
+        numbered: false,
+    },
+    'selection-text-input': {
+        fieldKey: '',
+        label: 'Select an option',
+        required: true,
+        selectionOptions: [{ label: 'Option 1', value: 'option1' }],
+    },
+    'number-input': {
+        fieldKey: '',
+        label: 'Insert a number',
+        min: 0,
+        max: 100,
+        defaultValue: null,
+        required: true,
+    },
+    'radio-selection': {
+        fieldKey: '',
+        label: 'Select one of the following options:',
+        required: true,
+        selectionOptions: [{ label: 'Option 1', value: 'option1' }],
+    },
+};
+
+export const defaultForm: FormType = {
+    name: 'Untitled',
+    title: '',
+    instructions: '',
+    questions: [{ type: 'selection-text-input', props: defaultQuestionProps['selection-text-input'] }],
+};

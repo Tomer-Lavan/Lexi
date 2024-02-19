@@ -2,23 +2,6 @@ import { UpdateWriteOpResult } from 'mongoose';
 import { IAgent } from 'src/types';
 import { AgentsModel } from '../models/AgentsModel';
 
-// export interface IAgent {
-//     _id: mongoose.Types.ObjectId;
-//     title: string;
-//     summary: string;
-//     systemStarterPrompt: string;
-//     beforeUserSentencePrompt: string;
-//     afterUserSentencePrompt: string;
-//     firstChatSentence: string;
-//     chatAgent: string;
-//     temperature: number;
-//     maxTokens: number;
-//     topP: number;
-//     frequencyPenalty: number;
-//     presencePenalty: number;
-//     stopSequences: string[];
-// }
-
 class AgentsService {
     saveAgent = async (settings: IAgent): Promise<IAgent> => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars

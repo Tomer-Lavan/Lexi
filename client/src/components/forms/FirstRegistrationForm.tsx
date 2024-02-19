@@ -10,6 +10,7 @@ import {
     UseFormSetError,
     UseFormSetValue,
 } from 'react-hook-form';
+import { NewUserInfoType } from '../../models/AppModels';
 import { FormButton, FormContainer, NoteText, StyledContainer } from './CommonFormStyles.s';
 
 const genderOptions = [
@@ -28,23 +29,26 @@ interface FirstRegisterFormProps {
     setError: UseFormSetError<FieldValues>;
     handleSubmit: UseFormHandleSubmit<FieldValues, undefined>;
     setValue: UseFormSetValue<FieldValues>;
+    onSubmit: (data) => void;
+    buttonLabel: string;
 }
 
 export const FirstRegisterForm: React.FC<FirstRegisterFormProps> = ({
-    setPage,
     register,
     errors,
+    buttonLabel,
     experimentId,
     getValues,
     setError,
     handleSubmit,
+    onSubmit,
     setValue,
 }) => {
-    const handleContinue = async () => {
+    const handleContinue = async (data: NewUserInfoType) => {
         try {
             const username = getValues('username');
             await validateUserName(username, experimentId);
-            setPage(2);
+            onSubmit(data);
         } catch (error) {
             setError('username', {
                 type: 'manual',
@@ -116,7 +120,7 @@ export const FirstRegisterForm: React.FC<FirstRegisterFormProps> = ({
             </FormContainer>
             <Box display={'flex'} justifyContent={'center'}>
                 <FormButton type="submit" onClick={handleSubmit(handleContinue)}>
-                    Continue
+                    {buttonLabel}
                 </FormButton>
             </Box>
         </StyledContainer>

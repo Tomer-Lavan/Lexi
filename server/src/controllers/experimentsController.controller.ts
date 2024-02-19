@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { experimentsService } from '../services/experiments.service';
+import { formsService } from '../services/forms.service';
 import { requestHandler } from '../utils/requestHandler';
 
 class ExperimentsController {
@@ -48,6 +49,27 @@ class ExperimentsController {
         const { experiment } = req.body;
         await experimentsService.updateExperiment(experiment);
         res.status(200).send();
+    });
+
+    getRegistrationForm = requestHandler(async (req: Request, res: Response) => {
+        const experimentId = req.params.id as string;
+        const experiment = await experimentsService.getExperiment(experimentId);
+        if (experiment.experimentForms?.registration) {
+            const form = await formsService.getForm(experiment.experimentForms?.registration);
+            res.status(200).send(form);
+            return;
+        }
+        res.status(200).send(null);
+    });
+
+    getConversationForms = requestHandler(async (req: Request, res: Response) => {
+        const experimentId = req.params.id as string;
+        const experiment = await experimentsService.getExperiment(experimentId);
+        const forms = await formsService.getConversationForms(
+            experiment.experimentForms?.preConversation,
+            experiment.experimentForms?.postConversation,
+        );
+        res.status(200).send(forms);
     });
 }
 
