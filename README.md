@@ -8,7 +8,7 @@
 
 ## 🌍 Project Overview
 
-This platform, developed in collaboration with Cambridge University, is designed to facilitate advanced research in the field of user-bot interactions and LLMS models. It offers a comprehensive environment for conducting, monitoring, and analyzing experiments in this cutting-edge domain.
+This platform is designed to facilitate advanced research in the field of user-bot interactions and LLMS models. It offers a comprehensive environment for conducting, monitoring, and analyzing experiments in this cutting-edge domain.
 
 ## 🚀 Quick Start
 
