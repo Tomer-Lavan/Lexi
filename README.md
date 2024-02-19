@@ -118,7 +118,7 @@ This project is licensed under the [CC BY-NC-ND 4.0 DEED License](LICENSE.md).
 
 ## 📞 Contact
 
-For any inquiries or further information, reach out to us at [contact@cam.ac.uk](mailto:contact@cam.ac.uk).
+For any inquiries or further information, reach out to us at [gl538@cam.ac.uk](mailto:gl538@cam.ac.uk).
 
 ## 👍 Show Your Support
 
