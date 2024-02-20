@@ -90,7 +90,6 @@ const Home: React.FC = () => {
     };
 
     const startConversation = async () => {
-        console.log('Starting a new conversation...');
         try {
             const newConversationId = await createConversation(
                 activeUser._id,

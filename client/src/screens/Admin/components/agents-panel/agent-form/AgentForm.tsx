@@ -57,7 +57,6 @@ const AgentForm: React.FC<AgentFormProps> = ({
     );
 
     const [agent, setAgent] = useState<any>(editAgent ? editAgent : defaultSettings);
-    console.log(agent);
     const updateAgentInList = (updatedAgent: AgentType) => {
         const updatedSettings = agents.map((agent: AgentType) =>
             agent._id === updatedAgent._id ? updatedAgent : agent,
