@@ -49,7 +49,7 @@ export const ConversationForm: React.FC<FinalRegisterFormProps> = ({ form, isPre
     return (
         <ConversationFormContainer
             isMobile={isMobile}
-            style={{ paddingLeft: isMobile ? '4px' : '48px', paddingRight: isMobile ? '4px' : '48px' }}
+            style={{ paddingLeft: isMobile ? '4px' : '4vw', paddingRight: isMobile ? '4px' : '4vw' }}
         >
             {isPreConversation && (
                 <Box style={{ display: 'flex', alignItems: 'center' }}>

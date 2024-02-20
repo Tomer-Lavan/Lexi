@@ -3,7 +3,7 @@ import { Box, Grid, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 export const ConversationFormContainer = styled(Box)<IsMobile>(({ isMobile }) => ({
-    width: '100%',
+    width: isMobile ? '100%' : '52vw',
     padding: isMobile ? '8px' : '16px',
 }));
 

@@ -74,15 +74,6 @@ const ChatPage: React.FC<ChatPageProps> = ({ isFinishDialogOpen, setIsFinishDial
     return isPageLoading ? (
         <LoadingPage />
     ) : (
-        // isMobile && surveyOpen ? (
-        //     <Dialog open={surveyOpen} maxWidth={'md'} fullScreen={isMobile}>
-        //         <ConversationForm
-        //             form={conversationForms.preConversation}
-        //             isPreConversation={true}
-        //             handleDone={handleImsSurveyDone}
-        //         />
-        //     </Dialog>
-        // ) : (
         <MainContainer container>
             {!isMobile && (
                 <Grid item xs={2} sm={2} md={2} lg={2} style={{ backgroundColor: '#f5f5f5' }}>
@@ -127,7 +118,7 @@ const ChatPage: React.FC<ChatPageProps> = ({ isFinishDialogOpen, setIsFinishDial
             )}
             <Dialog
                 open={surveyOpen}
-                maxWidth={'md'}
+                maxWidth={'lg'}
                 fullScreen={isMobile}
                 PaperProps={{
                     style: {
@@ -144,7 +135,6 @@ const ChatPage: React.FC<ChatPageProps> = ({ isFinishDialogOpen, setIsFinishDial
             </Dialog>
         </MainContainer>
     );
-    // );
 };
 
 export default ChatPage;

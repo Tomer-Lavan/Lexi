@@ -117,19 +117,6 @@ class ConversationsService {
         return conversation;
     };
 
-    updateIms = async (conversationId: string, imsValues, isPreConversation: boolean) => {
-        const saveField = isPreConversation ? { imsPre: imsValues } : { imsPost: imsValues };
-
-        const res = await MetadataConversationsModel.updateMany(
-            {
-                _id: new mongoose.Types.ObjectId(conversationId),
-            },
-            { $set: saveField },
-        );
-
-        return res;
-    };
-
     updateConversationSurveysData = async (conversationId: string, data, isPreConversation: boolean) => {
         const saveField = isPreConversation ? { preConversation: data } : { postConversation: data };
         const res = await this.updateConversationMetadata(conversationId, saveField);
