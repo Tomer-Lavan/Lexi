@@ -8,7 +8,6 @@ import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { FirstRegisterForm } from './FirstRegestrationForm';
 import { FinalRegisterForm } from './final-register-form/FinalRegestrationForm';
-import TermsOfConditions from './terms-of-conditions/TermsOfConditions';
 
 interface RegisterFormProps {
     experimentId: string;
@@ -19,7 +18,6 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ experimentId, setSho
     const [page, setPage] = useState(1);
     const dispatch = useDispatch();
     const { openSnackbar } = useSnackbar();
-    const [isAgreedTerms, setIsAgreedTerms] = useState(false);
     const {
         register,
         handleSubmit,
@@ -43,6 +41,10 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ experimentId, setSho
             const user = await registerUser(data, experimentId);
             dispatch(setActiveUser(user));
         } catch (error) {
+            if (error?.response?.status === 403) {
+                openSnackbar('Experiment Is Not Active', SnackbarStatus.ERROR);
+                return;
+            }
             openSnackbar('Registration Failed', SnackbarStatus.ERROR);
         }
     };
@@ -60,12 +62,6 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ experimentId, setSho
                         experimentId={experimentId}
                         register={register}
                         errors={errors}
-                    />
-                ) : page === 2 ? (
-                    <TermsOfConditions
-                        setPage={goToPage}
-                        isAgreed={isAgreedTerms}
-                        setIsAgreed={setIsAgreedTerms}
                     />
                 ) : (
                     <FinalRegisterForm

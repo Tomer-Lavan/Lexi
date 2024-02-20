@@ -1,5 +1,5 @@
 import { MoreOptionsMenu } from '@components/common/MoreOptionsMenu';
-import { ExperimentType } from '@models/AppModels';
+import { AgentLeanType, ExperimentType } from '@models/AppModels';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
@@ -9,10 +9,19 @@ import React, { useState } from 'react';
 import { ExperimentDetails } from '../experiments-details/ExperimentDetails';
 import { ActiveExpSelect, ExpInfo, TableRowStyled } from './ExperimentRow.s';
 
-export const ExperimentRow = (props: { row: ExperimentType; onStatusChange; handleMenuAction }) => {
-    const { row, onStatusChange, handleMenuAction } = props;
+interface ExperimentRowProps {
+    row: ExperimentType;
+    onStatusChange: (id: string, isActive: boolean) => void;
+    handleMenuAction: (action: string, row: ExperimentType) => void;
+}
+
+export const ExperimentRow: React.FC<ExperimentRowProps> = ({ row, onStatusChange, handleMenuAction }) => {
     const [open, setOpen] = useState(false);
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const [experimentAgentDetails, setExperimentAgentDetails] = useState<{
+        activeAgent: AgentLeanType | null;
+        abAgents: { agentA: AgentLeanType; agentB: AgentLeanType } | null;
+    }>(null);
 
     const timeAgo = (timestamp: number) => {
         const now = Date.now();
@@ -90,6 +99,16 @@ export const ExperimentRow = (props: { row: ExperimentType; onStatusChange; hand
                         <Typography color={theme.palette.secondary.main}>{row.numberOfParticipants}</Typography>
                     </Box>
                 </TableCell>
+                <TableCell component="th" scope="row">
+                    <Box display={'flex'} justifyContent={'left'} paddingLeft={4}>
+                        <Typography color={theme.palette.secondary.main}>{row.totalSessions}</Typography>
+                    </Box>
+                </TableCell>
+                <TableCell component="th" scope="row">
+                    <Box display={'flex'} justifyContent={'left'} paddingLeft={4}>
+                        <Typography color={theme.palette.secondary.main}>{row.openSessions}</Typography>
+                    </Box>
+                </TableCell>
                 <TableCell>{timeAgo(row.timestamp)}</TableCell>
                 <TableCell>
                     <ActiveExpSelect
@@ -123,9 +142,13 @@ export const ExperimentRow = (props: { row: ExperimentType; onStatusChange; hand
                 </TableCell>
             </TableRowStyled>
             <TableRow>
-                <ExpInfo colSpan={8}>
+                <ExpInfo colSpan={10}>
                     <Collapse in={open} timeout="auto" unmountOnExit>
-                        <ExperimentDetails row={row} />
+                        <ExperimentDetails
+                            row={row}
+                            experimentAgentDetails={experimentAgentDetails}
+                            setExperimentAgentDetails={setExperimentAgentDetails}
+                        />
                     </Collapse>
                 </ExpInfo>
             </TableRow>

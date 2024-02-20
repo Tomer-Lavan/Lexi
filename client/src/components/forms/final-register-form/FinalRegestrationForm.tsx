@@ -107,7 +107,7 @@ export const FinalRegisterForm: React.FC<FinalRegisterFormProps> = ({
                 />
             </Grid>
             <Grid item xs={12}>
-                <SliderTitle>Are you a native english speaker?</SliderTitle>
+                <SliderTitle>Are you a native english speaker? *</SliderTitle>
                 <RadioGroup
                     row
                     aria-labelledby="native-english-speaker-label"
@@ -137,7 +137,7 @@ export const FinalRegisterForm: React.FC<FinalRegisterFormProps> = ({
                     <FormButton
                         variant="outlined"
                         color="primary"
-                        onClick={() => setPage(2)}
+                        onClick={() => setPage(1)}
                         fullWidth
                         style={{ marginTop: '8px' }}
                     >

@@ -21,8 +21,7 @@ export const SidebarChat: React.FC<SidebarProps> = ({ setIsOpen, messageFontSize
             </StyledListItem>
             <ListItem>
                 <ListItemText textAlign={'left'} sx={{ fontSize: '0.875rem' }}>
-                    To conclude, click 'Finish', complete a short questionnaire, and then receive a link for
-                    another brief survey. Thanks for your cooperation!
+                    To conclude, click 'Finish' and complete a short questionnaire. Thank you for your cooperation!
                 </ListItemText>
             </ListItem>
         </Box>

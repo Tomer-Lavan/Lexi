@@ -1,6 +1,6 @@
 import { Box } from '@mui/material';
 import theme from '@root/Theme';
-import './LoadingDots.css'; // Import the CSS file
+import './LoadingDots.css';
 
 const LoadingDots = () => (
     <Box

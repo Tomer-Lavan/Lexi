@@ -1,9 +1,9 @@
-import { sendStreamMessage } from '@DAL/server-requests/conversations';
 import { SnackbarStatus, useSnackbar } from '@contexts/SnackbarProvider';
 import { MessageType } from '@models/AppModels';
 import SendIcon from '@mui/icons-material/Send';
 import { Box, Button, IconButton } from '@mui/material';
 import { useState } from 'react';
+import { sendStreamMessage } from '../../../../DAL/server-requests/conversations';
 import { StyledInputBase, StyledInputBox } from './InputBox.s';
 
 interface InputBoxProps {
@@ -38,17 +38,31 @@ const InputBox: React.FC<InputBoxProps> = ({
         setMessage('');
         setIsMessageLoading(true);
         try {
-            sendStreamMessage({ content: messageContent, role: 'user' }, conversationId, onStreamMessage, () =>
-                onMessageError(conversation, messageContent),
+            sendStreamMessage(
+                { content: messageContent, role: 'user' },
+                conversationId,
+                onStreamMessage,
+                (error) => onMessageError(conversation, messageContent, error),
             );
         } catch (err) {
-            onMessageError(conversation, messageContent);
+            onMessageError(conversation, messageContent, err);
         }
     };
 
-    const onMessageError = (conversation, messageContent) => {
+    const onMessageError = (conversation, messageContent, error) => {
         setIsMessageLoading(false);
-        setMessages([...conversation, { content: 'Network Error', role: 'assistant' }]);
+        setMessages([
+            ...conversation,
+            {
+                content:
+                    error.response && error.response.status && error.response.status === 403
+                        ? 'Messeges Limit Exceeded'
+                        : error?.response?.status === 400
+                          ? 'Message Is Too Long'
+                          : 'Network Error',
+                role: 'assistant',
+            },
+        ]);
         openSnackbar('Failed to send message', SnackbarStatus.ERROR);
         setErrorMessage(messageContent);
     };

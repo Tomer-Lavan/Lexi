@@ -15,6 +15,8 @@ export const metadataConversationSchema = new Schema<IMetadataConversation>(
         imsPost: { type: Object },
         conversationNumber: { type: Number },
         userId: { type: String, required: true },
+        maxMessages: { type: Number },
+        isFinished: { type: Boolean, default: () => false },
         agent: { type: agentsSchema, required: true },
     },
     { versionKey: false },

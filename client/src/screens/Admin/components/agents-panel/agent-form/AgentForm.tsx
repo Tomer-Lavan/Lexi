@@ -16,6 +16,9 @@ import {
     Typography,
 } from '@mui/material';
 import React, { useMemo, useState } from 'react';
+import { getExperimentsByAgent } from '../../../../../DAL/server-requests/experiments';
+import { updateUsersAgent } from '../../../../../DAL/server-requests/users';
+import { WarningMessage } from '../../../../../components/common/WarningMessasge';
 import { MainContainer, SaveButton } from './AgentForm.s';
 
 interface AgentFormProps {
@@ -35,7 +38,11 @@ const AgentForm: React.FC<AgentFormProps> = ({
 }) => {
     const [isSaveLoading, setIsSaveLoading] = useState(false);
     const [validationMessage, setValidationMessage] = useState('');
+    const [experimentsToUpdate, setExperimentsToUpdate] = useState([]);
+    const [updateUsersAgentMsg, setUpdateUsersAgentMsg] = useState(false);
     const formTitle = useMemo(() => (!isEditMode ? 'New Agent' : 'Edit Agent'), []);
+    const [confirmExperimentUpdateMsg, setConfirmExperimentUpdateMsg] = useState(false);
+
     const { openSnackbar } = useSnackbar();
     const [slidersEnabled, setSlidersEnabled] = useState<any>(
         isEditMode
@@ -50,7 +57,6 @@ const AgentForm: React.FC<AgentFormProps> = ({
     );
 
     const [agent, setAgent] = useState<any>(editAgent ? editAgent : defaultSettings);
-    console.log(agent);
     const updateAgentInList = (updatedAgent: AgentType) => {
         const updatedSettings = agents.map((agent: AgentType) =>
             agent._id === updatedAgent._id ? updatedAgent : agent,
@@ -74,6 +80,51 @@ const AgentForm: React.FC<AgentFormProps> = ({
         setAgent({ ...agent, [name]: value });
     };
 
+    const handleConfirmUpdate = async () => {
+        if (!validateAgent()) return;
+
+        setIsSaveLoading(true);
+        try {
+            await updateAgent(agent);
+            updateAgentInList(agent);
+            openSnackbar('Agent Updated !', SnackbarStatus.SUCCESS);
+            setIsSaveLoading(false);
+            setUpdateUsersAgentMsg(true);
+            setConfirmExperimentUpdateMsg(false);
+        } catch (error) {
+            openSnackbar('Agent Update Failed', SnackbarStatus.ERROR);
+            setIsSaveLoading(false);
+        }
+    };
+
+    const handleConfirmUsersUpdate = async () => {
+        setIsSaveLoading(true);
+        try {
+            await updateUsersAgent(agent);
+            openSnackbar('Users Agent Updated !', SnackbarStatus.SUCCESS);
+            setIsSaveLoading(false);
+            setUpdateUsersAgentMsg(false);
+            closeDialog();
+        } catch (error) {
+            openSnackbar('Users Update Failed', SnackbarStatus.ERROR);
+            setIsSaveLoading(false);
+        }
+    };
+
+    const handleUpdate = async () => {
+        const experiments = await getExperimentsByAgent(agent._id);
+        if (experiments.length) {
+            setExperimentsToUpdate(experiments);
+            setConfirmExperimentUpdateMsg(true);
+            setIsSaveLoading(false);
+            return;
+        }
+        await updateAgent(agent);
+        updateAgentInList(agent);
+        openSnackbar('Agent Updated !', SnackbarStatus.SUCCESS);
+        closeDialog();
+    };
+
     const handleSave = async () => {
         if (!validateAgent()) return;
 
@@ -82,13 +133,12 @@ const AgentForm: React.FC<AgentFormProps> = ({
             if (!isEditMode) {
                 const savedAgent = await saveAgent(agent);
                 setAgents([...agents, savedAgent]);
+                openSnackbar('Agent Saved !', SnackbarStatus.SUCCESS);
+                closeDialog();
             } else {
-                await updateAgent(agent);
-                updateAgentInList(agent);
+                await handleUpdate();
             }
-            openSnackbar('Agent Saved !', SnackbarStatus.SUCCESS);
             setIsSaveLoading(false);
-            closeDialog();
         } catch (error) {
             openSnackbar('Agent Saving Failed', SnackbarStatus.ERROR);
             setIsSaveLoading(false);
@@ -247,9 +297,42 @@ const AgentForm: React.FC<AgentFormProps> = ({
                 id={'stop'}
                 label={'Stop Sequences'}
             />
-            <SaveButton variant="contained" color="primary" onClick={handleSave} style={{ marginBottom: 0 }}>
-                {isSaveLoading ? <CircularProgress size={28} sx={{ color: 'white' }} /> : 'Save Agent'}
-            </SaveButton>
+            {confirmExperimentUpdateMsg ? (
+                <WarningMessage
+                    handleYes={handleConfirmUpdate}
+                    handleNO={() => setConfirmExperimentUpdateMsg(false)}
+                >
+                    This agent is attached to the following experiments:
+                    {experimentsToUpdate.map((experiment, index) => (
+                        <Typography
+                            key={experiment._id}
+                            component="span"
+                            display="inline"
+                            fontWeight="bold"
+                            style={{ marginRight: index < experimentsToUpdate.length - 1 && '8px' }}
+                        >
+                            {experiment.title}
+                            {index < experimentsToUpdate.length - 1 ? ',' : ''}
+                        </Typography>
+                    ))}
+                    . Are you sure you want to update the agent?
+                </WarningMessage>
+            ) : updateUsersAgentMsg ? (
+                <WarningMessage
+                    handleYes={handleConfirmUsersUpdate}
+                    handleNO={() => {
+                        closeDialog();
+                        openSnackbar('Agent Saved !', SnackbarStatus.SUCCESS);
+                    }}
+                >
+                    Do you want to update the agent also for users in the experiments that have already been
+                    attached to the agent?
+                </WarningMessage>
+            ) : (
+                <SaveButton variant="contained" color="primary" onClick={handleSave} style={{ marginBottom: 0 }}>
+                    {isSaveLoading ? <CircularProgress size={28} sx={{ color: 'white' }} /> : 'Save Agent'}
+                </SaveButton>
+            )}
             {validationMessage && <Typography color="error">{validationMessage}</Typography>}
         </MainContainer>
     );

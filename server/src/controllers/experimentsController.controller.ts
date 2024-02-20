@@ -26,12 +26,6 @@ class ExperimentsController {
         res.status(200).send(savedExperiment);
     });
 
-    updateActiveAgent = requestHandler(async (req: Request, res: Response) => {
-        const { experimentId, agent, agentsConfig, abAgents } = req.body;
-        await experimentsService.updateActiveAgent(experimentId, agent, agentsConfig, abAgents);
-        res.status(200).send();
-    });
-
     updateExperimentsStatus = requestHandler(async (req: Request, res: Response) => {
         const { modifiedExperiments } = req.body;
         await experimentsService.updateExperimentsStatus(modifiedExperiments);
@@ -48,6 +42,12 @@ class ExperimentsController {
         const { experiment } = req.body;
         await experimentsService.updateExperiment(experiment);
         res.status(200).send();
+    });
+
+    getAllExperimentsByAgentId = requestHandler(async (req: Request, res: Response) => {
+        const { agentId } = req.query;
+        const experiments = await experimentsService.getAllExperimentsByAgentId(agentId as string);
+        res.status(200).send(experiments);
     });
 }
 

@@ -24,6 +24,16 @@ class ConversationsService {
             this.getConversation(conversationId),
             this.getConversationMetadata(conversationId),
         ]);
+
+        if (
+            metadataConversation.maxMessages &&
+            metadataConversation.messagesNumber + 1 > metadataConversation.maxMessages
+        ) {
+            const error = new Error('Message limit exceeded');
+            error['code'] = 403;
+            throw error;
+        }
+
         const messages: any[] = this.getConversationMessages(metadataConversation.agent, conversation, message);
         const chatRequest = this.getChatRequest(metadataConversation.agent, messages);
         await this.createMessageDoc(message, conversationId, conversation.length + 1);
@@ -61,7 +71,21 @@ class ConversationsService {
 
     createConversation = async (userId: string, userConversationsNumber: number, experimentId: string) => {
         let agent;
-        const user = await usersService.getUserById(userId);
+        const [user, experimentBoundries] = await Promise.all([
+            usersService.getUserById(userId),
+            experimentsService.getExperimentBoundries(experimentId),
+        ]);
+
+        if (
+            !user.isAdmin &&
+            experimentBoundries.maxConversations &&
+            userConversationsNumber + 1 > experimentBoundries.maxConversations
+        ) {
+            const error = new Error('Conversations limit exceeded');
+            error['code'] = 403;
+            throw error;
+        }
+
         if (user.isAdmin) {
             agent = await experimentsService.getActiveAgent(experimentId);
         }
@@ -71,19 +95,23 @@ class ConversationsService {
             experimentId,
             userId,
             agent: user.isAdmin ? agent : user.agent,
+            maxMessages: user.isAdmin ? undefined : experimentBoundries.maxMessages,
         });
 
         const firstMessage: Message = {
             role: 'assistant',
             content: user.isAdmin ? agent.firstChatSentence : user.agent.firstChatSentence,
         };
-        await this.createMessageDoc(firstMessage, res._id.toString(), 1);
-        usersService.addConversation(userId);
+        await Promise.all([
+            this.createMessageDoc(firstMessage, res._id.toString(), 1),
+            usersService.addConversation(userId),
+            !user.isAdmin && experimentsService.addSession(experimentId),
+        ]);
 
         return res._id.toString();
     };
 
-    getConversation = async (conversationId: string) => {
+    getConversation = async (conversationId: string): Promise<Message[]> => {
         const conversation = await ConversationsModel.find({ conversationId }, { _id: 0, role: 1, content: 1 });
 
         return conversation;
@@ -124,6 +152,16 @@ class ConversationsService {
         return conversations;
     };
 
+    finishConversation = async (conversationId: string, experimentId: string, isAdmin: boolean): Promise<void> => {
+        await Promise.all([
+            MetadataConversationsModel.updateOne(
+                { _id: new mongoose.Types.ObjectId(conversationId) },
+                { $set: { isFinished: true } },
+            ),
+            !isAdmin && experimentsService.closeSession(experimentId),
+        ]);
+    };
+
     private updateConversationMetadata = async (conversationId, fields) => {
         try {
             const res = await MetadataConversationsModel.updateOne(
@@ -136,12 +174,12 @@ class ConversationsService {
         }
     };
 
-    private getConversationMessages = (settings: any, conversation: any[], message: any) => {
-        const systemPrompt: Message = { role: 'system', content: settings.systemStarterPrompt };
-        const beforeUserMessage = { role: 'system', content: settings.beforeUserSentencePrompt };
-        const afterUserMessage = { role: 'system', content: settings.afterUserSentencePrompt };
+    private getConversationMessages = (agent: IAgent, conversation: Message[], message: Message) => {
+        const systemPrompt = { role: 'system', content: agent.systemStarterPrompt };
+        const beforeUserMessage = { role: 'system', content: agent.beforeUserSentencePrompt };
+        const afterUserMessage = { role: 'system', content: agent.afterUserSentencePrompt };
 
-        const messages: any = [
+        const messages = [
             systemPrompt,
             ...conversation,
             beforeUserMessage,
