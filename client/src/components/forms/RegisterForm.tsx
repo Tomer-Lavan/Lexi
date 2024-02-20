@@ -55,6 +55,10 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ experimentId, setSho
             const user = await registerUser(data, experimentId);
             dispatch(setActiveUser(user));
         } catch (error) {
+            if (error?.response?.status === 403) {
+                openSnackbar('Experiment Is Not Active', SnackbarStatus.ERROR);
+                return;
+            }
             openSnackbar('Registration Failed', SnackbarStatus.ERROR);
         }
     };

@@ -4,7 +4,7 @@ import { IAgent } from '../types/agents.type';
 export interface IConversation {
     conversationId: string;
     content: string;
-    role: string;
+    role: 'system' | 'user' | 'assistant';
     createdAt: Date;
     timestamp: number;
     messageNumber: number;
@@ -23,4 +23,6 @@ export interface IMetadataConversation {
     userId: string;
     preConversation?: object;
     postConversation?: object;
+    maxMessages: number;
+    isFinished: boolean;
 }

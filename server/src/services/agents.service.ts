@@ -1,5 +1,5 @@
 import { UpdateWriteOpResult } from 'mongoose';
-import { IAgent } from 'src/types';
+import { IAgent, IAgentLean } from 'src/types';
 import { AgentsModel } from '../models/AgentsModel';
 
 class AgentsService {
@@ -14,6 +14,16 @@ class AgentsService {
     getAllAgents = async (): Promise<IAgent[]> => {
         const agents: IAgent[] = await AgentsModel.find({});
         return agents;
+    };
+
+    getAgent = async (agentId: string): Promise<IAgent> => {
+        const agent: IAgent = await AgentsModel.findOne({ _id: agentId });
+        return agent;
+    };
+
+    getAgentLean = async (agentId: string): Promise<IAgentLean> => {
+        const agent: IAgentLean = await AgentsModel.findOne({ _id: agentId }, { _id: 1, title: 1 });
+        return agent;
     };
 
     updateAgents = async (agent: IAgent): Promise<UpdateWriteOpResult> => {

@@ -1,11 +1,23 @@
 import { defaultExperiment } from '@DAL/constants';
 import { saveExperiment, updateExperiment } from '@DAL/server-requests/experiments';
-import { ActiveAgentsForm } from '@components/forms/ActiveAgentsForm';
 import { SnackbarStatus, useSnackbar } from '@contexts/SnackbarProvider';
-import { ExperimentType } from '@models/AppModels';
-import { Box, Checkbox, CircularProgress, FormControlLabel, TextField, Typography } from '@mui/material';
+import { AgentsModes } from '@models/AppModels';
+import {
+    Box,
+    Checkbox,
+    CircularProgress,
+    FormControl,
+    FormControlLabel,
+    MenuItem,
+    Select,
+    TextField,
+    Typography,
+} from '@mui/material';
 import { useMemo, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import StyledSelection from '../../../../components/common/StyledSelection';
+import { getFormErrorMessage } from '../../../../utils/commonFunctions';
+import { AbAgents } from '../agents-panel/active-agents/AbAgents';
 import { MainContainer, SaveButton } from '../agents-panel/agent-form/AgentForm.s';
 
 const ExperimentForm = ({
@@ -19,51 +31,44 @@ const ExperimentForm = ({
     isEditMode = false,
     forms,
 }) => {
-    const [experiment, setExperiment] = useState<any>(editExperiment || defaultExperiment);
-    const [isActive, setIsActive] = useState(experiment.isActive);
+    const {
+        register,
+        control,
+        handleSubmit,
+        watch,
+        setValue,
+        formState: { errors },
+    } = useForm({
+        defaultValues: editExperiment || defaultExperiment,
+    });
     const [isSaveLoading, setIsSaveLoading] = useState(false);
-    const [validationMessage, setValidationMessage] = useState('');
     const formTitle = useMemo(() => (!isEditMode ? 'New Experiment' : 'Edit Experiment'), []);
     // const formsOptions = useMemo(() => [{ name: 'No Form' }, ...forms], []);
     const { openSnackbar } = useSnackbar();
+    const agentsMode = watch('agentsMode');
 
-    const updateExperimentInList = (updatedExp: ExperimentType) => {
-        const updatedSettings = experiments.map((experiment: ExperimentType) =>
-            experiment._id === updatedExp._id ? updatedExp : experiment,
-        );
+    const updateExperimentInList = (updatedExp) => {
+        const updatedSettings = experiments.map((exp) => (exp._id === updatedExp._id ? updatedExp : exp));
         setTempExperiments(updatedSettings);
         setExperiments(updatedSettings);
     };
 
-    const validateAgent = (): boolean => {
-        let message = '';
-        if (!experiment.title) message = 'Title is required.';
-        else if (!experiment.agentsMode) message = 'Agent selection is required.';
-        else if (experiment.agentsMode === 'Single' && !experiment.activeAgent)
-            message = 'Active Agent selection is required.';
-        else if (experiment.agentsMode === 'A/B' && (!experiment.abAgents.agentA || !experiment.abAgents.agentB))
-            message = 'Agents selection is required.';
-
-        setValidationMessage(message);
-        return !message;
-    };
-
-    const handleChange = (event) => {
-        const { name, value } = event.target;
-        setExperiment({ ...experiment, [name]: value });
-    };
-
-    const handleSave = async () => {
-        if (!validateAgent()) return;
-
+    const handleSave = async (data) => {
         setIsSaveLoading(true);
         try {
-            if (experiment.agentsMode === 'Single') {
-                experiment.abAgents = null;
+            if (data.agentsMode === 'Single') {
+                data.abAgents = null;
             } else {
-                experiment.activeAgent = null;
+                data.activeAgent = null;
             }
-            const parsedExperiment = { ...experiment, isActive };
+            const parsedExperiment = {
+                ...data,
+                activeAgent: !data.activeAgent ? null : data.activeAgent.toString(),
+                maxMessages: !data.maxMessages ? null : Number(data.maxMessages),
+                maxConversations: !data.maxConversations ? null : Number(data.maxConversations),
+                maxParticipants: !data.maxParticipants ? null : Number(data.maxParticipants),
+                isActive: data.isActive,
+            };
             if (!isEditMode) {
                 const savedExperiment = await saveExperiment(parsedExperiment);
                 setTempExperiments([...tempExperiments, savedExperiment]);
@@ -81,8 +86,11 @@ const ExperimentForm = ({
         }
     };
 
+    const selectedFormId = watch('register'); // Replace with your field name
+    console.log('Selected form ID:', selectedFormId); // For debuggin
+
     return (
-        <MainContainer style={{ paddingBottom: '32px' }}>
+        <MainContainer as="form" onSubmit={handleSubmit(handleSave)} style={{ padding: '32px' }}>
             <Typography variant="h4" gutterBottom margin="normal">
                 {formTitle}
             </Typography>
@@ -90,9 +98,9 @@ const ExperimentForm = ({
                 fullWidth
                 required
                 label="Title"
-                name="title"
-                value={experiment.title}
-                onChange={handleChange}
+                {...register('title', { required: 'Title is required.' })}
+                error={!!errors.title}
+                helperText={getFormErrorMessage(errors.title)}
                 size="small"
                 margin="normal"
             />
@@ -102,9 +110,7 @@ const ExperimentForm = ({
                 multiline
                 fullWidth
                 label="Description"
-                name="description"
-                value={experiment.description}
-                onChange={handleChange}
+                {...register('description')}
                 size="small"
                 margin="normal"
             />
@@ -118,14 +124,55 @@ const ExperimentForm = ({
             >
                 Experiment Agents:
             </Typography>
-            <Box width={'100%'} paddingLeft={'16px'} style={{ marginBottom: '16px' }}>
-                <ActiveAgentsForm
-                    agents={agents}
-                    experiment={experiment}
-                    setExperiment={setExperiment}
-                    isRow={false}
+            <FormControl
+                margin="dense"
+                size="small"
+                sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 1 }}
+            >
+                <Typography>Experimental Design:</Typography>
+                <Controller
+                    name="agentsMode"
+                    control={control}
+                    render={({ field }) => (
+                        <Select {...field} labelId="agent-mode-select-label" style={{ minWidth: '100px' }}>
+                            {Object.values(AgentsModes).map((mode) => (
+                                <MenuItem key={mode} value={mode}>
+                                    {mode === AgentsModes.SINGLE ? 'Single Condition' : AgentsModes.AB}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    )}
                 />
-            </Box>
+            </FormControl>
+            {agentsMode === AgentsModes.SINGLE ? (
+                <FormControl
+                    margin="dense"
+                    size="small"
+                    sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 1 }}
+                >
+                    <Typography>Active Agent:</Typography>
+                    <Controller
+                        name="activeAgent"
+                        control={control}
+                        defaultValue={agents.length ? agents[0] : ''}
+                        rules={{ required: 'Active agent is required.' }}
+                        render={({ field }) => (
+                            <Select {...field} labelId="active-agent-select-label" style={{ minWidth: '100px' }}>
+                                {agents.map((agent) => (
+                                    <MenuItem key={agent._id} value={agent._id}>
+                                        {agent.title}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        )}
+                    />
+                    {errors.activeAgent && (
+                        <Typography color="error">{getFormErrorMessage(errors.activeAgent)}</Typography>
+                    )}
+                </FormControl>
+            ) : (
+                <AbAgents agents={agents} control={control} setValue={setValue} isRow={false} errors={errors} />
+            )}
 
             <Typography
                 style={{
@@ -141,58 +188,81 @@ const ExperimentForm = ({
                 <StyledSelection
                     label="Registration"
                     options={forms}
-                    value={experiment.experimentForms?.registration || null}
-                    onChange={(event) => {
-                        const selectedFormId = event.target.value;
-                        setExperiment({
-                            ...experiment,
-                            experimentForms: { ...experiment.experimentForms, registration: selectedFormId },
-                        });
-                    }}
-                    name="registration"
+                    control={control}
+                    name="experimentForms.registration"
                     placeholder={'No Form'}
                 />
                 <StyledSelection
                     label="Before Conversation"
                     options={forms}
-                    value={experiment.experimentForms?.preConversation || null}
-                    onChange={(event) => {
-                        const selectedFormId = event.target.value;
-                        setExperiment({
-                            ...experiment,
-                            experimentForms: { ...experiment.experimentForms, preConversation: selectedFormId },
-                        });
-                    }}
-                    name="preConversation"
+                    control={control}
+                    name="experimentForms.preConversation"
                     placeholder={'No Form'}
                 />
                 <StyledSelection
                     label="After Conversation"
                     options={forms}
-                    value={experiment.experimentForms?.postConversation || null}
-                    onChange={(event) => {
-                        const selectedFormId = event.target.value;
-                        setExperiment({
-                            ...experiment,
-                            experimentForms: { ...experiment.experimentForms, postConversation: selectedFormId },
-                        });
-                    }}
-                    name="postConversation"
+                    control={control}
+                    name="experimentForms.postConversation"
                     placeholder={'No Form'}
                 />
             </Box>
+            <Typography
+                style={{
+                    color: 'grey',
+                    marginBottom: '4px',
+                    marginTop: '8px',
+                    borderBottom: '1px solid grey',
+                }}
+            >
+                Experiment Boundaries:
+            </Typography>
+            <Typography style={{ fontSize: '0.75rem', color: 'rgba(0, 0, 0, 0.6)', padding: '8px' }}>
+                * Leave blank for no limit
+            </Typography>
+            <TextField
+                fullWidth
+                label="Max Participants"
+                {...register('maxParticipants')}
+                size="small"
+                margin="dense"
+                type="number"
+                InputLabelProps={{ shrink: true }}
+            />
+            <TextField
+                fullWidth
+                label="Max Conversations"
+                {...register('maxConversations')}
+                size="small"
+                margin="dense"
+                type="number"
+                InputLabelProps={{ shrink: true }}
+            />
+            <TextField
+                fullWidth
+                label="Max Messages"
+                {...register('maxMessages')}
+                size="small"
+                margin="dense"
+                type="number"
+                InputLabelProps={{ shrink: true }}
+                style={{ marginBottom: '12px' }}
+            />
             <Box style={{ width: '100%' }}>
-                <FormControlLabel
-                    control={
-                        <Checkbox checked={isActive} onClick={() => setIsActive(!isActive)} name="isActive" />
-                    }
-                    label="Activate Experiment"
+                <Controller
+                    name="isActive"
+                    control={control}
+                    render={({ field }) => (
+                        <FormControlLabel
+                            control={<Checkbox {...field} checked={field.value} />}
+                            label="Activate Experiment"
+                        />
+                    )}
                 />
             </Box>
-            <SaveButton variant="contained" color="primary" onClick={handleSave} style={{ marginBottom: 0 }}>
+            <SaveButton type="submit" variant="contained" color="primary" style={{ marginBottom: 0 }}>
                 {isSaveLoading ? <CircularProgress size={28} sx={{ color: 'white' }} /> : 'Save Experiment'}
             </SaveButton>
-            {validationMessage && <Typography color="error">{validationMessage}</Typography>}
         </MainContainer>
     );
 };

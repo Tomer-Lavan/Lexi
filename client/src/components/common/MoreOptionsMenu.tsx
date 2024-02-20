@@ -58,6 +58,5 @@ export const MoreOptionsMenu = ({
             </ListItemIcon>
             <ListItemText>Download Excel</ListItemText>
         </MenuItem>
-        {/* Add more menu items here if needed */}
     </Menu>
 );

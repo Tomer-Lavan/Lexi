@@ -23,7 +23,7 @@ export const sendStreamMessage = (
     message: MessageType,
     conversationId: string,
     onMessageReceived: (message: string) => void,
-    onError?: (error?: string) => void,
+    onError: (error?: Event | { code: number; message: string }) => void,
 ) => {
     const eventSource = new EventSource(
         `${process.env.REACT_APP_API_URL}/${ApiPaths.CONVERSATIONS_PATH}/message/stream?${serialize(
@@ -54,11 +54,11 @@ export const sendStreamMessage = (
         onMessageReceived(data.message);
     };
 
-    eventSource.onerror = () => {
+    eventSource.onerror = (error) => {
         if (eventSource.readyState === EventSource.CLOSED) {
             console.log('Connection was closed normally.');
         } else if (onError) {
-            onError();
+            onError(error);
         }
         eventSource.close();
     };
@@ -92,23 +92,6 @@ export const getConversation = async (conversationId: string): Promise<MessageTy
     }
 };
 
-export const updateIMS = async (
-    conversationId: string,
-    imsValues: object,
-    isPreConversation: boolean,
-): Promise<void> => {
-    try {
-        await axiosInstance.put(`/${ApiPaths.CONVERSATIONS_PATH}/ims`, {
-            conversationId,
-            imsValues,
-            isPreConversation,
-        });
-        return;
-    } catch (error) {
-        throw error;
-    }
-};
-
 export const updateConversationMetadata = async (
     conversationId: string,
     data: object,
@@ -119,6 +102,23 @@ export const updateConversationMetadata = async (
             conversationId,
             data,
             isPreConversation,
+        });
+        return;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const finishConversation = async (
+    conversationId: string,
+    experimentId: string,
+    isAdmin: boolean,
+): Promise<void> => {
+    try {
+        await axiosInstance.post(`/${ApiPaths.CONVERSATIONS_PATH}/finish`, {
+            conversationId,
+            experimentId,
+            isAdmin,
         });
         return;
     } catch (error) {

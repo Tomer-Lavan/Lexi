@@ -6,6 +6,7 @@ export const usersRouter = () => {
     router.post('/create', usersController.createUser);
     router.post('/login', usersController.login);
     router.post('/logout', usersController.logout);
+    router.put('/agent', usersController.updateUsersAgent);
     router.get('/user', usersController.getActiveUser);
     router.get('/validate', usersController.validateUserName);
 
