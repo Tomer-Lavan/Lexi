@@ -1,3 +1,4 @@
+import DeleteIcon from '@mui/icons-material/Delete';
 import DownloadIcon from '@mui/icons-material/Download';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
@@ -57,6 +58,17 @@ export const MoreOptionsMenu = ({
                 <DownloadIcon fontSize="small" />
             </ListItemIcon>
             <ListItemText>Download Excel</ListItemText>
+        </MenuItem>
+        <MenuItem
+            onClick={() => {
+                onMenuClose();
+                handleMenuAction('delete');
+            }}
+        >
+            <ListItemIcon>
+                <DeleteIcon fontSize="small" sx={{ color: 'red' }} />
+            </ListItemIcon>
+            <ListItemText primary="Delete" primaryTypographyProps={{ sx: { color: 'red' } }} />
         </MenuItem>
     </Menu>
 );

@@ -70,3 +70,12 @@ export const updateExperimentDisplaySettings = async (
         throw error;
     }
 };
+
+export const deleteExperiment = async (experimentId: string): Promise<void> => {
+    try {
+        await axiosInstance.delete(`/${ApiPaths.EXPERIMENTS_PATH}/${experimentId}`);
+        return;
+    } catch (error) {
+        throw error;
+    }
+};

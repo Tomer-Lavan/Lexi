@@ -7,6 +7,7 @@ export const agentsRouter = () => {
     router.get('/', agentsController.getAgents);
     router.get('/:id', agentsController.getAgentLean);
     router.put('/', agentsController.updateAgent);
+    router.delete('/:id', agentsController.deleteAgent);
 
     return router;
 };

@@ -1,7 +1,8 @@
-import { getExperiments, updateExperimentsStatus } from '@DAL/server-requests/experiments';
+import { deleteExperiment, getExperiments, updateExperimentsStatus } from '@DAL/server-requests/experiments';
+import { WarningMessage } from '@components/common/WarningMessasge';
 import { SnackbarStatus, useSnackbar } from '@contexts/SnackbarProvider';
 import useEffectAsync from '@hooks/useEffectAsync';
-import { AgentType, ExperimentType } from '@models/AppModels';
+import { ExperimentType } from '@models/AppModels';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 import { Box, Dialog, Typography } from '@mui/material';
@@ -16,10 +17,12 @@ export const Experiments = ({ agents }) => {
     const [isEditMode, setIsEditMode] = useState(false);
     const [isLoadingStatusChange, setIsLoadingStatusChange] = useState(false);
     const [isLoadingExperiments, setIsLoadingExperiments] = useState(true);
+    const [isLoadingDelete, setIsLoadingDelete] = useState(false);
     const [tempExperiments, setTempExperiments] = useState<ExperimentType[]>([]);
     const [modifiedExperiments, setModifiedExperiments] = useState<Record<string, ExperimentType>>({});
     const [openExperimentFormDialog, setOpenExperimentFormDialog] = useState(false);
-    const [editExperiment, setEditExperiment] = useState<AgentType | undefined>(null);
+    const [openDeleteExpDialog, setOpenDeleteExpDialog] = useState(false);
+    const [editExperiment, setEditExperiment] = useState<ExperimentType | undefined>(null);
 
     useEffectAsync(async () => {
         setIsLoadingExperiments(true);
@@ -77,6 +80,23 @@ export const Experiments = ({ agents }) => {
         setModifiedExperiments({});
     };
 
+    const handleDeleteExperiment = async () => {
+        try {
+            setIsLoadingDelete(true);
+            openSnackbar('Deleting Experiment...', SnackbarStatus.INFO);
+            await deleteExperiment(editExperiment._id);
+            setTempExperiments(tempExperiments.filter((exp) => exp._id !== editExperiment._id));
+            setExperiments(experiments.filter((exp) => exp._id !== editExperiment._id));
+            openSnackbar('Delete Experiment Success !', SnackbarStatus.SUCCESS);
+        } catch (err) {
+            openSnackbar('Failed to Delete Experiment', SnackbarStatus.ERROR);
+        } finally {
+            setIsLoadingDelete(false);
+            setOpenDeleteExpDialog(false);
+            setEditExperiment(null);
+        }
+    };
+
     return (
         <MainContainerStyled>
             <Typography variant="h6" gutterBottom style={{ borderBottom: '1px solid gray', marginBottom: '24px' }}>
@@ -110,6 +130,7 @@ export const Experiments = ({ agents }) => {
                 setOpenExperimentFormDialog={setOpenExperimentFormDialog}
                 setIsEditMode={setIsEditMode}
                 isLoadingExperiments={isLoadingExperiments}
+                setOpenDeleteExpDialog={setOpenDeleteExpDialog}
             />
             <Dialog open={openExperimentFormDialog} fullWidth maxWidth="md">
                 <IconButtonStyled aria-label="close" onClick={closeDialog}>
@@ -125,6 +146,19 @@ export const Experiments = ({ agents }) => {
                     closeDialog={closeDialog}
                     isEditMode={isEditMode}
                 />
+            </Dialog>
+            <Dialog open={openDeleteExpDialog} fullWidth maxWidth="md">
+                <WarningMessage
+                    handleYes={handleDeleteExperiment}
+                    handleNO={() => {
+                        setOpenDeleteExpDialog(false);
+                        setEditExperiment(null);
+                    }}
+                    isLoading={isLoadingDelete}
+                >
+                    Deleting the experiment will delete all experiment users and conversation. Are you sure you
+                    want to delete?
+                </WarningMessage>
             </Dialog>
         </MainContainerStyled>
     );

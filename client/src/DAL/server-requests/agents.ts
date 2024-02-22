@@ -37,3 +37,12 @@ export const getAgentLean = async (agentId: string): Promise<AgentLeanType> => {
         throw error;
     }
 };
+
+export const deleteAgent = async (agentId: string): Promise<void> => {
+    try {
+        await axiosInstance.delete(`/${ApiPaths.AGENTS_PATH}/${agentId}`);
+        return;
+    } catch (error) {
+        throw error;
+    }
+};

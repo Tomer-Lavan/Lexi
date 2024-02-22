@@ -137,6 +137,11 @@ class UsersService {
         const agentId = new mongoose.Types.ObjectId(agent._id);
         await UsersModel.updateMany({ 'agent._id': agentId }, { $set: { agent } });
     };
+
+    deleteExperimentUsers = async (experimentId: string): Promise<void> => {
+        const res = await UsersModel.deleteMany({ experimentId });
+        console.log(res);
+    };
 }
 
 export const usersService = new UsersService();

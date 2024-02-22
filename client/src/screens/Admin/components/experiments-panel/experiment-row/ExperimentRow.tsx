@@ -152,6 +152,12 @@ export const ExperimentRow: React.FC<ExperimentRowProps> = ({ row, onStatusChang
                     </Collapse>
                 </ExpInfo>
             </TableRow>
+            {/* <Dialog open={true} maxWidth="md">
+                <WarningMessage handleYes={handleDeleteExperiment} handleNO={() => {}}>
+                    Deleting the experiment will delete all experiment users and conversation. Are you sure you
+                    want to delete?
+                </WarningMessage>
+            </Dialog> */}
         </React.Fragment>
     );
 };

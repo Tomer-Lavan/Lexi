@@ -1,25 +1,33 @@
 import { WarningAmber } from '@mui/icons-material';
-import { Box, Typography } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import React from 'react';
-import { SaveButton } from '../../screens/Admin/components/agents-panel/agent-form/AgentForm.s';
+import AsyncButton from './AsyncButton';
 
-export const WarningMessage: React.FC<{
+interface WarningMessageProps {
     handleYes: () => void;
     handleNO: () => void;
+    isLoading?: boolean;
     children: React.ReactNode;
-}> = ({ handleYes, handleNO, children }) => (
+}
+
+export const WarningMessage: React.FC<WarningMessageProps> = ({
+    handleYes,
+    handleNO,
+    children,
+    isLoading = false,
+}) => (
     <Box padding={4}>
         <Box display={'flex'} flexDirection={'row'}>
             <WarningAmber color="warning" style={{ marginRight: '8px' }} />
             <Typography whiteSpace={'pre-line'}>{children}</Typography>
         </Box>
-        <Box display="flex" justifyContent="center" gap={4}>
-            <SaveButton variant="contained" color="primary" onClick={handleYes}>
+        <Box display="flex" justifyContent="center" gap={4} style={{ marginTop: '16px' }}>
+            <AsyncButton isLoading={isLoading} variant="contained" color="primary" onClick={handleYes}>
                 Yes
-            </SaveButton>
-            <SaveButton variant="outlined" color="secondary" onClick={handleNO}>
+            </AsyncButton>
+            <Button variant="outlined" color="secondary" onClick={handleNO}>
                 No
-            </SaveButton>
+            </Button>
         </Box>
     </Box>
 );
