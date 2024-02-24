@@ -139,8 +139,7 @@ class UsersService {
     };
 
     deleteExperimentUsers = async (experimentId: string): Promise<void> => {
-        const res = await UsersModel.deleteMany({ experimentId });
-        console.log(res);
+        await UsersModel.deleteMany({ experimentId });
     };
 }
 

@@ -60,25 +60,28 @@ export const AgentsListContainer: React.FC<AgentsListContainerProps> = ({ agents
             setEditAgent(selectedAgent);
             setOpenAgentFormDialog(true);
         } else if (action === 'delete') {
-            try {
-                openSnackbar('Deleting Agent...', SnackbarStatus.INFO);
-                const agentExperiments = await getExperimentsByAgent(selectedAgent._id);
-                if (agentExperiments.length) {
-                    openSnackbar(
-                        `Agent Can't Be Deleted While Attached to The Experiments: 
-                        ${agentExperiments.map((agentExp) => agentExp.title).join(', ')}`,
-                        SnackbarStatus.ERROR,
-                    );
-                    return;
-                }
-                await deleteAgent(selectedAgent._id);
-                setAgents(agents.filter((agent) => agent._id !== selectedAgent._id));
-                openSnackbar('Delete Agent Succes !', SnackbarStatus.SUCCESS);
-            } catch (error) {
-                openSnackbar('Failed Deleting Agent', SnackbarStatus.ERROR);
-            } finally {
-                handleClose();
+            handleDeleteAgent();
+        }
+        handleClose();
+    };
+
+    const handleDeleteAgent = async () => {
+        try {
+            openSnackbar('Deleting Agent...', SnackbarStatus.INFO);
+            const agentExperiments = await getExperimentsByAgent(selectedAgent._id);
+            if (agentExperiments.length) {
+                openSnackbar(
+                    `Agent Can't Be Deleted While Attached to The Experiments: 
+                    ${agentExperiments.map((agentExp) => agentExp.title).join(', ')}`,
+                    SnackbarStatus.ERROR,
+                );
+                return;
             }
+            await deleteAgent(selectedAgent._id);
+            setAgents(agents.filter((agent) => agent._id !== selectedAgent._id));
+            openSnackbar('Delete Agent Succes !', SnackbarStatus.SUCCESS);
+        } catch (error) {
+            openSnackbar('Failed Deleting Agent', SnackbarStatus.ERROR);
         }
     };
 

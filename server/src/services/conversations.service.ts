@@ -164,12 +164,10 @@ class ConversationsService {
 
     deleteExperimentConversations = async (experimentId: string): Promise<void> => {
         const conversationIds = await this.getExperimentConversationsIds(experimentId);
-        const [res1, res2] = await Promise.all([
+        await Promise.all([
             MetadataConversationsModel.deleteMany({ _id: { $in: conversationIds.ids } }),
             ConversationsModel.deleteMany({ conversationId: { $in: conversationIds.strIds } }),
         ]);
-        console.log(res1);
-        console.log(res2);
     };
 
     private updateConversationMetadata = async (conversationId, fields) => {

@@ -121,8 +121,7 @@ class ExperimentsService {
     }
 
     async deleteExperiment(experimentId): Promise<void> {
-        const res = await ExperimentsModel.deleteOne({ _id: experimentId });
-        console.log(res);
+        await ExperimentsModel.deleteOne({ _id: experimentId });
     }
 }
 
