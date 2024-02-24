@@ -162,6 +162,14 @@ class ConversationsService {
         ]);
     };
 
+    deleteExperimentConversations = async (experimentId: string): Promise<void> => {
+        const conversationIds = await this.getExperimentConversationsIds(experimentId);
+        await Promise.all([
+            MetadataConversationsModel.deleteMany({ _id: { $in: conversationIds.ids } }),
+            ConversationsModel.deleteMany({ conversationId: { $in: conversationIds.strIds } }),
+        ]);
+    };
+
     private updateConversationMetadata = async (conversationId, fields) => {
         try {
             const res = await MetadataConversationsModel.updateOne(
@@ -216,6 +224,18 @@ class ConversationsService {
         if (agent.stopSequences) chatCompletionsReq['stop'] = agent.stopSequences;
 
         return chatCompletionsReq;
+    };
+
+    private getExperimentConversationsIds = async (
+        experimentId: string,
+    ): Promise<{ ids: mongoose.Types.ObjectId[]; strIds: string[] }> => {
+        const conversationsIds = await MetadataConversationsModel.aggregate([
+            { $match: { experimentId } },
+            { $project: { _id: 1, id: { $toString: '$_id' } } },
+            { $group: { _id: null, ids: { $push: '$_id' }, strIds: { $push: '$id' } } },
+            { $project: { _id: 0, ids: 1, strIds: 1 } },
+        ]);
+        return conversationsIds[0];
     };
 }
 

@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
+import { conversationsService } from '../services/conversations.service';
 import { experimentsService } from '../services/experiments.service';
+import { usersService } from '../services/users.service';
 import { requestHandler } from '../utils/requestHandler';
 
 class ExperimentsController {
@@ -48,6 +50,17 @@ class ExperimentsController {
         const { agentId } = req.query;
         const experiments = await experimentsService.getAllExperimentsByAgentId(agentId as string);
         res.status(200).send(experiments);
+    });
+
+    deleteExperiment = requestHandler(async (req: Request, res: Response) => {
+        const experimentId = req.params.id as string;
+        await Promise.all([
+            experimentsService.deleteExperiment(experimentId),
+            usersService.deleteExperimentUsers(experimentId),
+            conversationsService.deleteExperimentConversations(experimentId),
+        ]);
+
+        res.status(200).send();
     });
 }
 

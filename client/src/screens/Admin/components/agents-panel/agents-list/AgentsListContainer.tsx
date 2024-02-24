@@ -17,6 +17,9 @@ import {
 } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import React, { useState } from 'react';
+import { deleteAgent } from '../../../../../DAL/server-requests/agents';
+import { getExperimentsByAgent } from '../../../../../DAL/server-requests/experiments';
+import { SnackbarStatus, useSnackbar } from '../../../../../contexts/SnackbarProvider';
 import { AddButton, MainContainerStyled } from '../../experiments-panel/experiments/Experiments.s';
 import AgentForm from '../agent-form/AgentForm';
 import { AgentDetails } from './AgentDetails';
@@ -28,6 +31,7 @@ export interface AgentsListContainerProps {
 }
 
 export const AgentsListContainer: React.FC<AgentsListContainerProps> = ({ agents, setAgents }) => {
+    const { openSnackbar } = useSnackbar();
     const [isEditMode, setIsEditMode] = useState(false);
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [openAgentFormDialog, setOpenAgentFormDialog] = useState(false);
@@ -47,7 +51,7 @@ export const AgentsListContainer: React.FC<AgentsListContainerProps> = ({ agents
         }
     };
 
-    const handleMenuAction = (action: string) => {
+    const handleMenuAction = async (action: string) => {
         if (action === 'edit') {
             setEditAgent(selectedAgent);
             setIsEditMode(true);
@@ -55,8 +59,30 @@ export const AgentsListContainer: React.FC<AgentsListContainerProps> = ({ agents
         } else if (action === 'duplicate') {
             setEditAgent(selectedAgent);
             setOpenAgentFormDialog(true);
+        } else if (action === 'delete') {
+            handleDeleteAgent();
         }
         handleClose();
+    };
+
+    const handleDeleteAgent = async () => {
+        try {
+            openSnackbar('Deleting Agent...', SnackbarStatus.INFO);
+            const agentExperiments = await getExperimentsByAgent(selectedAgent._id);
+            if (agentExperiments.length) {
+                openSnackbar(
+                    `Agent Can't Be Deleted While Attached to The Experiments: 
+                    ${agentExperiments.map((agentExp) => agentExp.title).join(', ')}`,
+                    SnackbarStatus.ERROR,
+                );
+                return;
+            }
+            await deleteAgent(selectedAgent._id);
+            setAgents(agents.filter((agent) => agent._id !== selectedAgent._id));
+            openSnackbar('Delete Agent Succes !', SnackbarStatus.SUCCESS);
+        } catch (error) {
+            openSnackbar('Failed Deleting Agent', SnackbarStatus.ERROR);
+        }
     };
 
     return (
@@ -115,6 +141,9 @@ export const AgentsListContainer: React.FC<AgentsListContainerProps> = ({ agents
                 >
                     <MenuItem onClick={() => handleMenuAction('edit')}>Edit</MenuItem>
                     <MenuItem onClick={() => handleMenuAction('duplicate')}>Duplicate</MenuItem>
+                    <MenuItem onClick={() => handleMenuAction('delete')} sx={{ color: 'red' }}>
+                        Delete
+                    </MenuItem>
                 </Menu>
             </List>
             <Dialog open={openAgentFormDialog} maxWidth={'lg'}>
