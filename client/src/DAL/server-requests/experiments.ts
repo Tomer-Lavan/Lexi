@@ -90,3 +90,12 @@ export const getExperimentCoversationForms = async (experimentId) => {
         throw error;
     }
 };
+
+export const deleteExperiment = async (experimentId: string): Promise<void> => {
+    try {
+        await axiosInstance.delete(`/${ApiPaths.EXPERIMENTS_PATH}/${experimentId}`);
+        return;
+    } catch (error) {
+        throw error;
+    }
+};

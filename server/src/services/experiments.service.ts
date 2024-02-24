@@ -119,6 +119,10 @@ class ExperimentsService {
         );
         return result;
     }
+
+    async deleteExperiment(experimentId): Promise<void> {
+        await ExperimentsModel.deleteOne({ _id: experimentId });
+    }
 }
 
 export const experimentsService = new ExperimentsService();

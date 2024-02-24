@@ -36,6 +36,7 @@ const ExperimentsList = ({
     setOpenExperimentFormDialog,
     isLoadingStatusChange,
     isLoadingExperiments,
+    setOpenDeleteExpDialog,
 }) => {
     const { openSnackbar } = useSnackbar();
     const [openShareDialog, setOpenShareDialog] = useState(false);
@@ -64,6 +65,9 @@ const ExperimentsList = ({
         } else if (action === 'share') {
             setShareLink(`${process.env.REACT_APP_FRONTEND_URL}/e/${row._id}`);
             setOpenShareDialog(true);
+        } else if (action === 'delete') {
+            setEditExperiment(row);
+            setOpenDeleteExpDialog(true);
         }
     };
 

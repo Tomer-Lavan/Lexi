@@ -30,6 +30,10 @@ class AgentsService {
         const response: UpdateWriteOpResult = await AgentsModel.updateOne({ _id: agent._id }, { $set: agent });
         return response;
     };
+
+    deleteAgent = async (agentId: string): Promise<void> => {
+        await AgentsModel.deleteOne({ _id: agentId });
+    };
 }
 
 export const agentsService = new AgentsService();
