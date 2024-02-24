@@ -18,10 +18,11 @@ interface Form {
     name: string;
 }
 
+import { Navigate, Route, Routes } from 'react-router-dom';
+
 const Admin = () => {
     const [agents, setAgents] = useState<AgentType[]>([]);
     const [forms, setForms] = useState<Form[]>([]);
-    const [section, setSection] = useState(AdminSections.EXPERIMENTS);
     const { openSnackbar } = useSnackbar();
 
     useEffectAsync(async () => {
@@ -38,7 +39,7 @@ const Admin = () => {
     return (
         <MainContainer container>
             <Grid item xs={2} sm={2} md={2} lg={2} style={{ backgroundColor: theme.palette.primary.main }}>
-                <SidebarAdmin section={section} setSection={setSection} />
+                <SidebarAdmin />
             </Grid>
             <Grid item xs={10} sm={10} md={10} lg={10}>
                 <SectionContainer
@@ -50,13 +51,22 @@ const Admin = () => {
                     }}
                 >
                     <SectionInnerContainer container>
-                        {section === AdminSections.EXPERIMENTS ? (
-                            <Experiments agents={agents} forms={forms} />
-                        ) : section === AdminSections.AGENTS ? (
-                            <AgentsListContainer agents={agents} setAgents={setAgents} />
-                        ) : (
-                            <FormsPanel forms={forms} setForms={setForms} />
-                        )}
+                        <Routes>
+                            <Route path="/" element={<Navigate to={AdminSections.EXPERIMENTS} replace />} />
+                            <Route
+                                path={AdminSections.EXPERIMENTS}
+                                element={<Experiments agents={agents} forms={forms} />}
+                            />
+                            <Route
+                                path={AdminSections.AGENTS}
+                                element={<AgentsListContainer agents={agents} setAgents={setAgents} />}
+                            />
+                            <Route
+                                path={AdminSections.FORMS}
+                                element={<FormsPanel forms={forms} setForms={setForms} />}
+                            />
+                            {/* Add more routes for other sections as needed */}
+                        </Routes>
                     </SectionInnerContainer>
                 </SectionContainer>
             </Grid>
