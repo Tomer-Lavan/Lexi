@@ -12,6 +12,10 @@ export interface DisplaySettings {
     welcomeHeader: string;
 }
 
+export interface ExperimentFeatures {
+    userAnnotation: boolean;
+}
+
 export interface IExperimentLean {
     _id: mongoose.Types.ObjectId;
     title: string;
@@ -34,4 +38,5 @@ export interface IExperiment {
     maxParticipants: number;
     totalSessions: number;
     openSessions: number;
+    experimentFeatures: ExperimentFeatures;
 }

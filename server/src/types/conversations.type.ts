@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import { IAgent } from '../types/agents.type';
 
+export type UserAnnotation = 1 | 0 | -1;
 export interface IConversation {
     conversationId: string;
     content: string;
@@ -8,6 +9,7 @@ export interface IConversation {
     createdAt: Date;
     timestamp: number;
     messageNumber: number;
+    userAnnotation: UserAnnotation;
 }
 
 export interface IMetadataConversation {

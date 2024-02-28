@@ -52,6 +52,13 @@ class ExperimentsController {
         res.status(200).send(experiments);
     });
 
+    getExperimentFeatures = requestHandler(async (req: Request, res: Response) => {
+        const experimentId = req.params.id as string;
+        const experimentFeatures = await experimentsService.getExperimentFeatures(experimentId);
+
+        res.status(200).send(experimentFeatures);
+    });
+
     deleteExperiment = requestHandler(async (req: Request, res: Response) => {
         const experimentId = req.params.id as string;
         await Promise.all([

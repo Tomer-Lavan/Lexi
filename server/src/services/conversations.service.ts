@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import { OpenAI } from 'openai';
-import { IAgent } from 'src/types';
+import { IAgent, UserAnnotation } from 'src/types';
 import { ConversationsModel } from '../models/ConversationsModel';
 import { MetadataConversationsModel } from '../models/MetadataConversationsModel';
 import { experimentsService } from './experiments.service';
@@ -10,8 +10,10 @@ import { usersService } from './users.service';
 dotenv.config();
 
 interface Message {
+    _id?: mongoose.Types.ObjectId;
     role: 'system' | 'user' | 'assistant';
     content: string;
+    userAnnotation?: UserAnnotation;
 }
 
 const { OPENAI_API_KEY } = process.env;
@@ -21,7 +23,7 @@ const openai = new OpenAI({ apiKey: OPENAI_API_KEY });
 class ConversationsService {
     message = async (message: any, conversationId: string, streamResponse?) => {
         const [conversation, metadataConversation] = await Promise.all([
-            this.getConversation(conversationId),
+            this.getConversation(conversationId, true),
             this.getConversationMetadata(conversationId),
         ]);
 
@@ -111,8 +113,12 @@ class ConversationsService {
         return res._id.toString();
     };
 
-    getConversation = async (conversationId: string): Promise<Message[]> => {
-        const conversation = await ConversationsModel.find({ conversationId }, { _id: 0, role: 1, content: 1 });
+    getConversation = async (conversationId: string, isLean = false): Promise<Message[]> => {
+        const returnValues = isLean
+            ? { _id: 0, role: 1, content: 1 }
+            : { _id: 1, role: 1, content: 1, userAnnotation: 1 };
+
+        const conversation = await ConversationsModel.find({ conversationId }, returnValues);
 
         return conversation;
     };
@@ -168,6 +174,16 @@ class ConversationsService {
             MetadataConversationsModel.deleteMany({ _id: { $in: conversationIds.ids } }),
             ConversationsModel.deleteMany({ conversationId: { $in: conversationIds.strIds } }),
         ]);
+    };
+
+    updateUserAnnotation = async (messageId: string, userAnnotation: UserAnnotation): Promise<Message> => {
+        const message: Message = await ConversationsModel.findOneAndUpdate(
+            { _id: messageId },
+            { $set: { userAnnotation } },
+            { new: true },
+        );
+
+        return message;
     };
 
     private updateConversationMetadata = async (conversationId, fields) => {

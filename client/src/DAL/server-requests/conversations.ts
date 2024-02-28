@@ -125,3 +125,15 @@ export const finishConversation = async (
         throw error;
     }
 };
+
+export const updateUserAnnotation = async (messageId: string, userAnnotation: number): Promise<void> => {
+    try {
+        await axiosInstance.put(`/${ApiPaths.CONVERSATIONS_PATH}/annotation`, {
+            messageId,
+            userAnnotation,
+        });
+        return;
+    } catch (error) {
+        throw error;
+    }
+};

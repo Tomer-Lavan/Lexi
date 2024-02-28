@@ -132,6 +132,13 @@ class ConvesationsController {
         res.status(200).send();
     });
 
+    updateUserAnnotation = requestHandler(async (req: Request, res: Response) => {
+        const { messageId, userAnnotation } = req.body;
+        await conversationsService.updateUserAnnotation(messageId, userAnnotation);
+
+        res.status(200).send();
+    });
+
     private validateMessage(message: string): void {
         if (typeof message !== 'string') {
             const error = new Error('Bad Request');
