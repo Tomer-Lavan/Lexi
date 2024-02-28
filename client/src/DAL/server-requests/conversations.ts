@@ -7,7 +7,7 @@ const serialize = (obj) =>
         .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(obj[key])}`)
         .join('&');
 
-export const sendMessage = async (message: MessageType, conversationId: string): Promise<{ message: string }> => {
+export const sendMessage = async (message: MessageType, conversationId: string): Promise<MessageType> => {
     try {
         const response = await axiosInstance.post(`/${ApiPaths.CONVERSATIONS_PATH}/message`, {
             message,
@@ -23,6 +23,7 @@ export const sendStreamMessage = (
     message: MessageType,
     conversationId: string,
     onMessageReceived: (message: string) => void,
+    onCloseStream: (message: MessageType) => void,
     onError: (error?: Event | { code: number; message: string }) => void,
 ) => {
     const eventSource = new EventSource(
@@ -31,8 +32,10 @@ export const sendStreamMessage = (
         )}&conversationId=${conversationId}`,
     );
 
-    eventSource.addEventListener('close', () => {
+    eventSource.addEventListener('close', (event) => {
         console.log('Server is closing the connection.');
+        const message = JSON.parse(event.data);
+        onCloseStream(message);
         eventSource.close();
     });
 
@@ -119,6 +122,18 @@ export const finishConversation = async (
             conversationId,
             experimentId,
             isAdmin,
+        });
+        return;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const updateUserAnnotation = async (messageId: string, userAnnotation: number): Promise<void> => {
+    try {
+        await axiosInstance.put(`/${ApiPaths.CONVERSATIONS_PATH}/annotation`, {
+            messageId,
+            userAnnotation,
         });
         return;
     } catch (error) {

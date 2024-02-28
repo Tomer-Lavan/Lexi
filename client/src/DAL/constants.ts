@@ -54,6 +54,10 @@ export const defaultExperiment = {
         preConversation: null,
         postConversation: null,
     },
+    experimentFeatures: {
+        userAnnotation: false,
+        streamMessage: false,
+    },
 } as const;
 
 export const initialSlidersEnabled = {

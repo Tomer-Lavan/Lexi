@@ -1,4 +1,4 @@
-import { getConversation } from '@DAL/server-requests/conversations';
+import { getConversation, updateUserAnnotation } from '@DAL/server-requests/conversations';
 import FinishConversationDialog from '@components/common/FinishConversationDialog';
 import LoadingPage from '@components/common/LoadingPage';
 import { SnackbarStatus, useSnackbar } from '@contexts/SnackbarProvider';
@@ -8,9 +8,10 @@ import { Dialog, Grid, useMediaQuery } from '@mui/material';
 import theme from '@root/Theme';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getExperimentCoversationForms } from '../../DAL/server-requests/experiments';
+import { getExperimentCoversationForms, getExperimentFeatures } from '../../DAL/server-requests/experiments';
 import { ConversationForm } from '../../components/forms/conversation-form/ConversationForm';
 import { useExperimentId } from '../../hooks/useExperimentId';
+import { UserAnnotation } from '../../models/AppModels';
 import { MainContainer, MessageListContainer, SectionContainer, SectionInnerContainer } from './ChatPage.s';
 import MessageList from './components/MessageList';
 import InputBox from './components/input-box/InputBox';
@@ -24,7 +25,6 @@ interface ChatPageProps {
 const ChatPage: React.FC<ChatPageProps> = ({ isFinishDialogOpen, setIsFinishDialogOpen }) => {
     const navigate = useNavigate();
     const messagesRef = useRef(null);
-    const [isPageLoading, setIsPageLoading] = useState(true);
     const { openSnackbar } = useSnackbar();
     const [messages, setMessages] = useState([]);
     const [conversationForms, setConversationForms] = useState({
@@ -33,6 +33,8 @@ const ChatPage: React.FC<ChatPageProps> = ({ isFinishDialogOpen, setIsFinishDial
     });
     const [messageFontSize, setMessageFontSize] = useState<'sm' | 'lg'>('lg');
     const [surveyOpen, setIsSurveyOpen] = useState(false);
+    const [isPageLoading, setIsPageLoading] = useState(true);
+    const [experimentFeatures, setExperimentFeatures] = useState(null);
     const [isMessageLoading, setIsMessageLoading] = useState(false);
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const questionnaireLink = 'https://docs.google.com/forms/u/0/?tgif=d&ec=asw-forms-hero-goto';
@@ -46,17 +48,19 @@ const ChatPage: React.FC<ChatPageProps> = ({ isFinishDialogOpen, setIsFinishDial
     }, [messages]);
 
     useEffectAsync(async () => {
-        const imsAnsweredKey = `imsPreAnswered-${conversationId}`;
-        const imsAnswered = sessionStorage.getItem(imsAnsweredKey);
+        const preConversationFormAnsweredKey = `preConversationFormAnswered-${conversationId}`;
+        const preConversationFormAnsweredKeyAnswered = sessionStorage.getItem(preConversationFormAnsweredKey);
         try {
-            const [conversation, conversationForms] = await Promise.all([
+            const [conversation, conversationForms, experimentFeaturesRes] = await Promise.all([
                 getConversation(conversationId),
                 getExperimentCoversationForms(experimentId),
+                getExperimentFeatures(experimentId),
             ]);
-            if (!imsAnswered && conversationForms.preConversation) {
+            if (!preConversationFormAnsweredKeyAnswered && conversationForms.preConversation) {
                 setIsSurveyOpen(true);
             }
             setConversationForms(conversationForms);
+            setExperimentFeatures(experimentFeaturesRes);
             setMessages(conversation.length ? conversation : []);
             setIsPageLoading(false);
         } catch (err) {
@@ -65,10 +69,21 @@ const ChatPage: React.FC<ChatPageProps> = ({ isFinishDialogOpen, setIsFinishDial
         }
     }, []);
 
-    const handleImsSurveyDone = () => {
-        const imsAnsweredKey = `imsPreAnswered-${conversationId}`;
-        sessionStorage.setItem(imsAnsweredKey, 'true');
+    const handlePreConversationSurveyDone = () => {
+        const preConversationFormAnsweredKey = `preConversationFormAnswered-${conversationId}`;
+        sessionStorage.setItem(preConversationFormAnsweredKey, 'true');
         setIsSurveyOpen(false);
+    };
+
+    const handleUpdateUserAnnotation = async (messageId: string, userAnnotation: UserAnnotation) => {
+        try {
+            await updateUserAnnotation(messageId, userAnnotation);
+            setMessages(
+                messages.map((message) => (message._id === messageId ? { ...message, userAnnotation } : message)),
+            );
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     return isPageLoading ? (
@@ -93,6 +108,8 @@ const ChatPage: React.FC<ChatPageProps> = ({ isFinishDialogOpen, setIsFinishDial
                                 messages={messages}
                                 isMessageLoading={isMessageLoading}
                                 size={messageFontSize}
+                                handleUpdateUserAnnotation={handleUpdateUserAnnotation}
+                                experimentHasUserAnnotation={experimentFeatures?.userAnnotation}
                             />
                         </MessageListContainer>
                         <Grid item display={'flex'} justifyContent={'center'}>
@@ -103,6 +120,7 @@ const ChatPage: React.FC<ChatPageProps> = ({ isFinishDialogOpen, setIsFinishDial
                                 conversationId={conversationId}
                                 setIsMessageLoading={setIsMessageLoading}
                                 fontSize={messageFontSize}
+                                isStreamMessage={experimentFeatures?.streamMessage}
                             />
                         </Grid>
                     </SectionInnerContainer>
@@ -130,7 +148,7 @@ const ChatPage: React.FC<ChatPageProps> = ({ isFinishDialogOpen, setIsFinishDial
                 <ConversationForm
                     form={conversationForms.preConversation}
                     isPreConversation={true}
-                    handleDone={handleImsSurveyDone}
+                    handleDone={handlePreConversationSurveyDone}
                 />
             </Dialog>
         </MainContainer>

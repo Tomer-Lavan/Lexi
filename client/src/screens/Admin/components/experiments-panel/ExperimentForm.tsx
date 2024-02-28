@@ -173,6 +173,40 @@ const ExperimentForm = ({
             ) : (
                 <AbAgents agents={agents} control={control} setValue={setValue} isRow={false} errors={errors} />
             )}
+            <Typography
+                style={{
+                    color: 'grey',
+                    marginBottom: '4px',
+                    marginTop: '8px',
+                    borderBottom: '1px solid grey',
+                }}
+            >
+                Experiment Features:
+            </Typography>
+            <Box style={{ width: '100%' }}>
+                <Controller
+                    name="experimentFeatures.userAnnotation"
+                    control={control}
+                    render={({ field }) => (
+                        <FormControlLabel
+                            control={<Checkbox {...field} checked={field.value} />}
+                            label="User Annotation"
+                        />
+                    )}
+                />
+            </Box>
+            <Box style={{ width: '100%' }}>
+                <Controller
+                    name="experimentFeatures.streamMessage"
+                    control={control}
+                    render={({ field }) => (
+                        <FormControlLabel
+                            control={<Checkbox {...field} checked={field.value} />}
+                            label="Stream Message"
+                        />
+                    )}
+                />
+            </Box>
 
             <Typography
                 style={{

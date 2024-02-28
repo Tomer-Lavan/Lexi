@@ -8,12 +8,28 @@ interface MessageListProps {
     messages: MessageType[];
     isMessageLoading: boolean;
     size: 'sm' | 'lg';
+    handleUpdateUserAnnotation: (messageId, userAnnotation) => void;
+    experimentHasUserAnnotation: boolean;
 }
 
-const MessageList: React.FC<MessageListProps> = ({ isMobile, messages, isMessageLoading, size }) => (
+const MessageList: React.FC<MessageListProps> = ({
+    isMobile,
+    messages,
+    isMessageLoading,
+    size,
+    experimentHasUserAnnotation,
+    handleUpdateUserAnnotation,
+}) => (
     <Box height="100%" width={isMobile ? '100%' : '85%'} padding={2}>
         {messages.map((message, index) => (
-            <Message key={index} message={message} role={message.role} size={size} />
+            <Message
+                key={index}
+                message={message}
+                role={message.role}
+                size={size}
+                handleUpdateUserAnnotation={handleUpdateUserAnnotation}
+                experimentHasUserAnnotation={experimentHasUserAnnotation}
+            />
         ))}
         {isMessageLoading && <LoadingDots />}
     </Box>

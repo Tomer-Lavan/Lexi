@@ -31,6 +31,7 @@ export const experimentsSchema = new Schema<IExperiment>(
         maxParticipants: { type: Number },
         totalSessions: { type: Number, default: () => 0 },
         openSessions: { type: Number, default: () => 0 },
+        experimentFeatures: { type: Object },
     },
     { versionKey: false },
 );

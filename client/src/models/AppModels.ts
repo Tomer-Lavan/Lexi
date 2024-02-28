@@ -1,9 +1,13 @@
 import { QuestionType, QuestionTypeProps } from '../components/questions/Question';
 
 export interface MessageType {
+    _id?: string;
     role: 'system' | 'user' | 'assistant';
     content: string;
+    userAnnotation?: UserAnnotation;
 }
+
+export type UserAnnotation = 1 | 0 | -1;
 
 export interface ConversationType {
     conversationId: string;
@@ -25,8 +29,6 @@ export interface MetadataConversationType {
     conversationNumber: number;
     agent: AgentType;
     userId: string;
-    imsPre?: object;
-    imsPost?: object;
 }
 
 export interface UserType {
@@ -107,11 +109,17 @@ export interface ExperimentType {
     maxParticipants: number | undefined;
     totalSessions: number;
     openSessions: number;
+    experimentFeatures: ExperimentFeatures;
 }
 
 export interface ExperimentLeanType {
     _id: string;
     title: string;
+}
+
+export interface ExperimentFeatures {
+    userAnnotation: boolean;
+    streamMessage: boolean;
 }
 
 export interface NewUserInfoType {

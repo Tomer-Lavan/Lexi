@@ -46,8 +46,8 @@ const conversationsSheetCol = [
     { header: 'Number Of Messages', key: 'messagesNumber' },
     { header: 'Created At', key: 'createdAt' },
     { header: 'Last Message Date', key: 'lastMessageDate' },
-    { header: 'Ims Pre', key: 'imsPre' },
-    { header: 'Ims Post', key: 'imsPost' },
+    { header: 'Pre Coversation', key: 'preConversation' },
+    { header: 'Post Conversation', key: 'postConversation' },
     { header: 'Finished', key: 'isFinished' },
 ];
 
@@ -58,8 +58,9 @@ const messagesSheetCol = [
     { header: 'Conversation Link', key: 'conversationLink' },
     { header: 'User Conversation Number', key: 'conversationNumber' },
     { header: 'Message Number', key: 'messageNumber' },
-    { header: 'Content', key: 'content' },
     { header: 'Role', key: 'role' },
+    { header: 'UserAnnotation', key: 'userAnnotation' },
+    { header: 'Content', key: 'content' },
     { header: 'Created At', key: 'createdAt' },
 ];
 
@@ -175,8 +176,12 @@ class DataAggregationService {
                         messagesNumber: conversation.metadata.messagesNumber,
                         createdAt: conversation.metadata.createdAt,
                         lastMessageDate: conversation.metadata.lastMessageDate,
-                        imsPre: conversation.metadata.imsPost ? Object.values(conversation.metadata.imsPre) : [],
-                        imsPost: conversation.metadata.imsPost ? Object.values(conversation.metadata.imsPost) : [],
+                        preConversation: conversation.metadata.preConversation
+                            ? Object.values(conversation.metadata.preConversation)
+                            : [],
+                        postConversation: conversation.metadata.postConversation
+                            ? Object.values(conversation.metadata.postConversation)
+                            : [],
                         isFinished: conversation.metadata.isFinished,
                     });
 
@@ -200,6 +205,7 @@ class DataAggregationService {
                             role: message.role,
                             createdAt: message.createdAt,
                             messageNumber: message.messageNumber,
+                            userAnnotation: message.userAnnotation,
                         });
                     });
 
