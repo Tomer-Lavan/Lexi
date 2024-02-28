@@ -1,10 +1,7 @@
-import ThumbDownIcon from '@mui/icons-material/ThumbDown';
-import ThumbDownOutlinedIcon from '@mui/icons-material/ThumbDownOutlined';
-import ThumbUpIcon from '@mui/icons-material/ThumbUp';
-import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
 import { Box, Typography } from '@mui/material';
 import theme from '@root/Theme';
 import { MessageType } from '@root/models/AppModels';
+import UserAnnotation from './UserAnnotation';
 
 interface MessageProps {
     message: MessageType;
@@ -49,7 +46,6 @@ const Message: React.FC<MessageProps> = ({
                         padding: '16px 16px 24px 16px',
                         borderRadius: isUser ? '26px 26px 0 26px' : '26px 26px 26px 0',
                         background: isUser ? theme.palette.userMessage.main : theme.palette.assistantMessage.main,
-                        // maxWidth: '80%',
                         display: 'inline-block',
                         clear: 'both',
                         float: isUser ? 'right' : 'left',
@@ -68,34 +64,7 @@ const Message: React.FC<MessageProps> = ({
                     </Typography>
                 </Box>
                 {!isUser && experimentHasUserAnnotation && (
-                    <Box display={'flex'} gap={1}>
-                        {message.userAnnotation === 1 ? (
-                            <ThumbUpIcon
-                                color="secondary"
-                                style={{ cursor: 'pointer', fontSize: '1.1rem' }}
-                                onClick={async () => handleUpdateUserAnnotation(message._id, 0)}
-                            />
-                        ) : (
-                            <ThumbUpOutlinedIcon
-                                color="secondary"
-                                style={{ cursor: 'pointer', fontSize: '1.1rem' }}
-                                onClick={async () => handleUpdateUserAnnotation(message._id, 1)}
-                            />
-                        )}
-                        {message.userAnnotation === -1 ? (
-                            <ThumbDownIcon
-                                color="secondary"
-                                style={{ cursor: 'pointer', fontSize: '1.1rem' }}
-                                onClick={async () => handleUpdateUserAnnotation(message._id, 0)}
-                            />
-                        ) : (
-                            <ThumbDownOutlinedIcon
-                                color="secondary"
-                                style={{ cursor: 'pointer', fontSize: '1.1rem' }}
-                                onClick={async () => handleUpdateUserAnnotation(message._id, -1)}
-                            />
-                        )}
-                    </Box>
+                    <UserAnnotation message={message} handleUpdateUserAnnotation={handleUpdateUserAnnotation} />
                 )}
             </Box>
         </Box>

@@ -71,7 +71,6 @@ const ChatPage: React.FC<ChatPageProps> = ({ isFinishDialogOpen, setIsFinishDial
 
     const handleUpdateUserAnnotation = async (messageId: string, userAnnotation: UserAnnotation) => {
         try {
-            debugger;
             await updateUserAnnotation(messageId, userAnnotation);
             setMessages(
                 messages.map((message) => (message._id === messageId ? { ...message, userAnnotation } : message)),
