@@ -63,8 +63,12 @@ const Message: React.FC<MessageProps> = ({
                         {getFormattedMessage(message.content)}
                     </Typography>
                 </Box>
-                {!isUser && experimentHasUserAnnotation && (
-                    <UserAnnotation message={message} handleUpdateUserAnnotation={handleUpdateUserAnnotation} />
+                {!isUser && experimentHasUserAnnotation && message._id && (
+                    <UserAnnotation
+                        key={message._id}
+                        message={message}
+                        handleUpdateUserAnnotation={handleUpdateUserAnnotation}
+                    />
                 )}
             </Box>
         </Box>

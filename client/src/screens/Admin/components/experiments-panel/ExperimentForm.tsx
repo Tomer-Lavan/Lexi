@@ -171,6 +171,18 @@ const ExperimentForm = ({
                     )}
                 />
             </Box>
+            <Box style={{ width: '100%' }}>
+                <Controller
+                    name="experimentFeatures.streamMessage"
+                    control={control}
+                    render={({ field }) => (
+                        <FormControlLabel
+                            control={<Checkbox {...field} checked={field.value} />}
+                            label="Stream Message"
+                        />
+                    )}
+                />
+            </Box>
             <FormControl
                 margin="dense"
                 size="small"

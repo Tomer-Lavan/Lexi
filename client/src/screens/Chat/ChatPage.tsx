@@ -29,7 +29,7 @@ const ChatPage: React.FC<ChatPageProps> = ({ isFinishDialogOpen, setIsFinishDial
     const [messages, setMessages] = useState([]);
     const [surveyOpen, setIsSurveyOpen] = useState(false);
     const [isPageLoading, setIsPageLoading] = useState(true);
-    const [hasUserAnnotation, setHasUserAnnotation] = useState(null);
+    const [experimentFeatures, setExperimentFeatures] = useState(null);
     const [messageFontSize, setMessageFontSize] = useState<'sm' | 'lg'>('lg');
     const [isMessageLoading, setIsMessageLoading] = useState(false);
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -50,11 +50,11 @@ const ChatPage: React.FC<ChatPageProps> = ({ isFinishDialogOpen, setIsFinishDial
             setIsSurveyOpen(true);
         }
         try {
-            const [conversation, experimentFeatures] = await Promise.all([
+            const [conversation, experimentFeaturesRes] = await Promise.all([
                 getConversation(conversationId),
                 getExperimentFeatures(experimentId),
             ]);
-            setHasUserAnnotation(experimentFeatures?.userAnnotation);
+            setExperimentFeatures(experimentFeaturesRes);
             setMessages(conversation.length ? conversation : []);
             setIsPageLoading(false);
         } catch (err) {
@@ -111,7 +111,7 @@ const ChatPage: React.FC<ChatPageProps> = ({ isFinishDialogOpen, setIsFinishDial
                                 isMessageLoading={isMessageLoading}
                                 size={messageFontSize}
                                 handleUpdateUserAnnotation={handleUpdateUserAnnotation}
-                                experimentHasUserAnnotation={hasUserAnnotation}
+                                experimentHasUserAnnotation={experimentFeatures?.userAnnotation}
                             />
                         </MessageListContainer>
                         <Grid item display={'flex'} justifyContent={'center'}>
@@ -122,6 +122,7 @@ const ChatPage: React.FC<ChatPageProps> = ({ isFinishDialogOpen, setIsFinishDial
                                 conversationId={conversationId}
                                 setIsMessageLoading={setIsMessageLoading}
                                 fontSize={messageFontSize}
+                                isStreamMessage={experimentFeatures?.streamMessage}
                             />
                         </Grid>
                     </SectionInnerContainer>

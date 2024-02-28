@@ -119,6 +119,7 @@ export interface ExperimentLeanType {
 
 export interface ExperimentFeatures {
     userAnnotation: boolean;
+    streamMessage: boolean;
 }
 
 export interface NewUserInfoType {

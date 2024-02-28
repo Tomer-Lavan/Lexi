@@ -9,8 +9,8 @@ class ConvesationsController {
             const { message, conversationId }: { message: any; conversationId: string } = req.body;
             this.validateMessage(message.content);
 
-            const response = await conversationsService.message(message, conversationId);
-            res.status(200).send({ message: response });
+            const savedResponse = await conversationsService.message(message, conversationId);
+            res.status(200).send(savedResponse);
         },
         (req, res, error) => {
             if (error.code === 403) {
@@ -43,13 +43,13 @@ class ConvesationsController {
                 res.write(`data: ${JSON.stringify({ message: partialMessage })}\n\n`);
             };
 
-            const closeStream = async () => {
-                res.write('event: close\ndata: \n\n');
+            const closeStream = async (message) => {
+                res.write(`event: close\ndata: ${JSON.stringify(message)}\n\n`);
                 res.end();
             };
 
-            await conversationsService.message(message, conversationId, streamResponse);
-            closeStream();
+            const savedResponse = await conversationsService.message(message, conversationId, streamResponse);
+            closeStream(savedResponse);
         },
         (req, res, error) => {
             if (error.code === 403) {

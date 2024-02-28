@@ -12,6 +12,13 @@ export interface IConversation {
     userAnnotation: UserAnnotation;
 }
 
+export interface Message {
+    _id?: mongoose.Types.ObjectId;
+    role: 'system' | 'user' | 'assistant';
+    content: string;
+    userAnnotation?: UserAnnotation;
+}
+
 export interface IMetadataConversation {
     _id: mongoose.Types.ObjectId;
     experimentId: string;

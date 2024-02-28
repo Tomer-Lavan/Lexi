@@ -14,6 +14,7 @@ export interface DisplaySettings {
 
 export interface ExperimentFeatures {
     userAnnotation: boolean;
+    streamMessage: boolean;
 }
 
 export interface IExperimentLean {
