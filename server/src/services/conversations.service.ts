@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import { OpenAI } from 'openai';
-import { IAgent } from 'src/types';
+import { IAgent, Message, UserAnnotation } from 'src/types';
 import { ConversationsModel } from '../models/ConversationsModel';
 import { MetadataConversationsModel } from '../models/MetadataConversationsModel';
 import { experimentsService } from './experiments.service';
@@ -9,19 +9,14 @@ import { usersService } from './users.service';
 
 dotenv.config();
 
-interface Message {
-    role: 'system' | 'user' | 'assistant';
-    content: string;
-}
-
 const { OPENAI_API_KEY } = process.env;
 if (!OPENAI_API_KEY) throw new Error('Server is not configured with OpenAI API key');
 const openai = new OpenAI({ apiKey: OPENAI_API_KEY });
 
 class ConversationsService {
-    message = async (message: any, conversationId: string, streamResponse?) => {
+    message = async (message, conversationId: string, streamResponse?) => {
         const [conversation, metadataConversation] = await Promise.all([
-            this.getConversation(conversationId),
+            this.getConversation(conversationId, true),
             this.getConversationMetadata(conversationId),
         ]);
 
@@ -52,7 +47,7 @@ class ConversationsService {
             }
         }
 
-        await this.createMessageDoc(
+        const savedMessage = await this.createMessageDoc(
             {
                 content: assistantMessage,
                 role: 'assistant',
@@ -66,7 +61,7 @@ class ConversationsService {
             $set: { lastMessageDate: new Date(), lastMessageTimestamp: Date.now() },
         });
 
-        return assistantMessage;
+        return savedMessage;
     };
 
     createConversation = async (userId: string, userConversationsNumber: number, experimentId: string) => {
@@ -111,8 +106,12 @@ class ConversationsService {
         return res._id.toString();
     };
 
-    getConversation = async (conversationId: string): Promise<Message[]> => {
-        const conversation = await ConversationsModel.find({ conversationId }, { _id: 0, role: 1, content: 1 });
+    getConversation = async (conversationId: string, isLean = false): Promise<Message[]> => {
+        const returnValues = isLean
+            ? { _id: 0, role: 1, content: 1 }
+            : { _id: 1, role: 1, content: 1, userAnnotation: 1 };
+
+        const conversation = await ConversationsModel.find({ conversationId }, returnValues);
 
         return conversation;
     };
@@ -170,6 +169,16 @@ class ConversationsService {
         ]);
     };
 
+    updateUserAnnotation = async (messageId: string, userAnnotation: UserAnnotation): Promise<Message> => {
+        const message: Message = await ConversationsModel.findOneAndUpdate(
+            { _id: messageId },
+            { $set: { userAnnotation } },
+            { new: true },
+        );
+
+        return message;
+    };
+
     private updateConversationMetadata = async (conversationId, fields) => {
         try {
             const res = await MetadataConversationsModel.updateOne(
@@ -199,7 +208,11 @@ class ConversationsService {
         return messages;
     };
 
-    private createMessageDoc = async (message: Message, conversationId: string, messageNumber: number) => {
+    private createMessageDoc = async (
+        message: Message,
+        conversationId: string,
+        messageNumber: number,
+    ): Promise<Message> => {
         const res = await ConversationsModel.create({
             content: message.content,
             role: message.role,
@@ -207,7 +220,7 @@ class ConversationsService {
             messageNumber,
         });
 
-        return res;
+        return { _id: res._id, role: res.role, content: res.content, userAnnotation: res.userAnnotation };
     };
 
     private getChatRequest = (agent: IAgent, messages: Message[]) => {

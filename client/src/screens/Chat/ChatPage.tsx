@@ -1,4 +1,4 @@
-import { getConversation } from '@DAL/server-requests/conversations';
+import { getConversation, updateUserAnnotation } from '@DAL/server-requests/conversations';
 import FinishConversationDialog from '@components/common/FinishConversationDialog';
 import LoadingPage from '@components/common/LoadingPage';
 import SurveyComponent from '@components/forms/survey-form/SurveyForm';
@@ -9,6 +9,9 @@ import { Dialog, Grid, useMediaQuery } from '@mui/material';
 import theme from '@root/Theme';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getExperimentFeatures } from '../../DAL/server-requests/experiments';
+import { useExperimentId } from '../../hooks/useExperimentId';
+import { UserAnnotation } from '../../models/AppModels';
 import { MainContainer, MessageListContainer, SectionContainer, SectionInnerContainer } from './ChatPage.s';
 import MessageList from './components/MessageList';
 import InputBox from './components/input-box/InputBox';
@@ -22,15 +25,17 @@ interface ChatPageProps {
 const ChatPage: React.FC<ChatPageProps> = ({ isFinishDialogOpen, setIsFinishDialogOpen }) => {
     const navigate = useNavigate();
     const messagesRef = useRef(null);
-    const [isPageLoading, setIsPageLoading] = useState(true);
     const { openSnackbar } = useSnackbar();
     const [messages, setMessages] = useState([]);
-    const [messageFontSize, setMessageFontSize] = useState<'sm' | 'lg'>('lg');
     const [surveyOpen, setIsSurveyOpen] = useState(false);
+    const [isPageLoading, setIsPageLoading] = useState(true);
+    const [experimentFeatures, setExperimentFeatures] = useState(null);
+    const [messageFontSize, setMessageFontSize] = useState<'sm' | 'lg'>('lg');
     const [isMessageLoading, setIsMessageLoading] = useState(false);
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const questionnaireLink = 'https://docs.google.com/forms/u/0/?tgif=d&ec=asw-forms-hero-goto';
     const conversationId = useConversationId();
+    const experimentId = useExperimentId();
 
     useEffect(() => {
         if (messagesRef.current) {
@@ -45,7 +50,11 @@ const ChatPage: React.FC<ChatPageProps> = ({ isFinishDialogOpen, setIsFinishDial
             setIsSurveyOpen(true);
         }
         try {
-            const conversation = await getConversation(conversationId);
+            const [conversation, experimentFeaturesRes] = await Promise.all([
+                getConversation(conversationId),
+                getExperimentFeatures(experimentId),
+            ]);
+            setExperimentFeatures(experimentFeaturesRes);
             setMessages(conversation.length ? conversation : []);
             setIsPageLoading(false);
         } catch (err) {
@@ -58,6 +67,17 @@ const ChatPage: React.FC<ChatPageProps> = ({ isFinishDialogOpen, setIsFinishDial
         const imsAnsweredKey = `imsPreAnswered-${conversationId}`;
         sessionStorage.setItem(imsAnsweredKey, 'true');
         setIsSurveyOpen(false);
+    };
+
+    const handleUpdateUserAnnotation = async (messageId: string, userAnnotation: UserAnnotation) => {
+        try {
+            await updateUserAnnotation(messageId, userAnnotation);
+            setMessages(
+                messages.map((message) => (message._id === messageId ? { ...message, userAnnotation } : message)),
+            );
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     return isPageLoading ? (
@@ -90,6 +110,8 @@ const ChatPage: React.FC<ChatPageProps> = ({ isFinishDialogOpen, setIsFinishDial
                                 messages={messages}
                                 isMessageLoading={isMessageLoading}
                                 size={messageFontSize}
+                                handleUpdateUserAnnotation={handleUpdateUserAnnotation}
+                                experimentHasUserAnnotation={experimentFeatures?.userAnnotation}
                             />
                         </MessageListContainer>
                         <Grid item display={'flex'} justifyContent={'center'}>
@@ -100,6 +122,7 @@ const ChatPage: React.FC<ChatPageProps> = ({ isFinishDialogOpen, setIsFinishDial
                                 conversationId={conversationId}
                                 setIsMessageLoading={setIsMessageLoading}
                                 fontSize={messageFontSize}
+                                isStreamMessage={experimentFeatures?.streamMessage}
                             />
                         </Grid>
                     </SectionInnerContainer>

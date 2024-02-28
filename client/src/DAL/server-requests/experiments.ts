@@ -1,4 +1,10 @@
-import { DisplaySettings, ExperimentContentType, ExperimentLeanType, ExperimentType } from '@models/AppModels';
+import {
+    DisplaySettings,
+    ExperimentContentType,
+    ExperimentFeatures,
+    ExperimentLeanType,
+    ExperimentType,
+} from '@models/AppModels';
 import { ApiPaths } from '../constants';
 import axiosInstance from './AxiosInstance';
 
@@ -66,6 +72,15 @@ export const updateExperimentDisplaySettings = async (
             displaySettings,
         });
         return;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const getExperimentFeatures = async (experimentId: string): Promise<ExperimentFeatures> => {
+    try {
+        const response = await axiosInstance.get(`/${ApiPaths.EXPERIMENTS_PATH}/${experimentId}/features`);
+        return response.data;
     } catch (error) {
         throw error;
     }

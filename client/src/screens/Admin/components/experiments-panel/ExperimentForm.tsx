@@ -149,6 +149,40 @@ const ExperimentForm = ({
                 InputLabelProps={{ shrink: true }}
                 style={{ marginBottom: '12px' }}
             />
+            <Typography
+                style={{
+                    color: 'grey',
+                    marginBottom: '4px',
+                    marginTop: '8px',
+                    borderBottom: '1px solid grey',
+                }}
+            >
+                Experiment Features:
+            </Typography>
+            <Box style={{ width: '100%' }}>
+                <Controller
+                    name="experimentFeatures.userAnnotation"
+                    control={control}
+                    render={({ field }) => (
+                        <FormControlLabel
+                            control={<Checkbox {...field} checked={field.value} />}
+                            label="User Annotation"
+                        />
+                    )}
+                />
+            </Box>
+            <Box style={{ width: '100%' }}>
+                <Controller
+                    name="experimentFeatures.streamMessage"
+                    control={control}
+                    render={({ field }) => (
+                        <FormControlLabel
+                            control={<Checkbox {...field} checked={field.value} />}
+                            label="Stream Message"
+                        />
+                    )}
+                />
+            </Box>
             <FormControl
                 margin="dense"
                 size="small"

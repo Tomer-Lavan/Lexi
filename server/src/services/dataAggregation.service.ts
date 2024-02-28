@@ -58,8 +58,9 @@ const messagesSheetCol = [
     { header: 'Conversation Link', key: 'conversationLink' },
     { header: 'User Conversation Number', key: 'conversationNumber' },
     { header: 'Message Number', key: 'messageNumber' },
-    { header: 'Content', key: 'content' },
     { header: 'Role', key: 'role' },
+    { header: 'UserAnnotation', key: 'userAnnotation' },
+    { header: 'Content', key: 'content' },
     { header: 'Created At', key: 'createdAt' },
 ];
 
@@ -200,6 +201,7 @@ class DataAggregationService {
                             role: message.role,
                             createdAt: message.createdAt,
                             messageNumber: message.messageNumber,
+                            userAnnotation: message.userAnnotation,
                         });
                     });
 

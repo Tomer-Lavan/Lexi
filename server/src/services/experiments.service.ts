@@ -1,6 +1,6 @@
 import mongoose, { UpdateWriteOpResult } from 'mongoose';
 import { ExperimentsModel } from '../models/ExperimentsModel';
-import { AgentsMode, DisplaySettings, IAgent, IExperiment, IExperimentLean } from '../types';
+import { AgentsMode, DisplaySettings, ExperimentFeatures, IAgent, IExperiment, IExperimentLean } from '../types';
 import { agentsService } from './agents.service';
 
 type BulkWriteResult = ReturnType<typeof ExperimentsModel.bulkWrite>;
@@ -108,6 +108,14 @@ class ExperimentsService {
             { maxMessages: 1, maxConversations: 1, maxParticipants: 1 },
         );
         return result;
+    }
+
+    async getExperimentFeatures(experimentId: string): Promise<ExperimentFeatures> {
+        const result: { experimentFeatures: ExperimentFeatures } = await ExperimentsModel.findOne(
+            { _id: new mongoose.Types.ObjectId(experimentId) },
+            { experimentFeatures: 1 },
+        );
+        return result?.experimentFeatures;
     }
 
     async getAllExperimentsByAgentId(agentId: string): Promise<IExperimentLean[]> {

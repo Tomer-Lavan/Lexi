@@ -49,6 +49,10 @@ export const defaultExperiment = {
         welcomeContent:
             'This is an experiment that is being carried out by Cambridge University.\nHere you will have a therapy session with a chat bot.\nThe conversation is completely anonymous.\nFeel free to share as you like.',
     },
+    experimentFeatures: {
+        userAnnotation: false,
+        streamMessage: false,
+    },
 } as const;
 
 export const initialSlidersEnabled = {
