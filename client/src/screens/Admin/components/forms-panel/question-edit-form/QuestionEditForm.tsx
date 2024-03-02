@@ -1,9 +1,19 @@
-import { Box, Checkbox, FormControlLabel, MenuItem, TextField } from '@mui/material';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import {
+    Box,
+    Checkbox,
+    FormControlLabel,
+    IconButton,
+    InputAdornment,
+    MenuItem,
+    TextField,
+    Tooltip,
+} from '@mui/material';
 import { getFormErrorMessage } from '@utils/commonFunctions';
 import React, { useCallback } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { defaultQuestionProps } from '../../../../../DAL/constants';
-import { SelectionOptions } from '../../selection-options/SelectionOptions';
+import { SelectionOptions } from '../selection-options/SelectionOptions';
 
 interface QuestionEditFormProps {
     selectedQuestionIndex: number;
@@ -18,6 +28,11 @@ const QuestionEditForm: React.FC<QuestionEditFormProps> = ({ selectedQuestionInd
     } = useFormContext();
 
     const watchedForm = watch();
+
+    const isCamelCase = (str) => {
+        const regex = /^[a-z]+(?:[A-Z][a-z]+)*$/;
+        return regex.test(str);
+    };
 
     const handleTypeChange = useCallback(
         (e) => {
@@ -59,6 +74,7 @@ const QuestionEditForm: React.FC<QuestionEditFormProps> = ({ selectedQuestionInd
             const fieldError = errors?.questions?.[selectedQuestionIndex]?.props?.[key];
 
             return (
+                // <Tooltip title="CamelCase format: start with a lowercase letter and use uppercase letters to separate words, e.g., myFieldKey">
                 <TextField
                     label={key === 'fieldKey' ? 'key' : key}
                     type={typeof value === 'number' ? 'number' : 'text'}
@@ -66,6 +82,10 @@ const QuestionEditForm: React.FC<QuestionEditFormProps> = ({ selectedQuestionInd
                     helperText={getFormErrorMessage(fieldError)}
                     {...register(`questions.${selectedQuestionIndex}.props.${key}`, {
                         required: key === 'fieldKey' ? 'Field Key is required' : false,
+                        validate:
+                            key === 'fieldKey'
+                                ? (value) => isCamelCase(value) || 'Field Key must be in camelCase format'
+                                : null,
                     })}
                     onChange={(e) => {
                         setValue(`questions.${selectedQuestionIndex}.props.${key}`, e.target.value, {
@@ -76,6 +96,24 @@ const QuestionEditForm: React.FC<QuestionEditFormProps> = ({ selectedQuestionInd
                     defaultValue={value}
                     size="small"
                     value={watchedForm.questions[selectedQuestionIndex].props[key]}
+                    InputProps={
+                        key === 'fieldKey'
+                            ? {
+                                  endAdornment: (
+                                      <InputAdornment position="end">
+                                          <Tooltip
+                                              title="The 'key' field defines how the field will be saved in the Dataset; it has to be in CamelCase format.
+                                              CamelCase format: starts with a lowercase letter and uses uppercase letters to separate words, e.g., myFieldKey."
+                                          >
+                                              <IconButton>
+                                                  <HelpOutlineIcon />
+                                              </IconButton>
+                                          </Tooltip>
+                                      </InputAdornment>
+                                  ),
+                              }
+                            : {}
+                    }
                 />
             );
         }

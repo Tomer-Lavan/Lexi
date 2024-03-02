@@ -121,6 +121,11 @@ export const CreateForm = ({ editFormId, setEditFormId, setForms }) => {
     };
 
     const addQuestion = useCallback(async () => {
+        if (questionLength >= 15) {
+            openSnackbar(`Form Qustions Limit Exceeded: ${questionLength}`, SnackbarStatus.WARNING);
+            return;
+        }
+
         const response = await trigger(`questions.${selectedQuestionIndex}.props.fieldKey`);
         if (response) {
             append({

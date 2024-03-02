@@ -19,6 +19,8 @@ interface Form {
 }
 
 import { Navigate, Route, Routes } from 'react-router-dom';
+import { DataPanel } from './components/data-panel/DataPanel';
+import { SettingsPanel } from './components/settings-panel/SettingsPanel';
 
 const Admin = () => {
     const [agents, setAgents] = useState<AgentType[]>([]);
@@ -65,7 +67,8 @@ const Admin = () => {
                                 path={AdminSections.FORMS}
                                 element={<FormsPanel forms={forms} setForms={setForms} />}
                             />
-                            {/* Add more routes for other sections as needed */}
+                            <Route path={AdminSections.DATA} element={<DataPanel />} />
+                            <Route path={AdminSections.SETTINGS} element={<SettingsPanel />} />
                         </Routes>
                     </SectionInnerContainer>
                 </SectionContainer>

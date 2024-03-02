@@ -27,21 +27,20 @@ const agentsSheetCol = [
 
 const usersSheetCol = [
     { header: 'Agent Link', key: 'agentLink' },
-    { header: 'User ID', key: 'userId' },
+    { header: 'Username', key: 'username' },
     { header: 'Number of Conversations', key: 'numberOfConversations' },
     { header: 'Age', key: 'age' },
     { header: 'Gender', key: 'gender' },
-    { header: 'Biological Sex', key: 'biologicalSex' },
-    { header: 'Marital Status', key: 'maritalStatus' },
-    { header: 'Number of Children', key: 'childrenNumber' },
-    { header: 'Native English Speaker', key: 'nativeEnglishSpeaker' },
+    // { header: 'Biological Sex', key: 'biologicalSex' },
+    // { header: 'Marital Status', key: 'maritalStatus' },
+    // { header: 'Number of Children', key: 'childrenNumber' },
+    // { header: 'Native English Speaker', key: 'nativeEnglishSpeaker' },
     { header: 'Created At', key: 'createdAt' },
 ];
 
 const conversationsSheetCol = [
     { header: 'Agent Link', key: 'agentLink' },
-    { header: 'User Link', key: 'userLink' },
-    { header: 'Conversation ID', key: 'conversationId' },
+    { header: 'User', key: 'username' },
     { header: 'Conversation Number', key: 'conversationNumber' },
     { header: 'Number Of Messages', key: 'messagesNumber' },
     { header: 'Created At', key: 'createdAt' },
@@ -53,13 +52,13 @@ const conversationsSheetCol = [
 
 const messagesSheetCol = [
     { header: 'Agent Link', key: 'agentLink' },
-    { header: 'User Link', key: 'userLink' },
+    { header: 'User', key: 'username' },
     { header: 'Message ID', key: 'messageId' },
     { header: 'Conversation Link', key: 'conversationLink' },
-    { header: 'User Conversation Number', key: 'conversationNumber' },
+    { header: 'Number of User Conversation', key: 'conversationNumber' },
     { header: 'Message Number', key: 'messageNumber' },
     { header: 'Role', key: 'role' },
-    { header: 'UserAnnotation', key: 'userAnnotation' },
+    { header: 'User Annotation', key: 'userAnnotation' },
     { header: 'Content', key: 'content' },
     { header: 'Created At', key: 'createdAt' },
 ];
@@ -110,6 +109,73 @@ class DataAggregationService {
         const usersSheet = workbook.addWorksheet('Users');
         const conversationsSheet = workbook.addWorksheet('Conversations');
         const messagesSheet = workbook.addWorksheet('Messages');
+        const conversationColFields = new Set([
+            'agentLink',
+            'username',
+            'conversationNumber',
+            'messagesNumber',
+            'createdAt',
+            'lastMessageDate',
+            'isFinished',
+        ]);
+        const userStaticFields = new Set([
+            '_id',
+            'timestamp',
+            'username',
+            'numberOfConversations',
+            'age',
+            'gender',
+            'createdAt',
+            'agentLink',
+            'isAdmin',
+            'password',
+            'agent',
+            'experimentId',
+        ]);
+
+        const userColFields = new Set([
+            '_id',
+            'timestamp',
+            'username',
+            'numberOfConversations',
+            'age',
+            'gender',
+            'createdAt',
+            'agentLink',
+            'isAdmin',
+            'password',
+            'agent',
+            'experimentId',
+        ]);
+
+        experimentData.agents.forEach((agent) => {
+            agent.data.forEach((user) => {
+                user.conversations.forEach((conversation) => {
+                    Object.keys(user.user).forEach((field) => {
+                        if (!userColFields.has(field)) {
+                            userColFields.add(field);
+                            usersSheetCol.push({ header: field, key: field });
+                        }
+                    });
+                    if (conversation.metadata.preConversation) {
+                        Object.keys(conversation.metadata.preConversation).forEach((key) => {
+                            if (!conversationColFields.has(key)) {
+                                conversationColFields.add(key);
+                                conversationsSheetCol.push({ header: `pre_${key}`, key: `pre_${key}` });
+                            }
+                        });
+                    }
+                    if (conversation.metadata.postConversation) {
+                        Object.keys(conversation.metadata.postConversation).forEach((key) => {
+                            if (!conversationColFields.has(key)) {
+                                conversationColFields.add(key);
+                                conversationsSheetCol.push({ header: `post_${key}`, key: `post_${key}` });
+                            }
+                        });
+                    }
+                });
+            });
+        });
 
         mainSheet.columns = mainSheetCol;
         agentsSheet.columns = agentsSheetCol;
@@ -145,45 +211,59 @@ class DataAggregationService {
             });
 
             agent.data.forEach((user) => {
-                usersSheet.addRow({
+                const userRow = {
                     agentLink: {
                         text: `Agent ${agentRowIndex}`,
                         hyperlink: `#\'Agents\'!A${agentRowIndex + 1}`,
                     },
-                    userId: user.user._id,
+                    username: user.user.username,
                     numberOfConversations: user.numberOfConversations,
                     age: user.user.age,
                     gender: user.user.gender,
-                    biologicalSex: user.user.biologicalSex,
-                    maritalStatus: user.user.maritalStatus,
-                    childrenNumber: user.user.childrenNumber,
-                    nativeEnglishSpeaker: user.user.nativeEnglishSpeaker,
+                    // biologicalSex: user.user.biologicalSex,
+                    // maritalStatus: user.user.maritalStatus,
+                    // childrenNumber: user.user.childrenNumber,
+                    // nativeEnglishSpeaker: user.user.nativeEnglishSpeaker,
                     createdAt: user.user.createdAt,
+                };
+
+                Object.entries(user.user).forEach(([key, value]) => {
+                    if (!userStaticFields.has(key)) {
+                        userRow[key] = value;
+                    }
                 });
 
+                usersSheet.addRow(userRow);
                 user.conversations.forEach((conversation) => {
-                    conversationsSheet.addRow({
+                    const conversationRow = {
                         agentLink: {
                             text: `Agent ${agentRowIndex}`,
                             hyperlink: `#\'Agents\'!A${agentRowIndex + 1}`,
                         },
-                        userLink: {
-                            text: `User ${userRowIndex}`,
+                        username: {
+                            text: user.user.username,
                             hyperlink: `#\'Users\'!A${userRowIndex + 1}`,
                         },
-                        conversationId: conversation.metadata._id,
                         conversationNumber: conversation.metadata.conversationNumber,
                         messagesNumber: conversation.metadata.messagesNumber,
                         createdAt: conversation.metadata.createdAt,
                         lastMessageDate: conversation.metadata.lastMessageDate,
-                        preConversation: conversation.metadata.preConversation
-                            ? Object.values(conversation.metadata.preConversation)
-                            : [],
-                        postConversation: conversation.metadata.postConversation
-                            ? Object.values(conversation.metadata.postConversation)
-                            : [],
                         isFinished: conversation.metadata.isFinished,
-                    });
+                    };
+
+                    if (conversation.metadata.preConversation) {
+                        Object.entries(conversation.metadata.preConversation).forEach(([key, value]) => {
+                            conversationRow[`pre_${key}`] = value;
+                        });
+                    }
+
+                    if (conversation.metadata.postConversation) {
+                        Object.entries(conversation.metadata.postConversation).forEach(([key, value]) => {
+                            conversationRow[`post_${key}`] = value;
+                        });
+                    }
+
+                    conversationsSheet.addRow(conversationRow);
 
                     conversation.conversation.forEach((message) => {
                         messagesSheet.addRow({
@@ -191,8 +271,8 @@ class DataAggregationService {
                                 text: `Agent ${agentRowIndex}`,
                                 hyperlink: `#\'Agents\'!A${agentRowIndex + 1}`,
                             },
-                            userLink: {
-                                text: `User ${userRowIndex}`,
+                            username: {
+                                text: user.user.username,
                                 hyperlink: `#\'Users\'!A${userRowIndex + 1}`,
                             },
                             conversationLink: {
