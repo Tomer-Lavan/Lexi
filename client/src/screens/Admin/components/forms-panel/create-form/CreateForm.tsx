@@ -9,6 +9,7 @@ import Question, { BinaryRadioSelectorProps } from '../../../../../components/qu
 import { SnackbarStatus, useSnackbar } from '../../../../../contexts/SnackbarProvider';
 import useEffectAsync from '../../../../../hooks/useEffectAsync';
 import { FormType } from '../../../../../models/AppModels';
+import { isCamelCase } from '../../../../../utils/commonFunctions';
 import QuestionEditForm from '../question-edit-form/QuestionEditForm';
 import {
     AddQuestionButton,
@@ -72,7 +73,10 @@ export const CreateForm = ({ editFormId, setEditFormId, setForms }) => {
 
     const validateQuestions = async () => {
         for (let i = 0; i < watchedForm.questions.length; i++) {
-            if (!watchedForm.questions[i].props.fieldKey) {
+            if (
+                !watchedForm.questions[i].props.fieldKey ||
+                !isCamelCase(watchedForm.questions[i].props.fieldKey)
+            ) {
                 setSelectedQuestionIndex(i);
                 return false;
             }

@@ -9,7 +9,7 @@ import {
     TextField,
     Tooltip,
 } from '@mui/material';
-import { getFormErrorMessage } from '@utils/commonFunctions';
+import { getFormErrorMessage, isCamelCase } from '@utils/commonFunctions';
 import React, { useCallback } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { defaultQuestionProps } from '../../../../../DAL/constants';
@@ -28,11 +28,6 @@ const QuestionEditForm: React.FC<QuestionEditFormProps> = ({ selectedQuestionInd
     } = useFormContext();
 
     const watchedForm = watch();
-
-    const isCamelCase = (str) => {
-        const regex = /^[a-z]+(?:[A-Z][a-z]+)*$/;
-        return regex.test(str);
-    };
 
     const handleTypeChange = useCallback(
         (e) => {
@@ -74,9 +69,8 @@ const QuestionEditForm: React.FC<QuestionEditFormProps> = ({ selectedQuestionInd
             const fieldError = errors?.questions?.[selectedQuestionIndex]?.props?.[key];
 
             return (
-                // <Tooltip title="CamelCase format: start with a lowercase letter and use uppercase letters to separate words, e.g., myFieldKey">
                 <TextField
-                    label={key === 'fieldKey' ? 'key' : key}
+                    label={key === 'fieldKey' ? 'key' : key === 'label' ? 'Question Text' : key}
                     type={typeof value === 'number' ? 'number' : 'text'}
                     error={Boolean(fieldError)}
                     helperText={getFormErrorMessage(fieldError)}
@@ -102,7 +96,7 @@ const QuestionEditForm: React.FC<QuestionEditFormProps> = ({ selectedQuestionInd
                                   endAdornment: (
                                       <InputAdornment position="end">
                                           <Tooltip
-                                              title="The 'key' field defines how the field will be saved in the Dataset; it has to be in CamelCase format.
+                                              title="The 'key' field defines how the item will be saved in the Dataset; it has to be in CamelCase format.
                                               CamelCase format: starts with a lowercase letter and uses uppercase letters to separate words, e.g., myFieldKey."
                                           >
                                               <IconButton>

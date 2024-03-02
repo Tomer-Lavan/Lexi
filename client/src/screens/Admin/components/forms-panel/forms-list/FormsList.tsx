@@ -50,7 +50,6 @@ const FormsList: React.FC<FormsListProps> = ({ forms, setForms, setSelectedFormI
         <List style={{ width: '100%' }}>
             {forms?.map((form) => (
                 <ListItem
-                    button
                     key={form._id}
                     sx={{
                         borderBottom: '1px solid black',

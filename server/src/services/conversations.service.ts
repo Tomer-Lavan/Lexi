@@ -146,13 +146,14 @@ class ConversationsService {
     };
 
     finishConversation = async (conversationId: string, experimentId: string, isAdmin: boolean): Promise<void> => {
-        await Promise.all([
-            MetadataConversationsModel.updateOne(
-                { _id: new mongoose.Types.ObjectId(conversationId) },
-                { $set: { isFinished: true } },
-            ),
-            !isAdmin && experimentsService.closeSession(experimentId),
-        ]);
+        const res = await MetadataConversationsModel.updateOne(
+            { _id: new mongoose.Types.ObjectId(conversationId) },
+            { $set: { isFinished: true } },
+        );
+
+        if (res.modifiedCount && !isAdmin) {
+            await experimentsService.closeSession(experimentId);
+        }
     };
 
     deleteExperimentConversations = async (experimentId: string): Promise<void> => {

@@ -25,20 +25,62 @@ const agentsSheetCol = [
     { header: 'Stop Sequences', key: 'stopSequences' },
 ];
 
-const usersSheetCol = [
+const getUserStaticFields = () => {
+    return new Set([
+        '_id',
+        'timestamp',
+        'username',
+        'numberOfConversations',
+        'age',
+        'gender',
+        'createdAt',
+        'agentLink',
+        'isAdmin',
+        'password',
+        'agent',
+        'experimentId',
+    ]);
+};
+
+const getConversationColFields = () => {
+    return new Set([
+        'agentLink',
+        'username',
+        'conversationNumber',
+        'messagesNumber',
+        'createdAt',
+        'lastMessageDate',
+        'isFinished',
+    ]);
+};
+
+const getUserColFields = () => {
+    return new Set([
+        '_id',
+        'timestamp',
+        'username',
+        'numberOfConversations',
+        'age',
+        'gender',
+        'createdAt',
+        'agentLink',
+        'isAdmin',
+        'password',
+        'agent',
+        'experimentId',
+    ]);
+};
+
+const getUsersSheetCol = () => [
     { header: 'Agent Link', key: 'agentLink' },
     { header: 'Username', key: 'username' },
     { header: 'Number of Conversations', key: 'numberOfConversations' },
     { header: 'Age', key: 'age' },
     { header: 'Gender', key: 'gender' },
-    // { header: 'Biological Sex', key: 'biologicalSex' },
-    // { header: 'Marital Status', key: 'maritalStatus' },
-    // { header: 'Number of Children', key: 'childrenNumber' },
-    // { header: 'Native English Speaker', key: 'nativeEnglishSpeaker' },
     { header: 'Created At', key: 'createdAt' },
 ];
 
-const conversationsSheetCol = [
+const getConversationsSheetCol = () => [
     { header: 'Agent Link', key: 'agentLink' },
     { header: 'User', key: 'username' },
     { header: 'Conversation Number', key: 'conversationNumber' },
@@ -109,44 +151,11 @@ class DataAggregationService {
         const usersSheet = workbook.addWorksheet('Users');
         const conversationsSheet = workbook.addWorksheet('Conversations');
         const messagesSheet = workbook.addWorksheet('Messages');
-        const conversationColFields = new Set([
-            'agentLink',
-            'username',
-            'conversationNumber',
-            'messagesNumber',
-            'createdAt',
-            'lastMessageDate',
-            'isFinished',
-        ]);
-        const userStaticFields = new Set([
-            '_id',
-            'timestamp',
-            'username',
-            'numberOfConversations',
-            'age',
-            'gender',
-            'createdAt',
-            'agentLink',
-            'isAdmin',
-            'password',
-            'agent',
-            'experimentId',
-        ]);
-
-        const userColFields = new Set([
-            '_id',
-            'timestamp',
-            'username',
-            'numberOfConversations',
-            'age',
-            'gender',
-            'createdAt',
-            'agentLink',
-            'isAdmin',
-            'password',
-            'agent',
-            'experimentId',
-        ]);
+        const conversationsSheetCol = getConversationsSheetCol();
+        const usersSheetCol = getUsersSheetCol();
+        const conversationColFields = getConversationColFields();
+        const userStaticFields = getUserStaticFields();
+        const userColFields = getUserColFields();
 
         experimentData.agents.forEach((agent) => {
             agent.data.forEach((user) => {
@@ -220,10 +229,6 @@ class DataAggregationService {
                     numberOfConversations: user.numberOfConversations,
                     age: user.user.age,
                     gender: user.user.gender,
-                    // biologicalSex: user.user.biologicalSex,
-                    // maritalStatus: user.user.maritalStatus,
-                    // childrenNumber: user.user.childrenNumber,
-                    // nativeEnglishSpeaker: user.user.nativeEnglishSpeaker,
                     createdAt: user.user.createdAt,
                 };
 

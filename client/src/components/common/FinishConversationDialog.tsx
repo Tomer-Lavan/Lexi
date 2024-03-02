@@ -28,6 +28,7 @@ const FinishConversationDialog = ({ open, setIsOpen, questionnaireLink, form }) 
             setPage(2);
         } else if (questionnaireLink) {
             setPage(3);
+            handleDone();
         } else {
             handleDone();
         }
@@ -35,9 +36,14 @@ const FinishConversationDialog = ({ open, setIsOpen, questionnaireLink, form }) 
 
     const handleNo = () => setIsOpen(false);
 
-    const handleDone = () => {
+    const handleDone = async () => {
         // navigate(`${Pages.EXPERIMENT.replace(':experimentId', experimentId)}`);
         // setIsOpen(false);
+        try {
+            await finishConversation(conversationId, experimentId, activeUser.isAdmin);
+        } catch (error) {
+            console.error('Failed to finish conversation');
+        }
         console.log('Finish Conversation');
     };
 

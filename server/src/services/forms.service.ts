@@ -32,7 +32,7 @@ class FormsService {
         let preConversation, postConversation;
         forms.forEach((form) => {
             if (form._id.toString() === preConversationFormId) preConversation = form;
-            else if (form._id.toString() === postConversationFormId) postConversation = form;
+            if (form._id.toString() === postConversationFormId) postConversation = form;
         });
 
         return {
