@@ -116,10 +116,10 @@ class ConvesationsController {
         res.status(200).send(conversation);
     });
 
-    updateIms = requestHandler(async (req: Request, res: Response) => {
-        const { conversationId, imsValues, isPreConversation } = req.body;
+    updateConversationMetadata = requestHandler(async (req: Request, res: Response) => {
+        const { conversationId, data, isPreConversation } = req.body;
 
-        await conversationsService.updateIms(conversationId, imsValues, isPreConversation);
+        await conversationsService.updateConversationSurveysData(conversationId, data, isPreConversation);
 
         res.status(200).send();
     });

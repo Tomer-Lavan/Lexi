@@ -8,6 +8,8 @@ export const experimentsRouter = () => {
     router.get('/:id', experimentsController.getExperiment);
     router.get('/:id/features', experimentsController.getExperimentFeatures);
     router.get('/:id/content', experimentsController.getExperimentContent);
+    router.get('/:id/registrationForm', experimentsController.getRegistrationForm);
+    router.get('/:id/conversationForms', experimentsController.getConversationForms);
     router.post('/create', experimentsController.createExperiment);
     router.put('/', experimentsController.updateExperiment);
     router.put('/status', experimentsController.updateExperimentsStatus);

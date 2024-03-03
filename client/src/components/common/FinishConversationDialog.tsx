@@ -12,46 +12,50 @@ import theme from '@root/Theme';
 import { useState } from 'react';
 import { finishConversation } from '../../DAL/server-requests/conversations';
 import useActiveUser from '../../hooks/useActiveUser';
-import SurveyComponent from '../forms/survey-form/SurveyForm';
+import { useConversationId } from '../../hooks/useConversationId';
+import { ConversationForm } from '../forms/conversation-form/ConversationForm';
 
-interface FinishConversationDialogProps {
-    open: boolean;
-    setIsOpen: (isOpen: boolean) => void;
-    questionnaireLink: string;
-    conversationId: string;
-}
-
-const FinishConversationDialog: React.FC<FinishConversationDialogProps> = ({
-    open,
-    conversationId,
-    setIsOpen,
-}) => {
+const FinishConversationDialog = ({ open, setIsOpen, questionnaireLink, form }) => {
     const [page, setPage] = useState(1);
     const { activeUser } = useActiveUser();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const experimentId = useExperimentId();
+    const conversationId = useConversationId();
     // const navigate = useNavigate();
 
-    const handleYes = () => setPage(2);
+    const handleYes = () => {
+        if (form) {
+            setPage(2);
+        } else if (questionnaireLink) {
+            setPage(3);
+            handleDone();
+        } else {
+            handleDone();
+        }
+    };
 
     const handleNo = () => setIsOpen(false);
 
-    // const handleDone = () => {
-    //     navigate(`${Pages.EXPERIMENT.replace(':experimentId', experimentId)}`);
-    //     setIsOpen(false);
-    // };
-
-    const handleDoneSurvey = async () => {
-        setPage(3);
+    const handleDone = async () => {
+        // navigate(`${Pages.EXPERIMENT.replace(':experimentId', experimentId)}`);
+        // setIsOpen(false);
         try {
             await finishConversation(conversationId, experimentId, activeUser.isAdmin);
         } catch (error) {
             console.error('Failed to finish conversation');
         }
+        console.log('Finish Conversation');
+    };
+
+    const handleDoneSurvey = async () => {
+        if (questionnaireLink) {
+            setPage(3);
+        }
+        handleDone();
     };
 
     return (
-        <Dialog open={open} maxWidth={'md'} fullScreen={isMobile && page > 1}>
+        <Dialog open={open} maxWidth={'lg'} fullScreen={isMobile && page > 1}>
             {page === 1 ? (
                 <>
                     <DialogContent>
@@ -66,13 +70,9 @@ const FinishConversationDialog: React.FC<FinishConversationDialogProps> = ({
                         </Button>
                     </DialogActions>
                 </>
-            ) : page === 2 ? (
-                <SurveyComponent
-                    conversationId={conversationId}
-                    isPreConversation={false}
-                    handleDone={() => handleDoneSurvey()}
-                />
-            ) : (
+            ) : page === 2 && form ? (
+                <ConversationForm form={form} isPreConversation={false} handleDone={handleDoneSurvey} />
+            ) : page === 3 || (!form && questionnaireLink) ? (
                 <>
                     <DialogTitle>Thank you for completing the conversation</DialogTitle>
                     <DialogContent>
@@ -88,7 +88,7 @@ const FinishConversationDialog: React.FC<FinishConversationDialogProps> = ({
                         <Button onClick={handleDone}>Done</Button>
                     </DialogActions> */}
                 </>
-            )}
+            ) : null}
         </Dialog>
     );
 };

@@ -116,15 +116,9 @@ class ConversationsService {
         return conversation;
     };
 
-    updateIms = async (conversationId: string, imsValues, isPreConversation: boolean) => {
-        const saveField = isPreConversation ? { imsPre: imsValues } : { imsPost: imsValues };
-
-        const res = await MetadataConversationsModel.updateMany(
-            {
-                _id: new mongoose.Types.ObjectId(conversationId),
-            },
-            { $set: saveField },
-        );
+    updateConversationSurveysData = async (conversationId: string, data, isPreConversation: boolean) => {
+        const saveField = isPreConversation ? { preConversation: data } : { postConversation: data };
+        const res = await this.updateConversationMetadata(conversationId, saveField);
 
         return res;
     };
@@ -152,13 +146,14 @@ class ConversationsService {
     };
 
     finishConversation = async (conversationId: string, experimentId: string, isAdmin: boolean): Promise<void> => {
-        await Promise.all([
-            MetadataConversationsModel.updateOne(
-                { _id: new mongoose.Types.ObjectId(conversationId) },
-                { $set: { isFinished: true } },
-            ),
-            !isAdmin && experimentsService.closeSession(experimentId),
-        ]);
+        const res = await MetadataConversationsModel.updateOne(
+            { _id: new mongoose.Types.ObjectId(conversationId) },
+            { $set: { isFinished: true } },
+        );
+
+        if (res.modifiedCount && !isAdmin) {
+            await experimentsService.closeSession(experimentId);
+        }
     };
 
     deleteExperimentConversations = async (experimentId: string): Promise<void> => {

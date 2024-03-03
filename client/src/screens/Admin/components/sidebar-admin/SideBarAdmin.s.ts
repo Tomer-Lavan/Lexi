@@ -10,19 +10,17 @@ export const MainContainer = styled(Box)({
     borderRight: '1px solid #ccc',
 });
 
-export const StyledListItem = styled(ListItemButton)<{ currentSection?: string; section?: string }>(
-    ({ currentSection, section }) => ({
-        paddingLeft: '15%',
-        marginTop: '12px',
-        position: 'relative',
-        '&::before': {
-            content: '""',
-            position: 'absolute',
-            top: 0,
-            bottom: 0,
-            left: 0,
-            width: '8px',
-            backgroundColor: currentSection === section ? 'rgba(142, 243, 253, 0.8)' : 'transparent',
-        },
-    }),
-);
+export const StyledListItem = styled(ListItemButton)<{ isCurrentSection?: boolean }>(({ isCurrentSection }) => ({
+    paddingLeft: '15%',
+    marginTop: '12px',
+    position: 'relative',
+    '&::before': {
+        content: '""',
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        left: 0,
+        width: '8px',
+        backgroundColor: isCurrentSection ? 'rgba(142, 243, 253, 0.8)' : 'transparent',
+    },
+}));

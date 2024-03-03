@@ -12,3 +12,8 @@ export const formatDate = (date: Date): string => {
 
 export const getFormErrorMessage = (error: FieldError | FieldErrorsImpl<any> | undefined) =>
     error && typeof error.message === 'string' ? error.message : '';
+
+export const isCamelCase = (str) => {
+    const regex = /^[a-z][a-zA-Z0-9]*$/;
+    return regex.test(str);
+};

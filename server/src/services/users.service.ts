@@ -126,8 +126,8 @@ class UsersService {
     getExperimentUsers = async (experimentId: string): Promise<any[]> => {
         const users = await UsersModel.aggregate([
             { $match: { experimentId } },
-            { $group: { _id: '$agent', data: { $push: '$$ROOT' } } },
-            { $project: { _id: 0, agent: '$_id', data: 1 } },
+            { $group: { _id: '$agent._id', agent: { $first: '$agent' }, data: { $push: '$$ROOT' } } },
+            { $project: { _id: 0, agent: 1, data: 1 } },
         ]);
 
         return users;

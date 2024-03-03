@@ -45,7 +45,7 @@ const App: FC = () => {
 
                         {/* Admin Routes */}
                         <Route
-                            path={Pages.ADMIN}
+                            path={`${Pages.ADMIN}/*`}
                             element={activeUser?.isAdmin ? <Admin /> : <Navigate to={Pages.ADMIN_LOGIN} />}
                         />
                         <Route

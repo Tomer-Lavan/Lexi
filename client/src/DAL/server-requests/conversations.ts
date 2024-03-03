@@ -95,15 +95,15 @@ export const getConversation = async (conversationId: string): Promise<MessageTy
     }
 };
 
-export const updateIMS = async (
+export const updateConversationMetadata = async (
     conversationId: string,
-    imsValues: object,
+    data: object,
     isPreConversation: boolean,
 ): Promise<void> => {
     try {
-        await axiosInstance.put(`/${ApiPaths.CONVERSATIONS_PATH}/ims`, {
+        await axiosInstance.put(`/${ApiPaths.CONVERSATIONS_PATH}/metadata`, {
             conversationId,
-            imsValues,
+            data,
             isPreConversation,
         });
         return;

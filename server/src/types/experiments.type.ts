@@ -12,6 +12,12 @@ export interface DisplaySettings {
     welcomeHeader: string;
 }
 
+export interface ExperimentForms {
+    registration: string;
+    preConversation: string;
+    postConversation: string;
+}
+
 export interface ExperimentFeatures {
     userAnnotation: boolean;
     streamMessage: boolean;
@@ -34,6 +40,7 @@ export interface IExperiment {
     title: string;
     description: string;
     numberOfParticipants: number;
+    experimentForms: ExperimentForms;
     maxMessages: number;
     maxConversations: number;
     maxParticipants: number;
