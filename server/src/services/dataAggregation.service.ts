@@ -34,7 +34,7 @@ const getUserStaticFields = () => {
         'age',
         'gender',
         'createdAt',
-        'agentLink',
+        'agent',
         'isAdmin',
         'password',
         'agent',
@@ -44,26 +44,28 @@ const getUserStaticFields = () => {
 
 const getConversationColFields = () => {
     return new Set([
-        'agentLink',
+        'agent',
         'username',
         'conversationNumber',
         'messagesNumber',
         'createdAt',
         'lastMessageDate',
         'isFinished',
+        'id',
+        '_id',
     ]);
 };
 
 const getUserColFields = () => {
     return new Set([
         '_id',
+        'id',
         'timestamp',
         'username',
         'numberOfConversations',
         'age',
         'gender',
         'createdAt',
-        'agentLink',
         'isAdmin',
         'password',
         'agent',
@@ -72,7 +74,7 @@ const getUserColFields = () => {
 };
 
 const getUsersSheetCol = () => [
-    { header: 'Agent Link', key: 'agentLink' },
+    { header: 'Agent', key: 'agent' },
     { header: 'Username', key: 'username' },
     { header: 'Number of Conversations', key: 'numberOfConversations' },
     { header: 'Age', key: 'age' },
@@ -81,22 +83,21 @@ const getUsersSheetCol = () => [
 ];
 
 const getConversationsSheetCol = () => [
-    { header: 'Agent Link', key: 'agentLink' },
+    { header: 'Conversation ID', key: 'id' },
+    { header: 'Agent', key: 'agent' },
     { header: 'User', key: 'username' },
     { header: 'Conversation Number', key: 'conversationNumber' },
     { header: 'Number Of Messages', key: 'messagesNumber' },
     { header: 'Created At', key: 'createdAt' },
     { header: 'Last Message Date', key: 'lastMessageDate' },
-    { header: 'Pre Coversation', key: 'preConversation' },
-    { header: 'Post Conversation', key: 'postConversation' },
     { header: 'Finished', key: 'isFinished' },
 ];
 
 const messagesSheetCol = [
-    { header: 'Agent Link', key: 'agentLink' },
-    { header: 'User', key: 'username' },
+    { header: 'Conversation ID', key: 'conversationId' },
     { header: 'Message ID', key: 'messageId' },
-    { header: 'Conversation Link', key: 'conversationLink' },
+    { header: 'Agent', key: 'agent' },
+    { header: 'User', key: 'username' },
     { header: 'Number of User Conversation', key: 'conversationNumber' },
     { header: 'Message Number', key: 'messageNumber' },
     { header: 'Role', key: 'role' },
@@ -221,8 +222,8 @@ class DataAggregationService {
 
             agent.data.forEach((user) => {
                 const userRow = {
-                    agentLink: {
-                        text: `Agent ${agentRowIndex}`,
+                    agent: {
+                        text: agent.condition.title,
                         hyperlink: `#\'Agents\'!A${agentRowIndex + 1}`,
                     },
                     username: user.user.username,
@@ -241,8 +242,9 @@ class DataAggregationService {
                 usersSheet.addRow(userRow);
                 user.conversations.forEach((conversation) => {
                     const conversationRow = {
-                        agentLink: {
-                            text: `Agent ${agentRowIndex}`,
+                        id: conversation.metadata._id,
+                        agent: {
+                            text: agent.condition.title,
                             hyperlink: `#\'Agents\'!A${agentRowIndex + 1}`,
                         },
                         username: {
@@ -272,20 +274,20 @@ class DataAggregationService {
 
                     conversation.conversation.forEach((message) => {
                         messagesSheet.addRow({
-                            agentLink: {
-                                text: `Agent ${agentRowIndex}`,
+                            conversationId: {
+                                text: conversation.metadata._id,
+                                hyperlink: `#\'Conversations\'!A${conversationRowIndex + 1}`,
+                            },
+                            messageId: message._id,
+                            agent: {
+                                text: agent.condition.title,
                                 hyperlink: `#\'Agents\'!A${agentRowIndex + 1}`,
                             },
                             username: {
                                 text: user.user.username,
                                 hyperlink: `#\'Users\'!A${userRowIndex + 1}`,
                             },
-                            conversationLink: {
-                                text: `Conversation ${conversationRowIndex}`,
-                                hyperlink: `#\'Conversations\'!A${conversationRowIndex + 1}`,
-                            },
                             conversationNumber: conversation.metadata.conversationNumber,
-                            messageId: message._id,
                             content: message.content,
                             role: message.role,
                             createdAt: message.createdAt,

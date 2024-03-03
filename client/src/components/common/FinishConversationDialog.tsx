@@ -50,14 +50,8 @@ const FinishConversationDialog = ({ open, setIsOpen, questionnaireLink, form }) 
     const handleDoneSurvey = async () => {
         if (questionnaireLink) {
             setPage(3);
-        } else {
-            handleDone();
         }
-        try {
-            await finishConversation(conversationId, experimentId, activeUser.isAdmin);
-        } catch (error) {
-            console.error('Failed to finish conversation');
-        }
+        handleDone();
     };
 
     return (
