@@ -169,16 +169,16 @@ class DataAggregationService {
                     });
                     if (conversation.metadata.preConversation) {
                         Object.keys(conversation.metadata.preConversation).forEach((key) => {
-                            if (!conversationColFields.has(key)) {
-                                conversationColFields.add(key);
+                            if (!conversationColFields.has(`pre_${key}`)) {
+                                conversationColFields.add(`pre_${key}`);
                                 conversationsSheetCol.push({ header: `pre_${key}`, key: `pre_${key}` });
                             }
                         });
                     }
                     if (conversation.metadata.postConversation) {
                         Object.keys(conversation.metadata.postConversation).forEach((key) => {
-                            if (!conversationColFields.has(key)) {
-                                conversationColFields.add(key);
+                            if (!conversationColFields.has(`post_${key}`)) {
+                                conversationColFields.add(`post_${key}`);
                                 conversationsSheetCol.push({ header: `post_${key}`, key: `post_${key}` });
                             }
                         });
