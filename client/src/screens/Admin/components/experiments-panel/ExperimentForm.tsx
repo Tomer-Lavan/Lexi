@@ -43,7 +43,6 @@ const ExperimentForm = ({
     });
     const [isSaveLoading, setIsSaveLoading] = useState(false);
     const formTitle = useMemo(() => (!isEditMode ? 'New Experiment' : 'Edit Experiment'), []);
-    // const formsOptions = useMemo(() => [{ name: 'No Form' }, ...forms], []);
     const { openSnackbar } = useSnackbar();
     const agentsMode = watch('agentsMode');
 
@@ -85,9 +84,6 @@ const ExperimentForm = ({
             setIsSaveLoading(false);
         }
     };
-
-    const selectedFormId = watch('register'); // Replace with your field name
-    console.log('Selected form ID:', selectedFormId); // For debuggin
 
     return (
         <MainContainer as="form" onSubmit={handleSubmit(handleSave)} style={{ padding: '32px' }}>

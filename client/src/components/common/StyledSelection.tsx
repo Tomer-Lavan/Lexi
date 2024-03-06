@@ -18,10 +18,10 @@ const StyledSelection = ({ control, name, label, options, placeholder }) => (
                     labelId={`${name}-select-label`}
                     displayEmpty
                     style={{ minWidth: '100px' }}
-                    value={field.value || ''}
+                    value={field.value || null}
                 >
                     {placeholder && (
-                        <MenuItem key="" value="">
+                        <MenuItem key="" value={null}>
                             <em>{placeholder}</em>
                         </MenuItem>
                     )}
