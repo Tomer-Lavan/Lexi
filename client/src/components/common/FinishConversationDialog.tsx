@@ -10,7 +10,9 @@ import {
 } from '@mui/material';
 import theme from '@root/Theme';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { finishConversation } from '../../DAL/server-requests/conversations';
+import { Pages } from '../../app/App';
 import useActiveUser from '../../hooks/useActiveUser';
 import { useConversationId } from '../../hooks/useConversationId';
 import { ConversationForm } from '../forms/conversation-form/ConversationForm';
@@ -21,7 +23,7 @@ const FinishConversationDialog = ({ open, setIsOpen, questionnaireLink, form }) 
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const experimentId = useExperimentId();
     const conversationId = useConversationId();
-    // const navigate = useNavigate();
+    const navigate = useNavigate();
 
     const handleYes = () => {
         if (form) {
@@ -37,8 +39,6 @@ const FinishConversationDialog = ({ open, setIsOpen, questionnaireLink, form }) 
     const handleNo = () => setIsOpen(false);
 
     const handleDone = async () => {
-        // navigate(`${Pages.EXPERIMENT.replace(':experimentId', experimentId)}`);
-        // setIsOpen(false);
         try {
             await finishConversation(conversationId, experimentId, activeUser.isAdmin);
         } catch (error) {
@@ -84,9 +84,18 @@ const FinishConversationDialog = ({ open, setIsOpen, questionnaireLink, form }) 
                             {questionnaireLink}
                         </a> */}
                     </DialogContent>
-                    {/* <DialogActions>
-                        <Button onClick={handleDone}>Done</Button>
-                    </DialogActions> */}
+                    {activeUser.isAdmin && (
+                        <DialogActions>
+                            <Button
+                                onClick={() => {
+                                    navigate(`${Pages.EXPERIMENT.replace(':experimentId', experimentId)}`);
+                                    setIsOpen(false);
+                                }}
+                            >
+                                Done
+                            </Button>
+                        </DialogActions>
+                    )}
                 </>
             ) : null}
         </Dialog>
