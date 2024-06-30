@@ -114,7 +114,7 @@ Interested in contributing? We value your input and contributions! Please read o
 
 ## 📄 License
 
-This project is licensed under the [CC BY-NC-ND 4.0 DEED License](LICENSE.md).
+This project is licensed under the [CC BY-NC 4.0 License](LICENSE.md).
 
 ## 📞 Contact
 
