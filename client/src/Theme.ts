@@ -30,10 +30,10 @@ const theme = createTheme({
             main: '#388E3C',
         },
         assistantMessage: {
-            main: '#6abaee',
+            main: '#CADEEA',
         },
         userMessage: {
-            main: '#CADEEA',
+            main: '#f4d2cb',
         },
     },
     typography: {

@@ -1,9 +1,9 @@
-import { sendStreamMessage } from '@DAL/server-requests/conversations';
 import { SnackbarStatus, useSnackbar } from '@contexts/SnackbarProvider';
 import { MessageType } from '@models/AppModels';
 import SendIcon from '@mui/icons-material/Send';
 import { Box, Button, IconButton } from '@mui/material';
 import { useState } from 'react';
+import { sendMessage, sendStreamMessage } from '../../../../DAL/server-requests/conversations';
 import { StyledInputBase, StyledInputBox } from './InputBox.s';
 
 interface InputBoxProps {
@@ -13,6 +13,7 @@ interface InputBoxProps {
     conversationId: string;
     setIsMessageLoading: (isLoading: boolean) => void;
     fontSize: string;
+    isStreamMessage: boolean;
 }
 
 const InputBox: React.FC<InputBoxProps> = ({
@@ -22,6 +23,7 @@ const InputBox: React.FC<InputBoxProps> = ({
     conversationId,
     setMessages,
     setIsMessageLoading,
+    isStreamMessage,
 }) => {
     const { openSnackbar } = useSnackbar();
     const [message, setMessage] = useState('');
@@ -38,19 +40,48 @@ const InputBox: React.FC<InputBoxProps> = ({
         setMessage('');
         setIsMessageLoading(true);
         try {
-            sendStreamMessage({ content: messageContent, role: 'user' }, conversationId, onStreamMessage, () =>
-                onMessageError(conversation, messageContent),
-            );
+            if (isStreamMessage) {
+                sendStreamMessage(
+                    { content: messageContent, role: 'user' },
+                    conversationId,
+                    onStreamMessage,
+                    onCloseStream,
+                    (error) => onMessageError(conversation, messageContent, error),
+                );
+            } else {
+                const response = await sendMessage({ content: messageContent, role: 'user' }, conversationId);
+                setMessages((prevMessages) => [...prevMessages, response]);
+                setIsMessageLoading(false);
+                setErrorMessage(null);
+            }
         } catch (err) {
-            onMessageError(conversation, messageContent);
+            onMessageError(conversation, messageContent, err);
         }
     };
 
-    const onMessageError = (conversation, messageContent) => {
+    const onMessageError = (conversation, messageContent, error) => {
         setIsMessageLoading(false);
-        setMessages([...conversation, { content: 'Network Error', role: 'assistant' }]);
+        setMessages([
+            ...conversation,
+            {
+                content:
+                    error.response && error.response.status && error.response.status === 403
+                        ? 'Messeges Limit Exceeded'
+                        : error?.response?.status === 400
+                          ? 'Message Is Too Long'
+                          : 'Network Error',
+                role: 'assistant',
+            },
+        ]);
         openSnackbar('Failed to send message', SnackbarStatus.ERROR);
         setErrorMessage(messageContent);
+    };
+
+    const onCloseStream = (message: MessageType) => {
+        setMessages((prevMessages) => [
+            ...prevMessages.slice(0, -1),
+            { ...prevMessages[prevMessages.length - 1], _id: message._id, userAnnotation: message.userAnnotation },
+        ]);
     };
 
     const onStreamMessage = (assistantMessagePart: string) => {

@@ -1,6 +1,7 @@
 import mongoose, { UpdateWriteOpResult } from 'mongoose';
 import { ExperimentsModel } from '../models/ExperimentsModel';
-import { ABAgents, AgentConfig, AgentsMode, DisplaySettings, IAgent, IExperiment } from '../types';
+import { AgentsMode, DisplaySettings, ExperimentFeatures, IAgent, IExperiment, IExperimentLean } from '../types';
+import { agentsService } from './agents.service';
 
 type BulkWriteResult = ReturnType<typeof ExperimentsModel.bulkWrite>;
 
@@ -37,24 +38,24 @@ class ExperimentsService {
         return updatedExperiment;
     };
 
-    updateActiveAgent = async (
-        experimentId: string,
-        agent: IAgent,
-        agentsConfig: AgentConfig,
-        abAgents: ABAgents,
-    ): Promise<UpdateWriteOpResult> => {
-        const updateFields = { agentsConfig };
-        if (agentsConfig === AgentConfig.SINGLE) {
-            updateFields['activeAgent'] = agent;
-        } else {
-            updateFields['abAgents'] = abAgents;
-        }
-        const response = await ExperimentsModel.updateOne(
-            { _id: new mongoose.Types.ObjectId(experimentId) },
-            { $set: updateFields },
+    addSession = async (experimentId: string): Promise<IExperiment> => {
+        const updatedExperiment = await ExperimentsModel.findOneAndUpdate(
+            { _id: experimentId },
+            { $inc: { totalSessions: 1, openSessions: 1 } },
+            { new: true },
         );
 
-        return response;
+        return updatedExperiment;
+    };
+
+    closeSession = async (experimentId: string): Promise<IExperiment> => {
+        const updatedExperiment = await ExperimentsModel.findOneAndUpdate(
+            { _id: experimentId },
+            { $inc: { openSessions: -1 } },
+            { new: true },
+        );
+
+        return updatedExperiment;
     };
 
     updateExperimentDisplaySettings = async (
@@ -83,15 +84,52 @@ class ExperimentsService {
 
     async getActiveAgent(experimentId: string): Promise<IAgent> {
         const experiment = await this.getExperiment(experimentId);
+        let agentId;
         if (experiment.agentsMode === AgentsMode.SINGLE) {
-            return experiment.activeAgent;
+            agentId = experiment.activeAgent;
+        } else {
+            const rand = Math.random() * 100;
+            if (experiment.abAgents.distA >= rand) {
+                agentId = experiment.abAgents.agentA;
+            } else {
+                agentId = experiment.abAgents.agentB;
+            }
         }
 
-        const rand = Math.random() * 100;
-        if (experiment.abAgents.distA >= rand) {
-            return experiment.abAgents.agentA;
-        }
-        return experiment.abAgents.agentB;
+        const agent = await agentsService.getAgent(agentId);
+        return agent;
+    }
+
+    async getExperimentBoundries(
+        experimentId: string,
+    ): Promise<{ maxMessages: number; maxConversations: number; maxParticipants: number }> {
+        const result = await ExperimentsModel.findOne(
+            { _id: new mongoose.Types.ObjectId(experimentId) },
+            { maxMessages: 1, maxConversations: 1, maxParticipants: 1 },
+        );
+        return result;
+    }
+
+    async getExperimentFeatures(experimentId: string): Promise<ExperimentFeatures> {
+        const result: { experimentFeatures: ExperimentFeatures } = await ExperimentsModel.findOne(
+            { _id: new mongoose.Types.ObjectId(experimentId) },
+            { experimentFeatures: 1 },
+        );
+        return result?.experimentFeatures;
+    }
+
+    async getAllExperimentsByAgentId(agentId: string): Promise<IExperimentLean[]> {
+        const result = await ExperimentsModel.find(
+            {
+                $or: [{ activeAgent: agentId }, { 'abAgents.agentA': agentId }, { 'abAgents.agentB': agentId }],
+            },
+            { _id: 1, title: 1 },
+        );
+        return result;
+    }
+
+    async deleteExperiment(experimentId): Promise<void> {
+        await ExperimentsModel.deleteOne({ _id: experimentId });
     }
 }
 

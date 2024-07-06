@@ -1,4 +1,3 @@
-import { Pages } from '@app/App';
 import { useExperimentId } from '@hooks/useExperimentId';
 import {
     Button,
@@ -12,25 +11,51 @@ import {
 import theme from '@root/Theme';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import SurveyComponent from '../forms/survey-form/SurveyForm';
+import { finishConversation } from '../../DAL/server-requests/conversations';
+import { Pages } from '../../app/App';
+import useActiveUser from '../../hooks/useActiveUser';
+import { useConversationId } from '../../hooks/useConversationId';
+import { ConversationForm } from '../forms/conversation-form/ConversationForm';
 
-const FinishConversationDialog = ({ open, setIsOpen, questionnaireLink, conversationId }) => {
+const FinishConversationDialog = ({ open, setIsOpen, questionnaireLink, form }) => {
     const [page, setPage] = useState(1);
+    const { activeUser } = useActiveUser();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const experimentId = useExperimentId();
+    const conversationId = useConversationId();
     const navigate = useNavigate();
 
-    const handleYes = () => setPage(2);
+    const handleYes = () => {
+        if (form) {
+            setPage(2);
+        } else if (questionnaireLink) {
+            setPage(3);
+            handleDone();
+        } else {
+            handleDone();
+        }
+    };
 
     const handleNo = () => setIsOpen(false);
 
-    const handleDone = () => {
-        navigate(`${Pages.EXPERIMENT.replace(':experimentId', experimentId)}`);
-        setIsOpen(false);
+    const handleDone = async () => {
+        try {
+            await finishConversation(conversationId, experimentId, activeUser.isAdmin);
+        } catch (error) {
+            console.error('Failed to finish conversation');
+        }
+        console.log('Finish Conversation');
+    };
+
+    const handleDoneSurvey = async () => {
+        if (questionnaireLink) {
+            setPage(3);
+        }
+        handleDone();
     };
 
     return (
-        <Dialog open={open} maxWidth={'md'} fullScreen={isMobile && page > 1}>
+        <Dialog open={open} maxWidth={'lg'} fullScreen={isMobile && page > 1}>
             {page === 1 ? (
                 <>
                     <DialogContent>
@@ -45,28 +70,34 @@ const FinishConversationDialog = ({ open, setIsOpen, questionnaireLink, conversa
                         </Button>
                     </DialogActions>
                 </>
-            ) : page === 2 ? (
-                <SurveyComponent
-                    conversationId={conversationId}
-                    isPreConversation={false}
-                    handleDone={() => setPage(3)}
-                />
-            ) : (
+            ) : page === 2 && form ? (
+                <ConversationForm form={form} isPreConversation={false} handleDone={handleDoneSurvey} />
+            ) : page === 3 || (!form && questionnaireLink) ? (
                 <>
-                    <DialogTitle>Questionnaire</DialogTitle>
+                    <DialogTitle>Thank you for completing the conversation</DialogTitle>
                     <DialogContent>
                         <DialogContentText color={'black'}>
-                            Please fill the following questionnaire:
+                            Your username is <b>{activeUser.username}</b>, continue with it in the rest of the
+                            study.
                         </DialogContentText>
-                        <a href={questionnaireLink} target="_blank" rel="noopener noreferrer">
+                        {/* <a href={questionnaireLink} target="_blank" rel="noopener noreferrer">
                             {questionnaireLink}
-                        </a>
+                        </a> */}
                     </DialogContent>
-                    <DialogActions>
-                        <Button onClick={handleDone}>Done</Button>
-                    </DialogActions>
+                    {activeUser.isAdmin && (
+                        <DialogActions>
+                            <Button
+                                onClick={() => {
+                                    navigate(`${Pages.EXPERIMENT.replace(':experimentId', experimentId)}`);
+                                    setIsOpen(false);
+                                }}
+                            >
+                                Done
+                            </Button>
+                        </DialogActions>
+                    )}
                 </>
-            )}
+            ) : null}
         </Dialog>
     );
 };

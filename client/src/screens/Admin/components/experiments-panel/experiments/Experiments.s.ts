@@ -12,7 +12,6 @@ export const FlexContainer = styled('div')({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    // borderBottom: '1px solid black',
 });
 
 export const TypographyStyled = styled(Typography)({

@@ -1,23 +1,6 @@
 import { UpdateWriteOpResult } from 'mongoose';
-import { IAgent } from 'src/types';
+import { IAgent, IAgentLean } from 'src/types';
 import { AgentsModel } from '../models/AgentsModel';
-
-// export interface IAgent {
-//     _id: mongoose.Types.ObjectId;
-//     title: string;
-//     summary: string;
-//     systemStarterPrompt: string;
-//     beforeUserSentencePrompt: string;
-//     afterUserSentencePrompt: string;
-//     firstChatSentence: string;
-//     chatAgent: string;
-//     temperature: number;
-//     maxTokens: number;
-//     topP: number;
-//     frequencyPenalty: number;
-//     presencePenalty: number;
-//     stopSequences: string[];
-// }
 
 class AgentsService {
     saveAgent = async (settings: IAgent): Promise<IAgent> => {
@@ -33,9 +16,23 @@ class AgentsService {
         return agents;
     };
 
+    getAgent = async (agentId: string): Promise<IAgent> => {
+        const agent: IAgent = await AgentsModel.findOne({ _id: agentId });
+        return agent;
+    };
+
+    getAgentLean = async (agentId: string): Promise<IAgentLean> => {
+        const agent: IAgentLean = await AgentsModel.findOne({ _id: agentId }, { _id: 1, title: 1 });
+        return agent;
+    };
+
     updateAgents = async (agent: IAgent): Promise<UpdateWriteOpResult> => {
         const response: UpdateWriteOpResult = await AgentsModel.updateOne({ _id: agent._id }, { $set: agent });
         return response;
+    };
+
+    deleteAgent = async (agentId: string): Promise<void> => {
+        await AgentsModel.deleteOne({ _id: agentId });
     };
 }
 

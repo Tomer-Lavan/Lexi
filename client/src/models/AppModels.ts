@@ -1,7 +1,13 @@
+import { QuestionType, QuestionTypeProps } from '../components/questions/Question';
+
 export interface MessageType {
+    _id?: string;
     role: 'system' | 'user' | 'assistant';
     content: string;
+    userAnnotation?: UserAnnotation;
 }
+
+export type UserAnnotation = 1 | 0 | -1;
 
 export interface ConversationType {
     conversationId: string;
@@ -23,8 +29,6 @@ export interface MetadataConversationType {
     conversationNumber: number;
     agent: AgentType;
     userId: string;
-    imsPre?: object;
-    imsPost?: object;
 }
 
 export interface UserType {
@@ -60,12 +64,19 @@ export interface AgentType {
     frequencyPenalty: number;
     presencePenalty: number;
     stopSequences: { value: string; id: string }[];
+    createdAt?: Date;
+    timestamp?: number;
+}
+
+export interface AgentLeanType {
+    _id: string;
+    title: string;
 }
 
 export type AbAgentsType = {
-    agentA: AgentType;
+    agentA: string;
     distA: number;
-    agentB: AgentType;
+    agentB: string;
     distB: number;
 };
 
@@ -82,7 +93,7 @@ export interface DisplaySettings {
 export interface ExperimentType {
     _id: string;
     agentsMode: string;
-    activeAgent: AgentType;
+    activeAgent: string;
     abAgents: AbAgentsType;
     createdAt: Date;
     timestamp: number;
@@ -93,6 +104,22 @@ export interface ExperimentType {
     title: string;
     description: string;
     numberOfParticipants: number;
+    maxMessages: number | undefined;
+    maxConversations: number | undefined;
+    maxParticipants: number | undefined;
+    totalSessions: number;
+    openSessions: number;
+    experimentFeatures: ExperimentFeatures;
+}
+
+export interface ExperimentLeanType {
+    _id: string;
+    title: string;
+}
+
+export interface ExperimentFeatures {
+    userAnnotation: boolean;
+    streamMessage: boolean;
 }
 
 export interface NewUserInfoType {
@@ -108,4 +135,11 @@ export interface NewUserInfoType {
 export interface ExperimentContentType {
     content: DisplaySettings;
     isActive: boolean;
+}
+
+export interface FormType {
+    name: string;
+    title: string;
+    instructions: string;
+    questions: Array<{ type: QuestionType; props: QuestionTypeProps }>;
 }

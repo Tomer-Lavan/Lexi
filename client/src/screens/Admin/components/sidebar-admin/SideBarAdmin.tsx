@@ -6,6 +6,7 @@ import BookOutlinedIcon from '@mui/icons-material/BookOutlined';
 import ExitToAppOutlinedIcon from '@mui/icons-material/ExitToAppOutlined';
 import InsertChartOutlinedOutlinedIcon from '@mui/icons-material/InsertChartOutlinedOutlined';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
+import TextSnippetIcon from '@mui/icons-material/TextSnippet';
 import { Divider, List, ListItem, Typography } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { MainContainer, StyledListItemIcon } from './SideBar.s';
@@ -14,12 +15,16 @@ import { StyledListItem } from './SideBarAdmin.s';
 const sectionsConfig = [
     { id: AdminSections.EXPERIMENTS, label: 'Experiments', Icon: BookOutlinedIcon },
     { id: AdminSections.AGENTS, label: 'Agents', Icon: AutoAwesomeOutlinedIcon },
+    { id: AdminSections.FORMS, label: 'Forms', Icon: TextSnippetIcon },
     { id: AdminSections.DATA, label: 'Data', Icon: InsertChartOutlinedOutlinedIcon },
     { id: AdminSections.SETTINGS, label: 'Settings', Icon: SettingsOutlinedIcon },
 ];
 
-export const SidebarAdmin = ({ section, setSection }) => {
+import { useNavigate } from 'react-router-dom';
+
+export const SidebarAdmin = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const handleLogout = async () => {
         try {
@@ -33,9 +38,8 @@ export const SidebarAdmin = ({ section, setSection }) => {
     const renderListItem = (item) => (
         <StyledListItem
             key={item.id}
-            section={item.id}
-            currentSection={section}
-            onClick={() => (item.id === 'logout' ? handleLogout() : setSection(item.id))}
+            isCurrentSection={location.pathname.endsWith(item.id)}
+            onClick={() => (item.id === 'logout' ? handleLogout() : navigate(`/admin/${item.id}`))}
         >
             <StyledListItemIcon>
                 <item.Icon style={{ color: 'floralwhite', fontSize: '1.25rem' }} />
@@ -48,7 +52,7 @@ export const SidebarAdmin = ({ section, setSection }) => {
         <MainContainer>
             <List>
                 <ListItem sx={{ display: 'flex', justifyContent: 'center', padding: 0, paddingRight: '5%' }}>
-                    <img src="lexi_logo.png" alt="logo" width={160} height={90} />
+                    <img src="/lexi_logo.png" alt="logo" width={160} height={90} />
                 </ListItem>
                 <Divider style={{ backgroundColor: 'rgba(250,250,255,0.5)', marginBottom: '3vh' }} />
                 {sectionsConfig.map(renderListItem)}

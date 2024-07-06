@@ -90,7 +90,6 @@ const Home: React.FC = () => {
     };
 
     const startConversation = async () => {
-        console.log('Starting a new conversation...');
         try {
             const newConversationId = await createConversation(
                 activeUser._id,
@@ -104,6 +103,10 @@ const Home: React.FC = () => {
                 )}`,
             );
         } catch (err) {
+            if (err?.response?.status === 403) {
+                openSnackbar('Converations Limit Exceeded', SnackbarStatus.ERROR);
+                return;
+            }
             openSnackbar('Failed to start a new conversation', SnackbarStatus.ERROR);
         }
     };

@@ -1,4 +1,10 @@
-import { DisplaySettings, ExperimentContentType, ExperimentType } from '@models/AppModels';
+import {
+    DisplaySettings,
+    ExperimentContentType,
+    ExperimentFeatures,
+    ExperimentLeanType,
+    ExperimentType,
+} from '@models/AppModels';
 import { ApiPaths } from '../constants';
 import axiosInstance from './AxiosInstance';
 
@@ -38,6 +44,15 @@ export const getExperimentContent = async (experimentId: string): Promise<Experi
     }
 };
 
+export const getExperimentsByAgent = async (agentId: string): Promise<ExperimentLeanType[]> => {
+    try {
+        const response = await axiosInstance.get(`/${ApiPaths.EXPERIMENTS_PATH}/agent?agentId=${agentId}`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
 export const updateExperiment = async (experiment: ExperimentType): Promise<void> => {
     try {
         await axiosInstance.put(`/${ApiPaths.EXPERIMENTS_PATH}`, { experiment });
@@ -56,6 +71,44 @@ export const updateExperimentDisplaySettings = async (
             experimentId,
             displaySettings,
         });
+        return;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const getExperimentRegistrationForm = async (experimentId) => {
+    try {
+        const response = await axiosInstance.get(`/${ApiPaths.EXPERIMENTS_PATH}/${experimentId}/registrationForm`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const getExperimentCoversationForms = async (experimentId) => {
+    try {
+        const response = await axiosInstance.get(
+            `/${ApiPaths.EXPERIMENTS_PATH}/${experimentId}/conversationForms`,
+        );
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const getExperimentFeatures = async (experimentId: string): Promise<ExperimentFeatures> => {
+    try {
+        const response = await axiosInstance.get(`/${ApiPaths.EXPERIMENTS_PATH}/${experimentId}/features`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const deleteExperiment = async (experimentId: string): Promise<void> => {
+    try {
+        await axiosInstance.delete(`/${ApiPaths.EXPERIMENTS_PATH}/${experimentId}`);
         return;
     } catch (error) {
         throw error;

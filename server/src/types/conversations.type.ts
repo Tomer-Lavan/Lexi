@@ -1,13 +1,22 @@
 import mongoose from 'mongoose';
 import { IAgent } from '../types/agents.type';
 
+export type UserAnnotation = 1 | 0 | -1;
 export interface IConversation {
     conversationId: string;
     content: string;
-    role: string;
+    role: 'system' | 'user' | 'assistant';
     createdAt: Date;
     timestamp: number;
     messageNumber: number;
+    userAnnotation: UserAnnotation;
+}
+
+export interface Message {
+    _id?: mongoose.Types.ObjectId;
+    role: 'system' | 'user' | 'assistant';
+    content: string;
+    userAnnotation?: UserAnnotation;
 }
 
 export interface IMetadataConversation {
@@ -21,6 +30,8 @@ export interface IMetadataConversation {
     conversationNumber: number;
     agent: IAgent;
     userId: string;
-    imsPre?: object;
-    imsPost?: object;
+    preConversation?: object;
+    postConversation?: object;
+    maxMessages: number;
+    isFinished: boolean;
 }

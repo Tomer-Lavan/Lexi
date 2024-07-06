@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import { UsersModel } from '../models/UsersModel';
-import { IUser } from '../types';
+import { IAgent, IUser } from '../types';
 import { experimentsService } from './experiments.service';
 
 dotenv.config();
@@ -23,7 +23,17 @@ class UsersService {
 
     createUser = async (user: IUser, experimentId: string): Promise<{ user: IUser; token: string }> => {
         const { username, age, gender, biologicalSex, maritalStatus, childrenNumber, nativeEnglishSpeaker } = user;
-        const agent = await experimentsService.getActiveAgent(experimentId);
+        const [agent, experiment] = await Promise.all([
+            experimentsService.getActiveAgent(experimentId),
+            experimentsService.getExperiment(experimentId),
+        ]);
+
+        if (experiment.maxParticipants && experiment.numberOfParticipants + 1 > experiment.maxParticipants) {
+            const error = new Error('Experiment Participants Limit Exceeded');
+            error['code'] = 403;
+            throw error;
+        }
+
         const res = await UsersModel.create({
             experimentId,
             username,
@@ -38,7 +48,7 @@ class UsersService {
 
         const savedUser = res.toObject() as IUser;
 
-        experimentsService.addParticipant(experimentId);
+        await experimentsService.addParticipant(experimentId);
         const token = jwt.sign({ id: savedUser._id }, process.env.JWT_SECRET_KEY);
         return { user: savedUser, token };
     };
@@ -116,11 +126,20 @@ class UsersService {
     getExperimentUsers = async (experimentId: string): Promise<any[]> => {
         const users = await UsersModel.aggregate([
             { $match: { experimentId } },
-            { $group: { _id: '$agent', data: { $push: '$$ROOT' } } },
-            { $project: { _id: 0, agent: '$_id', data: 1 } },
+            { $group: { _id: '$agent._id', agent: { $first: '$agent' }, data: { $push: '$$ROOT' } } },
+            { $project: { _id: 0, agent: 1, data: 1 } },
         ]);
 
         return users;
+    };
+
+    updateUsersAgent = async (agent: IAgent): Promise<void> => {
+        const agentId = new mongoose.Types.ObjectId(agent._id);
+        await UsersModel.updateMany({ 'agent._id': agentId }, { $set: { agent } });
+    };
+
+    deleteExperimentUsers = async (experimentId: string): Promise<void> => {
+        await UsersModel.deleteMany({ experimentId });
     };
 }
 

@@ -1,10 +1,9 @@
 import mongoose from 'mongoose';
-import { IAgent } from '../types/agents.type';
 
 export interface ABAgents {
-    agentA: IAgent;
+    agentA: string;
     distA: number;
-    agentB: IAgent;
+    agentB: string;
     distB: number;
 }
 
@@ -13,10 +12,26 @@ export interface DisplaySettings {
     welcomeHeader: string;
 }
 
+export interface ExperimentForms {
+    registration: string;
+    preConversation: string;
+    postConversation: string;
+}
+
+export interface ExperimentFeatures {
+    userAnnotation: boolean;
+    streamMessage: boolean;
+}
+
+export interface IExperimentLean {
+    _id: mongoose.Types.ObjectId;
+    title: string;
+}
+
 export interface IExperiment {
     _id: mongoose.Types.ObjectId;
     agentsMode: string;
-    activeAgent: IAgent;
+    activeAgent: string;
     abAgents: ABAgents;
     createdAt: Date;
     timestamp: number;
@@ -25,4 +40,11 @@ export interface IExperiment {
     title: string;
     description: string;
     numberOfParticipants: number;
+    experimentForms: ExperimentForms;
+    maxMessages: number;
+    maxConversations: number;
+    maxParticipants: number;
+    totalSessions: number;
+    openSessions: number;
+    experimentFeatures: ExperimentFeatures;
 }

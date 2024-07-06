@@ -1,4 +1,4 @@
-import { NewUserInfoType, UserType } from '@models/AppModels';
+import { AgentType, NewUserInfoType, UserType } from '@models/AppModels';
 import { ApiPaths } from '../constants';
 import axiosInstance from './AxiosInstance';
 
@@ -13,7 +13,6 @@ export const getActiveUser = async (): Promise<UserType> => {
 
 export const registerUser = async (userInfo: NewUserInfoType, experimentId: string): Promise<UserType> => {
     try {
-        userInfo.nativeEnglishSpeaker = userInfo.nativeEnglishSpeaker === 'true';
         const response = await axiosInstance.post(`/${ApiPaths.USERS_PATH}/create`, { userInfo, experimentId });
         return response.data;
     } catch (error) {
@@ -52,6 +51,15 @@ export const validateUserName = async (username: string, experimentId: string): 
         const response = await axiosInstance.get(
             `/${ApiPaths.USERS_PATH}/validate?username=${username}&experimentId=${experimentId}`,
         );
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const updateUsersAgent = async (agent: AgentType): Promise<void> => {
+    try {
+        const response = await axiosInstance.put(`/${ApiPaths.USERS_PATH}/agent`, { agent });
         return response.data;
     } catch (error) {
         throw error;
