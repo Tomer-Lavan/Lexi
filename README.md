@@ -2,13 +2,13 @@
     <a href="https://www.cam.ac.uk/">
         <img src="https://www.cam.ac.uk/sites/www.cam.ac.uk/files/inner-images/logo.jpg" width="128px" />
     </a>
-    <h1>Cambridge University Bot Interaction & LLMS Experiment Platform</h1>
-    <p>An innovative platform for conducting experiments in user interaction with bots and Language Learning & Modeling Systems (LLMS).</p>
+    <h1>LEXI: Large Language Models Experimental Interface</h1>
+    <p>An innovative platform by <a href="https://cambridge-afar.github.io/">Affective Intelligence and Robotics Laboratory (AFAR)</a> of the University of Cambridge for conducting social interaction experiments with bots and Language Learning & Modeling Systems (LLMS).</p>
 </div>
 
 ## 🌍 Project Overview
 
-This platform, developed in collaboration with Cambridge University, is designed to facilitate advanced research in the field of user-bot interactions and LLMS models. It offers a comprehensive environment for conducting, monitoring, and analyzing experiments in this cutting-edge domain.
+This platform is designed to facilitate advanced research in the field of user-bot interactions and LLMS models. It offers a comprehensive environment for conducting, monitoring, and analyzing experiments in this cutting-edge domain.
 
 ## 🚀 Quick Start
 
@@ -114,11 +114,11 @@ Interested in contributing? We value your input and contributions! Please read o
 
 ## 📄 License
 
-This project is licensed under the [Cambridge University License](LICENSE.md).
+This project is licensed under the [CC BY-NC 4.0 License](LICENSE.md).
 
 ## 📞 Contact
 
-For any inquiries or further information, reach out to us at [contact@cam.ac.uk](mailto:contact@cam.ac.uk).
+For any inquiries or further information, reach out to us at [gl538@cam.ac.uk](mailto:gl538@cam.ac.uk).
 
 ## 👍 Show Your Support
 
