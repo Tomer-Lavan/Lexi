@@ -50,6 +50,7 @@ class UsersService {
 
         await experimentsService.addParticipant(experimentId);
         const token = jwt.sign({ id: savedUser._id }, process.env.JWT_SECRET_KEY);
+        // note
         return { user: savedUser, token };
     };
 
