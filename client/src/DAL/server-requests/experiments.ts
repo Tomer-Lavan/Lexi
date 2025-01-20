@@ -17,9 +17,9 @@ export const saveExperiment = async (experiment: ExperimentType): Promise<Experi
     }
 };
 
-export const getExperiments = async (): Promise<ExperimentType[]> => {
+export const getExperiments = async (pageNumber: string, limit: string): Promise<ExperimentType[]> => {
     try {
-        const response = await axiosInstance.get(`/${ApiPaths.EXPERIMENTS_PATH}`);
+        const response = await axiosInstance.get(`/${ApiPaths.EXPERIMENTS_PATH}?page=${pageNumber}&limit=${limit}`);
         return response.data;
     } catch (error) {
         throw error;
