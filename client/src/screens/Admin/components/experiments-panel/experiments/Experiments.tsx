@@ -23,8 +23,8 @@ export const Experiments = ({ agents, forms }) => {
     const [openExperimentFormDialog, setOpenExperimentFormDialog] = useState(false);
     const [openDeleteExpDialog, setOpenDeleteExpDialog] = useState(false);
     const [editExperiment, setEditExperiment] = useState<ExperimentType | undefined>(null);
-    const [pageNumber, setPageNumber] = useState("1");
-    const expLimit = "4";
+    const [pageNumber, setPageNumber] = useState('1');
+    const expLimit = '4';
 
     useEffectAsync(async () => {
         setIsLoadingExperiments(true);
@@ -163,13 +163,13 @@ export const Experiments = ({ agents, forms }) => {
                     want to delete?
                 </WarningMessage>
             </Dialog>
-            <Box display={'flex'} justifyContent={'center'}>
+            <Box display={'flex'} justifyContent={'center'} alignItems={'center'} mt={4} gap={2}>
                 <NextPrevButton disabled={pageNumber==="1"} onClick={() => setPageNumber(String(Number(pageNumber) - 1))} size="small">
                             <Typography variant="body2" fontWeight={500} color={'floralwhite'}>
                                 prev
                             </Typography>
                 </NextPrevButton>
-                <Typography variant="h6" gutterBottom style={{ borderBottom: '1px solid gray', marginBottom: '24px' }}>
+                <Typography variant="h5" fontWeight={400} style={{color: '#4A90E2', fontSize: '22px',lineHeight: '1',textAlign: 'center',}}>
                     {pageNumber}
                 </Typography>
                 <NextPrevButton disabled={Number(expLimit) > experiments.length} onClick={() => setPageNumber(String(Number(pageNumber) + 1))} size="small">
