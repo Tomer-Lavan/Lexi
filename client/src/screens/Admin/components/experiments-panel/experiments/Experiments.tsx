@@ -9,7 +9,7 @@ import { Box, Dialog, Typography } from '@mui/material';
 import { useState } from 'react';
 import ExperimentForm from '../ExperimentForm';
 import ExperimentsList from '../experiments-list/ExperimentsList';
-import { AddButton, IconButtonStyled, MainContainerStyled } from './Experiments.s';
+import { AddButton, IconButtonStyled, MainContainerStyled, NextPrevButton} from './Experiments.s';
 
 export const Experiments = ({ agents, forms }) => {
     const { openSnackbar } = useSnackbar();
@@ -23,11 +23,13 @@ export const Experiments = ({ agents, forms }) => {
     const [openExperimentFormDialog, setOpenExperimentFormDialog] = useState(false);
     const [openDeleteExpDialog, setOpenDeleteExpDialog] = useState(false);
     const [editExperiment, setEditExperiment] = useState<ExperimentType | undefined>(null);
+    const [pageNumber, setPageNumber] = useState('1');
+    const expLimit = '4';
 
     useEffectAsync(async () => {
         setIsLoadingExperiments(true);
         try {
-            const res = await getExperiments();
+            const res = await getExperiments(pageNumber , expLimit);
             setExperiments(res);
             setTempExperiments(res);
         } catch (error) {
@@ -36,7 +38,7 @@ export const Experiments = ({ agents, forms }) => {
             setTempExperiments([]);
         }
         setIsLoadingExperiments(false);
-    }, []);
+    }, [pageNumber]);
 
     const closeDialog = () => {
         setOpenExperimentFormDialog(false);
@@ -103,11 +105,11 @@ export const Experiments = ({ agents, forms }) => {
                 Experiments
             </Typography>
             <Typography variant="h5" gutterBottom fontWeight={500}>
-                Manage Your Experiments
+                Experiments Manager
             </Typography>
             <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
                 <Typography variant="body2" gutterBottom fontWeight={500} marginBottom={2}>
-                    Manage your experiments, attcach to them a agent, launch them, share with participants and
+                    Manage your experiments, attach to them a agent, launch them, share with participants and
                     more.
                 </Typography>
                 <Box display={'flex'} justifyContent={'end'}>
@@ -161,6 +163,21 @@ export const Experiments = ({ agents, forms }) => {
                     want to delete?
                 </WarningMessage>
             </Dialog>
+            <Box display={'flex'} justifyContent={'center'} alignItems={'center'} mt={4} gap={2}>
+                <NextPrevButton disabled={pageNumber==="1"} onClick={() => setPageNumber(String(Number(pageNumber) - 1))} size="small">
+                            <Typography variant="body2" fontWeight={500} color={'floralwhite'}>
+                                prev
+                            </Typography>
+                </NextPrevButton>
+                <Typography variant="h5" fontWeight={400} style={{color: '#4A90E2', fontSize: '22px',lineHeight: '1',textAlign: 'center',}}>
+                    {pageNumber}
+                </Typography>
+                <NextPrevButton disabled={Number(expLimit) > experiments.length} onClick={() => setPageNumber(String(Number(pageNumber) + 1))} size="small">
+                            <Typography variant="body2" fontWeight={500} color={'floralwhite'}>
+                                next
+                            </Typography>
+                </NextPrevButton>
+            </Box>
         </MainContainerStyled>
     );
 };

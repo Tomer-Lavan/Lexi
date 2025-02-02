@@ -7,7 +7,9 @@ import { requestHandler } from '../utils/requestHandler';
 
 class ExperimentsController {
     getExperiments = requestHandler(async (req: Request, res: Response) => {
-        const experiments = await experimentsService.getExperiments();
+        const page = req.query.page as string;
+        const limit = req.query.limit as string;
+        const experiments = await experimentsService.getExperiments(page, limit);
         res.status(200).send(experiments);
     });
 
