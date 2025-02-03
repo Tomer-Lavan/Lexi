@@ -1,6 +1,8 @@
 import { Button, IconButton, Typography } from '@mui/material';
 import { styled } from '@mui/system';
 import theme from '@root/Theme';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 export const MainContainerStyled = styled('div')({
     maxWidth: 'lg',
@@ -43,3 +45,16 @@ export const AddButton = styled(Button)({
         backgroundColor: theme.palette.secondary.dark,
     },
 });
+
+export const NextPrevButton = styled(Button)({
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: theme.palette.secondary.main,
+    color: theme.palette.common.white,
+    textTransform: 'none',
+    '&:hover': {
+        backgroundColor: theme.palette.secondary.dark,
+    },
+});
+

@@ -18,8 +18,10 @@ class ExperimentsService {
         return experiment;
     }
 
-    async getExperiments(): Promise<IExperiment[]> {
-        const experiments = await ExperimentsModel.find({});
+    async getExperiments(page: string, limit: string): Promise<IExperiment[]> {
+        const startIndex = (Number(page) - 1) * Number(limit);
+        const limitValue = Number(limit);
+        const experiments = await ExperimentsModel.find({}).skip(startIndex).limit(limitValue).exec();
         return experiments;
     }
 
