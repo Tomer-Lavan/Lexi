@@ -84,14 +84,16 @@ class ConversationsService {
         if (user.isAdmin) {
             agent = await experimentsService.getActiveAgent(experimentId);
         }
+        agent = await experimentsService.getActiveAgent(experimentId);
 
         const res = await MetadataConversationsModel.create({
             conversationNumber: userConversationsNumber + 1,
             experimentId,
             userId,
-            agent: user.isAdmin ? agent : user.agent,
+            agent: agent,
             maxMessages: user.isAdmin ? undefined : experimentBoundries.maxMessages,
         });
+        //user.isAdmin ? agent : user.agent
 
         const firstMessage: Message = {
             role: 'assistant',
